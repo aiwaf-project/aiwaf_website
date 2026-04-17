@@ -31,9 +31,20 @@ app.config['AIWAF_MIN_FORM_TIME'] = 2.0  # Minimum form submission time
 
 # Initialize AIWAF protection
 
-from aiwaf_flask import AIWAF
+from aiwaf.flask import AIWAF
 
-aiwaf = AIWAF(app)
+aiwaf = AIWAF(
+    app,
+    middlewares=[
+        "logging",
+        "header_validation",
+        "ip_keyword_block",
+        "rate_limit",
+        "geo_block",
+        "ai_anomaly",
+        "uuid_tamper",
+    ],
+)
 
 @app.route('/')
 def home():
