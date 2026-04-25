@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#3b3b98,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+    </style>
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">JavaScript Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="/docs/javascript">Overview</a></li>
+        <li><a href="/docs/javascript/setup">Setup Guide</a></li>
+        <li><a href="/docs/javascript/architecture" class="active">Architecture</a></li>
+        <li><a href="/docs/javascript/operations">Operations</a></li>
+    </ul>
+</aside>
+<main class="content">
+    <div class="badge">Core Design</div>
+    <h1 class="page-title">Architecture And Runtime Flow</h1>
+
+    <section class="section">
+        <h2>High-Level Architecture</h2>
+        <ul>
+            <li>Unified core pipeline in <code>lib/wafMiddleware.js</code>.</li>
+            <li>Defense-domain modules in <code>lib/</code> (rate, headers, geo, anomaly, keyword, UUID, honeypot).</li>
+            <li>Storage managers prefer SQLite and fail open to CSV when DB is unavailable.</li>
+            <li>Training pipeline learns from logs and runtime data stores.</li>
+            <li>Non-Express adapters normalize into Express-like <code>req/res/next</code> contract.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Runtime Entry And Framework Adapters</h2>
+        <h3>Package Entry (<code>index.js</code>)</h3>
+        <ul>
+            <li>Default export: Express-compatible middleware.</li>
+            <li>Named targets: Fastify, Hapi, Koa, Nest, Next.js, Adonis.</li>
+            <li>Sails alias points to Express middleware path.</li>
+        </ul>
+        <h3>Adapter Behavior</h3>
+        <ul>
+            <li>Fastify: <code>onRequest</code> hook with wrapped <code>status/json/send</code> response helpers.</li>
+            <li>Hapi: <code>server.ext('onRequest')</code> and takeover response mapping on deny.</li>
+            <li>Koa: wraps <code>ctx</code> with Express-like methods, forwards only if not handled.</li>
+            <li>Nest: middleware class delegates to core middleware in <code>use(req,res,next)</code>.</li>
+            <li>Next.js: wrapper runs AIWAF first, blocks short-circuit, else calls original handler.</li>
+            <li>Adonis: maps context request/response into Express-like contract.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Core Request Pipeline (<code>lib/wafMiddleware.js</code>)</h2>
+        <h3>Initialization Phase</h3>
+        <ul>
+            <li>Settings normalized through <code>normalizeSettings(rawOpts)</code>.</li>
+            <li>Defense modules initialized: rate limiter, keyword detectors, anomaly, header validation, geo, exemptions, logger, feature utils.</li>
+            <li>Optional startup clear via <code>AIWAF_CLEAR_STATE_ON_START</code>.</li>
+        </ul>
+        <h3>Per-Request Flow</h3>
+        <ol>
+            <li>Resolve metadata (<code>ip/path/method</code>) and logger hooks.</li>
+            <li>Optional method policy block (<code>AIWAF_METHOD_POLICY_ENABLED</code>).</li>
+            <li>Exemption short-circuit.</li>
+            <li>Blocked IP check.</li>
+            <li>Header validation.</li>
+            <li>Optional WASM checks (headers/url/content/recent behavior).</li>
+            <li>Geo policy check.</li>
+            <li>Honeypot/timing checks.</li>
+            <li>Rate limit record + block decision.</li>
+            <li>Static and dynamic keyword checks.</li>
+            <li>UUID tamper checks.</li>
+            <li>Unknown-route anomaly decision (trained-model-gated, behavior-filtered).</li>
+            <li>Response-finish keyword learning for suspicious 404 patterns.</li>
+            <li><code>next()</code> when not blocked.</li>
+        </ol>
+        <h3>Block Response Model</h3>
+        <p>Responds with <code>403</code>/<code>405</code>/<code>429</code>, JSON-aware by request semantics or <code>AIWAF_FORCE_JSON_ERRORS</code>.</p>
+    </section>
+
+    <section class="section">
+        <h2>Core Modules Map (<code>lib/</code>)</h2>
+        <ul>
+            <li><code>blacklistManager.js</code>, <code>exemptionStore.js</code>, <code>exemptions.js</code></li>
+            <li><code>rateLimiter.js</code>, <code>keywordDetector.js</code>, <code>dynamicKeyword.js</code>, <code>dynamicKeywordStore.js</code></li>
+            <li><code>honeypotDetector.js</code>, <code>uuidDetector.js</code>, <code>headerValidation.js</code></li>
+            <li><code>geoBlocker.js</code>, <code>geoStore.js</code></li>
+            <li><code>anomalyDetector.js</code>, <code>isolationForest.js</code>, <code>featureUtils.js</code></li>
+            <li><code>middlewareLogger.js</code>, <code>requestLogStore.js</code>, <code>modelStore.js</code></li>
+            <li><code>settingsCompat.js</code>, <code>redisClient.js</code>, <code>wasmAdapter.js</code>, <code>csvStore.js</code></li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Storage And Persistence Strategy</h2>
+        <ul>
+            <li>SQLite via Knex in <code>utils/db.js</code> (<code>:memory:</code> in tests; <code>./aiwaf.sqlite</code> otherwise).</li>
+            <li>Lazily-created tables include blocked/exemptions/geo/request logs/dynamic keywords/model artifacts.</li>
+            <li>On DB failure, stores switch to CSV fallback under <code>logs/storage/</code>.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Training And Learning Pipeline (<code>train.js</code>)</h2>
+        <h3>Source Priority</h3>
+        <ol>
+            <li>Access logs (<code>AIWAF_ACCESS_LOG</code>/<code>NODE_LOG_PATH</code> + glob/rotated gzip).</li>
+            <li>Middleware JSONL logs.</li>
+            <li>Middleware CSV logs.</li>
+            <li>DB request logs.</li>
+        </ol>
+        <h3>Controls And Output</h3>
+        <ul>
+            <li>Threshold gates: <code>AIWAF_MIN_TRAIN_LOGS</code>, <code>AIWAF_MIN_AI_LOGS</code>, <code>AIWAF_FORCE_AI_TRAINING</code>.</li>
+            <li>Keyword-learning control: <code>AIWAF_ENABLE_KEYWORD_LEARNING</code>, <code>AIWAF_DYNAMIC_TOP_N</code>.</li>
+            <li>Feature vector has 6 dimensions: path length, keyword hits, status bucket, response time, burst count, per-IP 404 count.</li>
+            <li>Outputs include model save, optional anomaly IP blacklist, dynamic keyword updates, exemption cleanups, and geo summaries.</li>
+        </ul>
+    </section>
+</main>
+</div></div>
+</body>
+</html>

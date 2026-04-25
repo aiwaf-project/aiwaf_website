@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#3a506b,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: .6rem; }
+        th, td { border: 1px solid rgba(255,255,255,.1); padding: .6rem; text-align: left; vertical-align: top; }
+        th { background: rgba(78,205,196,.12); }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+    </style>
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">Python Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="/docs/python">Overview</a></li>
+        <li><a href="/docs/python/setup">Setup Guide</a></li>
+        <li><a href="/docs/python/architecture" class="active">Architecture</a></li>
+        <li><a href="/docs/python/adapters">Adapters</a></li>
+        <li><a href="/docs/python/operations">Operations</a></li>
+    </ul>
+</aside>
+<main class="content">
+    <div class="badge">Core Design</div>
+    <h1 class="page-title">Architecture And Shared Layer</h1>
+
+    <section class="section">
+        <h2>High-Level Architecture</h2>
+        <ul>
+            <li>Framework-agnostic core in <code>aiwaf/core/*</code>.</li>
+            <li>Adapters for Django, Flask, and FastAPI sharing common logic.</li>
+            <li>Storage abstraction with memory/file/CSV/DB options.</li>
+            <li>Training pipeline for feature extraction and anomaly model lifecycle.</li>
+            <li>Optional Rust backend for header validation and feature extraction acceleration.</li>
+        </ul>
+        <h3>Core Intent</h3>
+        <ul>
+            <li>Graceful degradation when optional dependencies are unavailable.</li>
+            <li>False-positive reduction via exemptions and route-aware heuristics.</li>
+            <li>Portable behavior across Python web frameworks.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Core Shared Layer (<code>aiwaf/core</code>)</h2>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Area</th><th>Modules</th></tr></thead>
+                <tbody>
+                    <tr><td>Exports & defaults</td><td><code>__init__.py</code>, <code>constants.py</code>, <code>defaults.py</code></td></tr>
+                    <tr><td>Storage primitives</td><td><code>storage_schema.py</code>, <code>storage_interfaces.py</code>, <code>storage_csv.py</code>, <code>storage_ops.py</code>, <code>storage_csv_impl.py</code>, <code>runtime_storage.py</code></td></tr>
+                    <tr><td>Security logic</td><td><code>blacklist.py</code>, <code>runtime_blacklist.py</code>, <code>exemptions.py</code>, <code>header_validation.py</code>, <code>geoip.py</code>, <code>runtime_utils.py</code></td></tr>
+                    <tr><td>Training/model helpers</td><td><code>training_logic.py</code>, <code>training_features.py</code>, <code>training.py</code>, <code>model_artifacts.py</code></td></tr>
+                    <tr><td>Rust bridge</td><td><code>rust_backend.py</code> for optional <code>aiwaf_rust</code> integration</td></tr>
+                    <tr><td>Logging & misc</td><td><code>logs.py</code>, <code>utils.py</code>, <code>whois.py</code>, <code>keyword_fallback.py</code></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>Configuration Model</h2>
+        <ul>
+            <li>Modern flat settings/env keys: <code>AIWAF_*</code>.</li>
+            <li>Legacy nested <code>AIWAF_SETTINGS</code> compatibility mapping in Django.</li>
+            <li>Control domains: storage, AI thresholds, rate limits, exemptions, geo mode, header validation, model store, Rust toggle, path rules.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Storage Semantics</h2>
+        <h3>Runtime Backends</h3>
+        <ul>
+            <li><code>MemoryStorage</code>: in-process key/value + cleanup.</li>
+            <li><code>FileStorage</code>: JSON file via atomic temp-file replace.</li>
+            <li><code>CSVStorage</code>: key/value storage over CSV.</li>
+            <li><code>DBStorage</code>: SQLite key/value store.</li>
+        </ul>
+        <h3>Typed Stores</h3>
+        <ul>
+            <li><code>ExemptionStore</code>, <code>BlacklistStore</code>, <code>KeywordStore</code>, <code>GeoBlockStore</code>.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Training And AI Lifecycle</h2>
+        <ol style="padding-left:1.2rem;">
+            <li>Parse logs from combined/common/csv/json/model fallbacks.</li>
+            <li>Build request feature records.</li>
+            <li>Use Rust acceleration when available.</li>
+            <li>Train anomaly model when thresholds permit.</li>
+            <li>Persist model artifact.</li>
+            <li>Learn suspicious keywords with malicious-context checks.</li>
+            <li>Exclude legitimate/exempt keywords to reduce false positives.</li>
+        </ol>
+        <h3>Execution Safeguards</h3>
+        <ul>
+            <li>Disable AI path when logs are insufficient.</li>
+            <li>Post-filter anomaly predictions before hard blocks.</li>
+            <li>Fall back to keyword protections when AI deps are missing.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Security Subsystems</h2>
+        <h3>Header Validation</h3>
+        <ul>
+            <li>Required header resolution with method-aware overrides.</li>
+            <li>Suspicious UA and header-combination heuristics.</li>
+            <li>Caps on header bytes/count/value lengths.</li>
+            <li>Quality score model with optional Rust fast-path.</li>
+        </ul>
+        <h3>GeoIP And Country Blocking</h3>
+        <ul>
+            <li>Geo DB path: <code>aiwaf/core/geolock/ipinfo_lite.mmdb</code>.</li>
+            <li>Allowlist mode and blocklist mode supported.</li>
+            <li>Adapters add cache integration where available.</li>
+        </ul>
+        <h3>Exemptions And Path Rules</h3>
+        <ul>
+            <li>Path, IP, decorator, and persisted exemption layers.</li>
+            <li>Path rules can disable middleware or override rate limits.</li>
+        </ul>
+    </section>
+</main>
+</div></div>
+</body>
+</html>

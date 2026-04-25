@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#5b2a86,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        pre { background: rgba(0,0,0,.5); border: 1px solid rgba(78,205,196,.3); border-radius: 10px; padding: .85rem; overflow-x: auto; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+    </style>
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">JavaScript Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="/docs/javascript">Overview</a></li>
+        <li><a href="/docs/javascript/setup">Setup Guide</a></li>
+        <li><a href="/docs/javascript/architecture">Architecture</a></li>
+        <li><a href="/docs/javascript/operations" class="active">Operations</a></li>
+    </ul>
+</aside>
+<main class="content">
+    <div class="badge">Ops And Release</div>
+    <h1 class="page-title">CLI, Config, Testing, Packaging</h1>
+
+    <section class="section">
+        <h2>CLI And Operational Commands (<code>bin/aiwaf.js</code>)</h2>
+        <pre><code>npm run aiwaf -- &lt;command&gt;
+# or
+node bin/aiwaf.js &lt;command&gt;</code></pre>
+        <h3>Supported Commands</h3>
+        <ul>
+            <li><code>list blacklist</code>, <code>list exemptions</code>, <code>list geo</code></li>
+            <li><code>list request-logs [limit]</code>, <code>list dynamic-keywords [limit]</code>, <code>list model-info</code></li>
+            <li><code>add/remove ip-exemption</code>, <code>add/remove path-exemption</code></li>
+            <li><code>geo block/unblock/summary</code></li>
+            <li><code>clear blacklist</code>, <code>clear request-logs</code>, <code>clear dynamic-keywords</code></li>
+            <li><code>train</code>, <code>diagnose &lt;ip&gt;</code></li>
+        </ul>
+        <p>Output is JSON-first for script-friendly automation. <code>train</code> delegates to <code>node train.js</code>.</p>
+    </section>
+
+    <section class="section">
+        <h2>Configuration Model (<code>AIWAF_*</code>)</h2>
+        <p>Settings are normalized by <code>lib/settingsCompat.js</code> from middleware options, legacy nested settings, and environment variables.</p>
+        <h3>High-Impact Groups</h3>
+        <ul>
+            <li>Rate limiting: <code>AIWAF_RATE_WINDOW</code>, <code>AIWAF_RATE_MAX</code>, <code>AIWAF_RATE_FLOOD</code></li>
+            <li>Honeypot/method policy: <code>AIWAF_MIN_FORM_TIME</code>, <code>AIWAF_MAX_PAGE_TIME</code>, <code>AIWAF_ALLOWED_METHODS</code>, <code>AIWAF_METHOD_POLICY_ENABLED</code></li>
+            <li>Exemptions: <code>AIWAF_EXEMPT_PATHS</code>, <code>AIWAF_EXEMPT_IPS</code>, <code>AIWAF_ALLOWED_PATH_KEYWORDS</code>, <code>AIWAF_EXEMPT_KEYWORDS</code>, <code>AIWAF_EXEMPTIONS_DB</code></li>
+            <li>Header validation: <code>AIWAF_HEADER_VALIDATION</code>, <code>AIWAF_REQUIRED_HEADERS</code>, <code>AIWAF_HEADER_QUALITY_MIN_SCORE</code>, and header size/count limits</li>
+            <li>Geo controls: <code>AIWAF_GEO_BLOCK_ENABLED</code>, geo allow/block country sets, MMDB path, cache controls</li>
+            <li>Model/training: storage/path/fallback/cache options + AI training threshold flags</li>
+            <li>Logging controls: JSONL/CSV/DB toggles and paths</li>
+            <li>WASM toggles: <code>AIWAF_WASM_VALIDATION</code>, header/recent validation flags</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Request Lifecycle (Simplified)</h2>
+        <ol>
+            <li>Request enters unified middleware.</li>
+            <li>Exemption checks evaluate IP/path bypass.</li>
+            <li>Header and optional WASM validations run.</li>
+            <li>Geo checks run.</li>
+            <li>Honeypot/timing checks run.</li>
+            <li>Rate limiter records and enforces thresholds.</li>
+            <li>Static + dynamic keyword checks run.</li>
+            <li>UUID tamper checks run.</li>
+            <li>Unknown-route anomaly checks run when model is sufficiently trained.</li>
+            <li>Blocked requests are denied and logged; all requests can be logged to JSONL/CSV/DB.</li>
+        </ol>
+    </section>
+
+    <section class="section">
+        <h2>Testing And Local Development</h2>
+        <ul>
+            <li>Node.js LTS, npm, and sqlite3 compatibility required.</li>
+            <li>Common commands:</li>
+        </ul>
+        <pre><code>npm install
+npm test
+npm run train
+npm run aiwaf -- help
+npm run perf:wasm
+npm run test:wasm-real</code></pre>
+        <p>Jest notes: <code>--runInBand</code>, teardown via <code>test/jest.teardown.js</code>, and <code>forceExit: true</code>.</p>
+    </section>
+
+    <section class="section">
+        <h2>Packaging And Release Surface</h2>
+        <ul>
+            <li>Published files include <code>index.js</code>, <code>bin/</code>, <code>lib/</code>, <code>resources/</code>, <code>utils/</code>, <code>train.js</code>, docs/license files.</li>
+            <li>Published CLI binary: <code>aiwaf -&gt; bin/aiwaf.js</code>.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Operational Notes</h2>
+        <ul>
+            <li>Middleware order is security-critical and false-positive-sensitive.</li>
+            <li>Anomaly model failures should not break request handling.</li>
+            <li>Geo lookups can run via MMDB or header fallback.</li>
+            <li>Store modules are defensive: DB failures should not disable core protections.</li>
+            <li>Unknown-route anomaly checks stay conservative until model training is sufficient.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Suggested Onboarding Order</h2>
+        <ol>
+            <li><code>README.md</code></li>
+            <li><code>INSTALLATION.md</code></li>
+            <li><code>index.js</code></li>
+            <li><code>lib/wafMiddleware.js</code></li>
+            <li><code>train.js</code></li>
+            <li><code>lib/*Store.js</code>, <code>lib/blacklistManager.js</code>, <code>lib/exemptions.js</code></li>
+            <li><code>bin/aiwaf.js</code></li>
+            <li><code>test/</code> suite</li>
+        </ol>
+    </section>
+</main>
+</div></div>
+</body>
+</html>

@@ -3,8 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentation - AIWAF</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; overflow-x: hidden; }
@@ -51,9 +65,8 @@
             <aside class="sidebar">
                 <h3 class="sidebar-title">Frameworks</h3>
                 <ul class="sidebar-nav">
-                    <li><a href="/docs/django">Django</a></li>
-                    <li><a href="/docs/flask">Flask</a></li>
-                    <li><a href="#" style="opacity: 0.5; cursor: not-allowed;">FastAPI (Coming Soon)</a></li>
+                    <li><a href="/docs/python">Python</a></li>
+                    <li><a href="/docs/javascript">JavaScript</a></li>
                 </ul>
             </aside>
 
@@ -61,22 +74,17 @@
                 <h1 class="page-title">Documentation</h1>
                 
                 <div class="doc-card">
-                    <h3>Django Framework</h3>
-                    <p>Complete AIWAF integration guide for Django web applications, including middleware setup, configuration, and best practices.</p>
-                    <a href="/docs/django">Explore Django Docs →</a>
+                    <h3>Python</h3>
+                    <p>Reference for AIWAF architecture, storage, middleware, training lifecycle, CLI surface, tests, and release pipeline for Python.</p>
+                    <a href="/docs/python">Open Python Deep-Dive Docs →</a>
                 </div>
 
                 <div class="doc-card">
-                    <h3>Flask Framework</h3>
-                    <p>Complete AIWAF integration guide for Flask applications with AI-powered security, CLI management, and flexible storage options.</p>
-                    <a href="/docs/flask">Explore Flask Docs →</a>
+                    <h3>JavaScript</h3>
+                    <p>Reference for AIWAF-JS Node.js middleware architecture, framework integrations, end-to-end setup guide, storage/training lifecycle, CLI operations, and packaging.</p>
+                    <a href="/docs/javascript">Open JavaScript Deep-Dive Docs →</a>
                 </div>
 
-                <div class="doc-card" style="opacity: 0.6;">
-                    <h3>FastAPI Framework</h3>
-                    <p>Modern async Python web framework integration with AIWAF for high-performance applications.</p>
-                    <span style="color: #666;">Coming Soon</span>
-                </div>
             </main>
         </div>
     </div>

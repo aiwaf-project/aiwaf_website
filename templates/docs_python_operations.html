@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#5b2a86,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: .8rem; margin-top: .8rem; }
+        .stats { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .stats .k { color: #4ecdc4; font-size: .82rem; }
+        .stats .v { font-size: 1.2rem; font-weight: 800; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: .8rem; }
+        .module-card { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .module-card h4 { color: #4ecdc4; margin-bottom: .45rem; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+    </style>
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">Python Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="/docs/python">Overview</a></li>
+        <li><a href="/docs/python/setup">Setup Guide</a></li>
+        <li><a href="/docs/python/architecture">Architecture</a></li>
+        <li><a href="/docs/python/adapters">Adapters</a></li>
+        <li><a href="/docs/python/operations" class="active">Operations</a></li>
+    </ul>
+</aside>
+<main class="content">
+    <div class="badge">Ops, Tests, Release</div>
+    <h1 class="page-title">Operational Surface</h1>
+
+    <section class="section">
+        <h2>Logging And Observability</h2>
+        <ul>
+            <li>Flask/FastAPI middleware emits access, error, and AIWAF event logs.</li>
+            <li>Django uses <code>RequestLog</code> model and optional CSV middleware logs.</li>
+            <li><code>core/logs.py</code> provides locking-aware CSV log writing.</li>
+            <li>Helpers include <code>analyze_access_logs</code>, <code>log_analyzer.py</code>, <code>analyze_storage.py</code>, and diagnostics scripts.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>CLI And Operator Surfaces</h2>
+        <h3>Package CLI</h3>
+        <ul>
+            <li><code>aiwaf/cli.py</code> routes to framework handlers.</li>
+            <li>Bare <code>aiwaf</code> defaults to Fast command set.</li>
+            <li><code>aiwaf-detect</code> bridges into Django training path.</li>
+        </ul>
+        <h3>Django Commands</h3>
+        <ul>
+            <li>Training/list/reset/diagnose paths under <code>aiwaf/django/management/commands/</code>.</li>
+            <li>Geo controls, exemption utilities, model setup/regeneration, blacklist/cache maintenance, WHOIS.</li>
+        </ul>
+        <h3>Flask/Fast Commands</h3>
+        <ul>
+            <li>Flask CLI manages storage/security states and import/export operations.</li>
+            <li>FastAPI CLI delegates to Flask CLI for operational parity.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Tests And Quality Surface</h2>
+        <div class="stats-grid">
+            <div class="stats"><div class="k">Total Test Files</div><div class="v">168</div></div>
+            <div class="stats"><div class="k">Django</div><div class="v">64</div></div>
+            <div class="stats"><div class="k">Flask</div><div class="v">45</div></div>
+            <div class="stats"><div class="k">FastAPI</div><div class="v">58</div></div>
+        </div>
+        <h3>Coverage Themes</h3>
+        <ul>
+            <li>Middleware behavior and integrations.</li>
+            <li>Storage backends and CSV correctness.</li>
+            <li>Config compatibility and header validation robustness.</li>
+            <li>Geo/block/exemption behavior.</li>
+            <li>Training/model paths and Rust parity checks.</li>
+            <li>Packaging and route-rule edge cases.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Build, Packaging, Release</h2>
+        <ul>
+            <li><code>pyproject.toml</code> for canonical metadata, dependencies, extras, and scripts.</li>
+            <li><code>setup.py</code> for setuptools compatibility.</li>
+            <li><code>MANIFEST.in</code> for data resources inclusion.</li>
+            <li>GitHub workflows:
+                <ul>
+                    <li><code>.github/workflows/workflow.yml</code> for build + publish flow.</li>
+                    <li><code>.github/workflows/python-publish.yml</code> for manual publish flow.</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Examples, Scripts, And Contributor Path</h2>
+        <ul>
+            <li><code>examples/config_example.py</code> and <code>examples/sandbox/</code> for proxy apps and replay/comparison tooling.</li>
+            <li>Root scripts: <code>run_tests.py</code>, <code>check_rate_limiting_logic.py</code>, <code>diagnose_burst_blocking.py</code>, <code>analyze_storage.py</code>, <code>debug_aiwaf.py</code>.</li>
+        </ul>
+        <h3>Suggested Start Path</h3>
+        <ol>
+            <li>Read <code>README.md</code> and <code>INSTALLATION.md</code>.</li>
+            <li>Read the Python deep-dive pages once end-to-end.</li>
+            <li>Understand shared abstractions in <code>aiwaf/core/*</code>.</li>
+            <li>Pick one adapter and trace middleware request flow.</li>
+            <li>Run that framework’s tests before and after changes.</li>
+        </ol>
+    </section>
+
+    <section class="section">
+        <h2>Design Strengths And Tradeoffs</h2>
+        <h3>Strengths</h3>
+        <ul>
+            <li>Shared core minimizes cross-framework drift.</li>
+            <li>Fallback strategies reduce hard failures under missing deps/storage issues.</li>
+            <li>Route-aware keyword learning lowers false positives.</li>
+            <li>Path-rule + decorator controls allow selective hardening.</li>
+            <li>Rust acceleration is optional, not a hard dependency.</li>
+        </ul>
+        <h3>Tradeoffs</h3>
+        <ul>
+            <li>Behavior differences remain across adapters in specific edge semantics.</li>
+            <li>Adapter maturity is uneven (Django generally deeper).</li>
+            <li>Legacy compatibility layers increase complexity.</li>
+            <li>In-process middleware caches are not distributed by default.</li>
+            <li>Simple fallback stores need stronger concurrency hardening for heavy multi-worker traffic.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Appendix A: Source Module Inventory</h2>
+        <div class="module-grid">
+            <div class="module-card"><h4><code>aiwaf/core</code></h4><p><code>blacklist.py</code>, <code>constants.py</code>, <code>defaults.py</code>, <code>exemptions.py</code>, <code>geoip.py</code>, <code>header_validation.py</code>, <code>keyword_fallback.py</code>, <code>logs.py</code>, <code>model_artifacts.py</code>, <code>runtime_blacklist.py</code>, <code>runtime_config.py</code>, <code>runtime_fastapi.py</code>, <code>runtime_fastapi_decorators.py</code>, <code>runtime_storage.py</code>, <code>runtime_utils.py</code>, <code>rust_backend.py</code>, <code>storage_csv.py</code>, <code>storage_csv_impl.py</code>, <code>storage_interfaces.py</code>, <code>storage_ops.py</code>, <code>storage_schema.py</code>, <code>training.py</code>, <code>training_features.py</code>, <code>training_logic.py</code>, <code>utils.py</code>, <code>whois.py</code>.</p></div>
+            <div class="module-card"><h4><code>aiwaf/django</code></h4><p><code>apps.py</code>, <code>blacklist_manager.py</code>, <code>decorators.py</code>, <code>geoip.py</code>, <code>middleware.py</code>, <code>middleware_logger.py</code>, <code>model_store.py</code>, <code>models.py</code>, <code>settings_compat.py</code>, <code>storage.py</code>, <code>trainer.py</code>, <code>utils.py</code>, <code>management/commands/*</code>.</p></div>
+            <div class="module-card"><h4><code>aiwaf/flask</code></h4><p><code>aiwaf_whois.py</code>, <code>anomaly_middleware.py</code>, <code>apps.py</code>, <code>auto_config.py</code>, <code>blacklist_manager.py</code>, <code>cli.py</code>, <code>db_models.py</code>, <code>decorators.py</code>, <code>exemption_decorators.py</code>, <code>flask_integration.py</code>, <code>geo_block_middleware.py</code>, <code>geoip.py</code>, <code>header_validation_middleware.py</code>, <code>honeypot_timing_middleware.py</code>, <code>ip_and_keyword_block_middleware.py</code>, <code>logging_middleware.py</code>, <code>middleware.py</code>, <code>middleware_logger.py</code>, <code>models.py</code>, <code>rate_limit_middleware.py</code>, <code>rust_backend.py</code>, <code>storage.py</code>, <code>trainer.py</code>, <code>utils.py</code>, <code>uuid_tamper_middleware.py</code>, <code>whois_cli.py</code>.</p></div>
+            <div class="module-card"><h4><code>aiwaf/fast</code></h4><p><code>blacklist.py</code>, <code>cli.py</code>, <code>config.py</code>, <code>core.py</code>, <code>decorators.py</code>, <code>geoip.py</code>, <code>rust_backend.py</code>, <code>storage.py</code>, <code>utils.py</code>, middleware modules for anomaly, geo block, header validation, honeypot timing, IP/keyword block, logging, rate limit, UUID tamper.</p></div>
+        </div>
+    </section>
+</main>
+</div></div>
+</body>
+</html>
