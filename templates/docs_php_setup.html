@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#2d6a4f,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.09); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        pre { background: rgba(0,0,0,.5); border: 1px solid rgba(78,205,196,.3); border-radius: 10px; padding: .85rem; overflow-x: auto; }
+        .checklist li { list-style: none; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+    </style>
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">PHP Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="/docs/php">Overview</a></li>
+        <li><a href="/docs/php/setup" class="active">Setup Guide</a></li>
+        <li><a href="/docs/php/architecture">Architecture</a></li>
+        <li><a href="/docs/php/operations">Operations</a></li>
+    </ul>
+</aside>
+<main class="content">
+    <div class="badge">Comprehensive Setup</div>
+    <h1 class="page-title">AIWAF-PHP Comprehensive Setup Guide</h1>
+
+    <section class="section">
+        <h2>1. What This Guide Is</h2>
+        <p>This is an end-to-end setup manual for running <code>aiwaf-php</code> in real PHP applications.</p>
+        <ul>
+            <li>Environment prerequisites.</li>
+            <li>Installation for app usage and repository development.</li>
+            <li>Integration patterns for plain PHP, Laravel, Symfony, and WordPress style bootstraps.</li>
+            <li>Baseline and production-oriented configuration.</li>
+            <li>Storage/backend selection for rate limiting.</li>
+            <li>Training workflow and verification.</li>
+            <li>Troubleshooting and validation playbooks.</li>
+        </ul>
+        <p>If you need architecture internals, use <code>PROJECT_DETAILED_REFERENCE.md</code>.</p>
+    </section>
+
+    <section class="section">
+        <h2>2. Prerequisites</h2>
+        <h3>2.1 Runtime</h3>
+        <ul>
+            <li>PHP <code>>= 7.4</code></li>
+            <li>Composer</li>
+            <li>Optional <code>ext-redis</code> when using Redis adapter/driver</li>
+        </ul>
+        <h3>2.2 System dependencies</h3>
+        <ul>
+            <li>Writable filesystem for <code>resources/</code> runtime artifacts.</li>
+            <li>Access to application/proxy logs for training (<code>AIWAF_ACCESS_LOG</code>).</li>
+        </ul>
+        <h3>2.3 Recommended for production</h3>
+        <ul>
+            <li>Persistent storage for runtime artifacts and model files.</li>
+            <li>Scheduled training runs (<code>php cli/detect_and_train.php</code>).</li>
+            <li>Known route/path hints configured to reduce false positives.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>3. Installation Paths</h2>
+        <pre><code># Application install
+composer require aayushgauba/aiwaf
+
+# Local development in this repository
+composer install
+
+# Initialize runtime resources
+php setup.php</code></pre>
+    </section>
+
+    <section class="section">
+        <h2>4. Core Configuration Concepts</h2>
+        <p>AIWAF-PHP can be configured through static config, runtime config, and env mapping in <code>RuntimeConfig::loadFromEnvironment()</code>.</p>
+        <ul>
+            <li>Header validation: <code>AIWAF_HEADER_VALIDATION_ENABLED</code>, <code>AIWAF_HEADER_BLOCK_SUSPICIOUS</code>, <code>AIWAF_HEADER_QUALITY_THRESHOLD</code>, <code>AIWAF_HEADER_EXEMPT_PATHS</code></li>
+            <li>Rate limiting: <code>AIWAF_RATE_LIMITING_ENABLED</code>, <code>AIWAF_RATE_MAX_REQUESTS</code>, <code>AIWAF_RATE_WINDOW_SECONDS</code>, <code>AIWAF_EXEMPT_IPS</code></li>
+            <li>Detection toggles: IP/keyword, honeypot, AI anomaly, UUID tamper toggles</li>
+            <li>Geo policy: allow/block countries</li>
+            <li>Training controls: access log, thresholds, force/disable flags, anomaly threshold, known paths</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>5. Plain PHP Setup (Primary Path)</h2>
+        <h3>5.1 Basic wiring</h3>
+        <pre><code>&lt;?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+use AIWAF\AIWAF;
+use AIWAF\RateLimiter;
+use AIWAF\Adapters\InMemoryAdapter;
+
+RateLimiter::initAdapter(new InMemoryAdapter());
+AIWAF::protect();</code></pre>
+        <h3>5.2 Middleware/order guidance</h3>
+        <ul>
+            <li>Run AIWAF as early as possible in request bootstrap.</li>
+            <li>Keep known-safe endpoints in exemption lists.</li>
+            <li>Ensure honeypot checks can access expected POST fields.</li>
+        </ul>
+        <h3>5.3 Baseline production env</h3>
+        <pre><code>AIWAF_HEADER_VALIDATION_ENABLED=true
+AIWAF_HEADER_BLOCK_SUSPICIOUS=true
+AIWAF_HEADER_QUALITY_THRESHOLD=3
+AIWAF_RATE_LIMITING_ENABLED=true
+AIWAF_RATE_MAX_REQUESTS=60
+AIWAF_RATE_WINDOW_SECONDS=60
+AIWAF_IP_KEYWORD_BLOCK_ENABLED=true
+AIWAF_HONEYPOT_ENABLED=true
+AIWAF_AI_ANOMALY_ENABLED=true</code></pre>
+    </section>
+
+    <section class="section">
+        <h2>6. Framework Integration Patterns</h2>
+        <h3>6.1 Laravel</h3>
+        <p>Use patterns under <code>examples/laravel/</code> (service provider + train command).</p>
+        <pre><code>AIWAF::setPathExistsResolver(function (string $path): bool {
+    $candidate = '/' . ltrim((string) strtok($path, '?'), '/');
+    foreach (Route::getRoutes() as $route) {
+        $uri = '/' . ltrim($route->uri(), '/');
+        if ($candidate === $uri || strpos($candidate, $uri . '/') === 0) {
+            return true;
+        }
+    }
+    return false;
+});</code></pre>
+        <h3>6.2 Symfony</h3>
+        <p>Use references in <code>examples/symfony/</code>.</p>
+        <pre><code>AIWAF::setPathExistsResolver(function (string $path) use ($router): bool {
+    $candidate = '/' . ltrim((string) strtok($path, '?'), '/');
+    foreach ($router->getRouteCollection() as $route) {
+        $routePath = (string) $route->getPath();
+        if ($routePath !== '' && ($candidate === $routePath || strpos($candidate, rtrim($routePath, '/') . '/') === 0)) {
+            return true;
+        }
+    }
+    return false;
+});</code></pre>
+        <h3>6.3 WordPress</h3>
+        <p>Use integration assets in <code>examples/wordpress/</code>, including MU-plugin bootstrap and WP-CLI training command.</p>
+        <h3>6.4 Generic custom framework</h3>
+        <p>Provide <code>setPathExistsResolver</code> callback to align unknown-route anomaly behavior with real route registry.</p>
+    </section>
+
+    <section class="section">
+        <h2>7. Storage Setup and Backend Choices</h2>
+        <h3>7.1 Default behavior</h3>
+        <ul>
+            <li>Core runtime artifacts are file-backed under <code>resources/</code>.</li>
+            <li><code>php setup.php</code> ensures base files exist.</li>
+        </ul>
+        <h3>7.2 Key artifact files</h3>
+        <ul>
+            <li><code>resources/blocked_ips.json</code></li>
+            <li><code>resources/dynamic_keywords.json</code></li>
+            <li><code>resources/request_features.csv</code></li>
+            <li><code>resources/forest_model.json</code></li>
+        </ul>
+        <h3>7.3 Rate-limit adapter/backend options</h3>
+        <ul>
+            <li>In-memory adapter</li>
+            <li>APCu adapter</li>
+            <li>Redis adapter</li>
+            <li>DB adapter</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>8. Training Setup</h2>
+        <h3>8.1 Configure training log source</h3>
+        <pre><code># Linux/macOS
+export AIWAF_ACCESS_LOG=/var/log/nginx/access.log
+
+# PowerShell
+$env:AIWAF_ACCESS_LOG = "C:\path\to\access.log"</code></pre>
+        <h3>8.2 Run training</h3>
+        <pre><code>php cli/detect_and_train.php</code></pre>
+        <h3>8.3 Useful training env examples</h3>
+        <pre><code>AIWAF_MIN_TRAIN_LOGS=50
+AIWAF_MIN_AI_LOGS=10000
+AIWAF_FORCE_AI_TRAINING=false
+AIWAF_DISABLE_AI=false
+AIWAF_AI_ANOMALY_THRESHOLD=0.65
+AIWAF_KNOWN_PATHS=/app,/api,/wp-json</code></pre>
+        <h3>8.4 Expected output</h3>
+        <ul>
+            <li>Updated keyword store and model artifact when thresholds are met.</li>
+            <li>Trainer telemetry via logs and <code>AIWAF::getLastTrainingTelemetry()</code>.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>9. Optional GeoIP Enablement</h2>
+        <pre><code>AIWAF_GEO_BLOCK_ENABLED=true
+AIWAF_GEO_BLOCK_COUNTRIES=CN,RU
+# or allowlist mode
+AIWAF_GEO_ALLOW_COUNTRIES=US,CA</code></pre>
+        <p>Geo checks run in <code>AIWAF::protect()</code> when enabled.</p>
+    </section>
+
+    <section class="section">
+        <h2>10. Optional Redis/APCu Setup</h2>
+        <h3>10.1 Redis adapter example</h3>
+        <pre><code>$redis = new Redis();
+$redis->connect('127.0.0.1', 6379);
+RateLimiter::initAdapter(new RedisAdapter($redis));</code></pre>
+        <h3>10.2 APCu adapter example</h3>
+        <pre><code>RateLimiter::initAdapter(new ApcuAdapter());</code></pre>
+    </section>
+
+    <section class="section">
+        <h2>11. Production Baseline Checklist</h2>
+        <ul class="checklist">
+            <li>[ ] Package installed and app starts with AIWAF enabled.</li>
+            <li>[ ] <code>php setup.php</code> executed in target environment.</li>
+            <li>[ ] Exempt paths set for health/static/known-safe callbacks.</li>
+            <li>[ ] Rate limits tuned from real traffic patterns.</li>
+            <li>[ ] Header policy tuned to reduce false positives.</li>
+            <li>[ ] Training job scheduled and verified.</li>
+            <li>[ ] Intentional block scenario validated in staging.</li>
+            <li>[ ] Runtime artifact paths persisted across deploys/restarts.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>12. Validation Playbook</h2>
+        <ol>
+            <li>Smoke checks: health/static pass, suspicious probe blocks.</li>
+            <li>Rate-limit checks: burst traffic transitions to <code>429</code> and/or IP block.</li>
+            <li>Header checks: low-quality headers trigger expected behavior.</li>
+            <li>Training checks: confirm log readability and artifact/telemetry updates.</li>
+        </ol>
+    </section>
+
+    <section class="section">
+        <h2>13. Troubleshooting</h2>
+        <ul>
+            <li>Training skipped: verify log path/readability and thresholds.</li>
+            <li>Too many false positives: tune exemptions/known paths and anomaly threshold.</li>
+            <li>Not enough detections: lower anomaly threshold carefully and retrain with representative traffic.</li>
+            <li>Redis/APCu issues: verify extension availability/connectivity and fallback to in-memory temporarily.</li>
+            <li>Resource permissions: ensure read/write on <code>resources/</code>, rerun <code>php setup.php</code>.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>14. Contributor Setup (Repository)</h2>
+        <pre><code>composer install
+composer test
+
+php setup.php
+php cli/detect_and_train.php
+composer run cover-everything
+composer run test-adapters-matrix
+composer run validate-all</code></pre>
+        <p>Suggested docs: <code>README.md</code>, <code>PROJECT_DETAILED_REFERENCE.md</code>.</p>
+    </section>
+</main>
+</div></div>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#5b2a86,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        pre { background: rgba(0,0,0,.5); border: 1px solid rgba(78,205,196,.3); border-radius: 10px; padding: .85rem; overflow-x: auto; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+    </style>
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">PHP Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="/docs/php">Overview</a></li>
+        <li><a href="/docs/php/setup">Setup Guide</a></li>
+        <li><a href="/docs/php/architecture">Architecture</a></li>
+        <li><a href="/docs/php/operations" class="active">Operations</a></li>
+    </ul>
+</aside>
+<main class="content">
+    <div class="badge">Ops And Release</div>
+    <h1 class="page-title">AIWAF-PHP Operations</h1>
+
+    <section class="section">
+        <h2>10. Operational Command Surface</h2>
+        <pre><code>php setup.php
+php cli/detect_and_train.php
+composer test
+composer run cover-everything
+composer run test-adapters-matrix
+composer run validate-all</code></pre>
+        <p>AIWAF-PHP operations are script-based (PHP/Composer), not a Node-style monolithic CLI.</p>
+    </section>
+
+    <section class="section">
+        <h2>11. Configuration Model</h2>
+        <h3>Layering</h3>
+        <ol>
+            <li>Defaults in <code>Core\RuntimeConfig</code></li>
+            <li>Optional JSON file via <code>RuntimeConfig::loadFromFile</code></li>
+            <li>Environment mapping via <code>RuntimeConfig::loadFromEnvironment</code></li>
+            <li>Runtime overrides via <code>RuntimeConfig::update</code></li>
+        </ol>
+        <h3>Static Config Highlights (<code>Config</code>)</h3>
+        <ul>
+            <li><code>Config::$exemptPaths</code>, <code>Config::$knownPaths</code></li>
+            <li><code>Config::$rateLimitPerMinute</code></li>
+            <li><code>Config::$keywordDetectionThreshold</code></li>
+            <li><code>Config::$uuidTamperThreshold</code></li>
+            <li><code>Config::$aiAnomalyThreshold</code></li>
+            <li><code>Config::HEADER_MIN_SCORE</code>, <code>Config::REQUIRED_HEADERS</code></li>
+        </ul>
+        <h3>Env Mapping Highlights</h3>
+        <ul>
+            <li>Storage, header validation, rate limiting, detection toggles, geo policies, blacklist/logging controls.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>12. Request Lifecycle (Simplified)</h2>
+        <ol>
+            <li>Request enters front controller/bootstrap.</li>
+            <li><code>AIWAF::protect()</code> evaluates exemptions and enabled controls.</li>
+            <li>Failing controls block with <code>403</code>/<code>429</code> and may persist IP consequences.</li>
+            <li>Passing requests continue to app routing.</li>
+            <li>Training loop independently updates model and keywords from historical logs.</li>
+        </ol>
+    </section>
+
+    <section class="section">
+        <h2>13. Testing And Local Development</h2>
+        <ul>
+            <li>PHP <code>>=7.4</code>, Composer, optional Docker for adapter/sandbox matrix workflows.</li>
+        </ul>
+        <pre><code>composer install
+php setup.php
+composer test
+php cli/detect_and_train.php
+composer run cover-everything
+composer run test-adapters-matrix
+composer run validate-all</code></pre>
+    </section>
+
+    <section class="section">
+        <h2>14. Packaging And Release Surface</h2>
+        <ul>
+            <li>Composer name: <code>aayushgauba/aiwaf</code></li>
+            <li>PSR-4 namespace: <code>AIWAF\\</code> -> <code>src/</code></li>
+            <li>Dev namespace: <code>AIWAF\\Tests\\</code> -> <code>tests/</code></li>
+            <li>Archive excludes include <code>/examples</code> and <code>/tools</code></li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>15. Operational Notes</h2>
+        <ul>
+            <li>Run <code>AIWAF::protect()</code> early, before side effects/output.</li>
+            <li>Keep exemptions explicit for health checks and trusted callbacks.</li>
+            <li>Treat anomaly blocking as data-dependent and retrain with representative logs.</li>
+            <li>Select adapter/driver backend according to deployment topology and durability needs.</li>
+            <li>Validate thresholds/settings with staged traffic before tightening.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Suggested Onboarding Order</h2>
+        <ol>
+            <li><code>README.md</code></li>
+            <li><code>docs/php/setup</code> (Setup Guide)</li>
+            <li><code>src/AIWAF.php</code></li>
+            <li><code>src/Core/RuntimeConfig.php</code></li>
+            <li><code>src/Core/Training.php</code> and <code>src/Core/TrainingLogic.php</code></li>
+            <li><code>src/Adapters/*</code> and <code>src/RateLimit/*</code></li>
+            <li><code>cli/detect_and_train.php</code></li>
+            <li><code>tests/</code></li>
+        </ol>
+    </section>
+</main>
+</div></div>
+</body>
+</html>

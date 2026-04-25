@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#5a189a,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+    </style>
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">PHP Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="/docs/php">Overview</a></li>
+        <li><a href="/docs/php/setup">Setup Guide</a></li>
+        <li><a href="/docs/php/architecture" class="active">Architecture</a></li>
+        <li><a href="/docs/php/operations">Operations</a></li>
+    </ul>
+</aside>
+<main class="content">
+    <div class="badge">Core Design</div>
+    <h1 class="page-title">AIWAF-PHP Architecture Deep Dive</h1>
+
+    <section class="section">
+        <h2>1-4. Purpose, Snapshot, Structure, Architecture</h2>
+        <ul>
+            <li>Package: <code>aayushgauba/aiwaf</code>, Composer library, PHP <code>>=7.4</code>.</li>
+            <li>Primary runtime entry: <code>AIWAF::protect()</code>; training entry: <code>cli/detect_and_train.php</code>.</li>
+            <li>Top-level focus: <code>src/</code>, <code>src/Core/</code>, <code>src/Adapters/</code>, <code>src/RateLimit/</code>, <code>resources/</code>, <code>tests/</code>.</li>
+            <li>Design traits: defense-in-depth, exemption-first, conservative AI guardrails, flexible persistence backends.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>5. Runtime Entry And Integration Surface</h2>
+        <h3>Primary API (<code>src/AIWAF.php</code>)</h3>
+        <ul>
+            <li><code>AIWAF::protect()</code> executes per-request security controls.</li>
+            <li><code>AIWAF::setPathExistsResolver()</code> enables route-awareness for framework integrations.</li>
+            <li><code>AIWAF::setMiddlewareDecisionResolver()</code> supports custom middleware gating logic.</li>
+            <li><code>AIWAF::getLastTrainingTelemetry()</code> exposes latest trainer telemetry snapshot.</li>
+        </ul>
+        <h3>Typical Bootstrap</h3>
+        <ul>
+            <li>Load Composer autoload.</li>
+            <li>Initialize selected rate-limit adapter.</li>
+            <li>Call <code>AIWAF::protect()</code> early in front-controller lifecycle.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>6. Request Protection Flow (<code>AIWAF::protect</code>)</h2>
+        <ol>
+            <li>Build runtime config via <code>Config::toRuntimeConfig()</code>.</li>
+            <li>Resolve request identity (<code>ip</code>, <code>path</code>).</li>
+            <li>Exemption short-circuit.</li>
+            <li>Header validation.</li>
+            <li>Blocked-IP enforcement.</li>
+            <li>Geo policy checks.</li>
+            <li>AI anomaly scoring (model + threshold gated).</li>
+            <li>Rate-limit enforcement (<code>429</code>, optional block persist).</li>
+            <li>Dynamic keyword checks.</li>
+            <li>UUID tamper checks.</li>
+            <li>Honeypot checks.</li>
+        </ol>
+        <p>Block responses use <code>403</code> for deny cases and <code>429</code> for rate-limit violations.</p>
+    </section>
+
+    <section class="section">
+        <h2>7. Core Modules Responsibility Map</h2>
+        <h3><code>src/</code></h3>
+        <ul>
+            <li><code>AIWAF.php</code>, <code>Config.php</code>, <code>Utils.php</code></li>
+            <li><code>RateLimiter.php</code>, <code>IPBlocker.php</code></li>
+            <li><code>DynamicKeywordManager.php</code>, <code>UUIDTamperProtector.php</code>, <code>HoneypotChecker.php</code></li>
+            <li><code>FeatureExtractor.php</code>, <code>IsolationForest.php</code>, <code>Logger.php</code></li>
+        </ul>
+        <h3><code>src/Core/</code></h3>
+        <ul>
+            <li><code>RuntimeConfig.php</code>, <code>HeaderValidation.php</code>, <code>GeoIP.php</code>, <code>Exemptions.php</code></li>
+            <li><code>Logs.php</code>, <code>Training.php</code>, <code>TrainingLogic.php</code></li>
+            <li><code>StorageOps.php</code>, <code>StorageCsvImpl.php</code>, <code>StorageSchema.php</code>, <code>BlacklistManager.php</code></li>
+        </ul>
+        <h3>Rate-Limit Layers</h3>
+        <ul>
+            <li>Adapters in <code>src/Adapters/</code> bridge runtime usage.</li>
+            <li>Drivers in <code>src/RateLimit/</code> provide backend-specific persistence behavior.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>8-9. Storage, Artifacts, Training Lifecycle</h2>
+        <h3>Artifacts (default under <code>resources/</code>)</h3>
+        <ul>
+            <li><code>blocked_ips.json</code>, <code>dynamic_keywords.json</code>, <code>request_features.csv</code>, <code>forest_model.json</code>.</li>
+            <li><code>php setup.php</code> ensures required baseline files exist.</li>
+        </ul>
+        <h3>Training Pipeline (<code>AIWAF::detectAndTrain</code>)</h3>
+        <ul>
+            <li>Entry: <code>php cli/detect_and_train.php</code>.</li>
+            <li>Primary source: <code>AIWAF_ACCESS_LOG</code>, including rotated log handling.</li>
+            <li>Controls: min log thresholds, force/disable flags, anomaly threshold, known paths.</li>
+            <li>Outputs: model updates, dynamic keyword updates, optional anomaly-driven block updates, telemetry.</li>
+        </ul>
+        <h3>Telemetry Includes</h3>
+        <ul>
+            <li>line counts, parse failures, feature rows</li>
+            <li>keyword candidate/learned counts</li>
+            <li>anomalous/blocked IP totals and top-country summaries</li>
+        </ul>
+    </section>
+</main>
+</div></div>
+</body>
+</html>

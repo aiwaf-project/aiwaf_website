@@ -68,6 +68,10 @@ def inject_seo_defaults():
         "/docs/javascript/setup": "AIWAF-JS Setup Guide | Node.js End-to-End Integration",
         "/docs/javascript/architecture": "AIWAF-JS Architecture | Middleware Pipeline and Adapters",
         "/docs/javascript/operations": "AIWAF-JS Operations | CLI, Config, Testing, Packaging",
+        "/docs/php": "AIWAF-PHP Deep Dive | PHP Security Integration Reference",
+        "/docs/php/setup": "AIWAF-PHP Setup Guide | End-to-End PHP Integration",
+        "/docs/php/architecture": "AIWAF-PHP Architecture | Runtime Flow and Core Modules",
+        "/docs/php/operations": "AIWAF-PHP Operations | Config, Testing, Packaging",
     }
     description_map = {
         "/": "Official AIWAF documentation for Python and JavaScript integrations, setup guides, architecture, and operational best practices.",
@@ -81,6 +85,10 @@ def inject_seo_defaults():
         "/docs/javascript/setup": "End-to-end setup guide for aiwaf-js across Express, Fastify, Hapi, Koa, NestJS, Next.js, AdonisJS, and Sails.",
         "/docs/javascript/architecture": "aiwaf-js architecture guide covering request flow, adapters, storage strategy, and model training lifecycle.",
         "/docs/javascript/operations": "aiwaf-js operations guide for CLI commands, AIWAF_* config, testing workflow, packaging, and operational notes.",
+        "/docs/php": "Comprehensive PHP reference for aiwaf-php covering integration patterns, configuration model, runtime artifacts, and training workflow.",
+        "/docs/php/setup": "End-to-end setup guide for aiwaf-php across plain PHP, Laravel, Symfony, and WordPress-style bootstraps.",
+        "/docs/php/architecture": "Deep architecture reference for aiwaf-php including protect() flow, module responsibilities, persistence, and training lifecycle.",
+        "/docs/php/operations": "Operational guide for aiwaf-php covering scripts, configuration layering, testing commands, packaging, and deployment notes.",
     }
     seo_title = title_map.get(path, "AIWAF Documentation")
     seo_description = description_map.get(
@@ -143,6 +151,10 @@ def sitemap():
         "/docs/javascript/setup",
         "/docs/javascript/architecture",
         "/docs/javascript/operations",
+        "/docs/php",
+        "/docs/php/setup",
+        "/docs/php/architecture",
+        "/docs/php/operations",
     ]
     now = datetime.utcnow().strftime("%Y-%m-%d")
     url_nodes = "".join(

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; overflow-x: hidden; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16, 16, 30, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientShift 3s ease-in-out infinite; }
+        @keyframes gradientShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; padding: .5rem 1rem; border-radius: 50px; transition: all .3s ease; }
+        .nav-link:hover { color: #4ecdc4; transform: translateY(-2px); }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; color: #4ecdc4; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem 1rem; border-radius: 10px; display: block; transition: all .3s ease; }
+        .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(78,205,196,.2); color: #4ecdc4; transform: translateX(5px); }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 3rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#5a189a,#2a9d8f); color: #fff; padding: .5rem 1rem; border-radius: 25px; font-weight: 600; display: inline-block; margin-bottom: 1.2rem; }
+        .page-title { font-size: 3rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
+        .meta-card { background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 1rem; }
+        .meta-key { color: #4ecdc4; font-size: .82rem; text-transform: uppercase; letter-spacing: .08em; }
+        .meta-val { font-size: 1.05rem; font-weight: 700; margin-top: .35rem; }
+        .section-title { color: #ff6b6b; margin: 1.7rem 0 .8rem; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1rem; margin: 1.2rem 0; }
+        .feature-card { background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 1.2rem; }
+        .feature-card h4 { color: #4ecdc4; margin-bottom: .35rem; }
+        .doc-card { background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 1.4rem; margin-top: 1rem; }
+        .doc-card a { color: #4ecdc4; text-decoration: none; font-weight: 600; }
+        .doc-card a:hover { text-decoration: underline; }
+        ul { padding-left: 1.2rem; }
+        li { margin-bottom: .4rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">AIWAF</div>
+            <nav class="nav">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/docs" class="nav-link">Documentation</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <h3 class="sidebar-title">PHP Docs</h3>
+            <ul class="sidebar-nav">
+                <li><a href="/docs/php" class="active">Overview</a></li>
+                <li><a href="/docs/php/setup">Setup Guide</a></li>
+                <li><a href="/docs/php/architecture">Architecture</a></li>
+                <li><a href="/docs/php/operations">Operations</a></li>
+            </ul>
+            <div style="margin-top: 2rem; padding: 1rem; background: rgba(78,205,196,.1); border-radius: 10px;">
+                <small>Official PHP package and source links.</small>
+                <div style="margin-top: 0.7rem;">
+                    <a href="https://packagist.org/packages/aayushgauba/aiwaf" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">Packagist Package</a><br>
+                    <a href="https://github.com/aiwaf-project/aiwaf-php" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub Repository</a>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="badge">PHP Deep Dive</div>
+            <h1 class="page-title">AIWAF-PHP Project Reference</h1>
+            <p>Comprehensive reference and setup path for integrating <code>aiwaf-php</code> in real PHP applications.</p>
+
+            <div class="meta-grid">
+                <div class="meta-card"><div class="meta-key">Runtime</div><div class="meta-val">PHP <code>>= 7.4</code></div></div>
+                <div class="meta-card"><div class="meta-key">Package Manager</div><div class="meta-val">Composer</div></div>
+                <div class="meta-card"><div class="meta-key">Primary Setup Command</div><div class="meta-val"><code>php setup.php</code></div></div>
+                <div class="meta-card"><div class="meta-key">Training Command</div><div class="meta-val"><code>php cli/detect_and_train.php</code></div></div>
+            </div>
+
+            <h2 class="section-title">Scope</h2>
+            <ul>
+                <li>Environment prerequisites and installation.</li>
+                <li>Integration patterns for plain PHP, Laravel, Symfony, and WordPress style bootstraps.</li>
+                <li>Baseline and production configuration controls.</li>
+                <li>Storage/backend selection and training workflow.</li>
+                <li>Troubleshooting and validation playbooks.</li>
+            </ul>
+
+            <h2 class="section-title">Integration Targets</h2>
+            <div class="feature-grid">
+                <div class="feature-card"><h4>Plain PHP</h4><p>Front-controller early bootstrap with <code>AIWAF::protect()</code>.</p></div>
+                <div class="feature-card"><h4>Laravel</h4><p>Service provider patterns and route-awareness resolver hooks.</p></div>
+                <div class="feature-card"><h4>Symfony</h4><p>Router-backed path resolver integration for known-route awareness.</p></div>
+                <div class="feature-card"><h4>WordPress</h4><p>MU-plugin bootstrap and WP-CLI oriented operational workflow.</p></div>
+            </div>
+
+            <h2 class="section-title">Runtime Artifacts</h2>
+            <ul>
+                <li><code>resources/blocked_ips.json</code></li>
+                <li><code>resources/dynamic_keywords.json</code></li>
+                <li><code>resources/request_features.csv</code></li>
+                <li><code>resources/forest_model.json</code></li>
+            </ul>
+
+            <div class="doc-card">
+                <h3 style="color:#ff6b6b; margin-bottom:.5rem;">Start Here</h3>
+                <p><a href="/docs/php/setup">Setup Guide</a> includes end-to-end installation, integration examples, backend options, training, validation, and troubleshooting.</p>
+                <p><a href="/docs/php/architecture">Architecture</a> covers runtime flow, core modules, storage strategy, and training lifecycle internals.</p>
+                <p><a href="/docs/php/operations">Operations</a> covers command surface, config layering, test workflows, packaging, and operational notes.</p>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>
