@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#7b2cbf,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.09); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+    </style>
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">Rust Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="/docs/rust">Overview</a></li>
+        <li><a href="/docs/rust/bindings" class="active">Bindings API</a></li>
+        <li><a href="/docs/rust/operations">Build & Operations</a></li>
+    </ul>
+    <div style="margin-top: 2rem; padding: 1rem; background: rgba(78,205,196,.1); border-radius: 10px;">
+        <small>Rust accelerator package links.</small>
+        <div style="margin-top: 0.7rem;">
+            <a href="https://pypi.org/project/aiwaf-rust/" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">PyPI: aiwaf-rust</a><br>
+            <a href="https://www.npmjs.com/package/aiwaf-wasm" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">npm: aiwaf-wasm</a><br>
+            <a href="https://github.com/aiwaf-project/aiwaf-rust" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub: aiwaf-rust</a>
+        </div>
+    </div>
+</aside>
+<main class="content">
+    <div class="badge">Bindings API</div>
+    <h1 class="page-title">PyO3 And WASM Function Reference</h1>
+
+    <section class="section">
+        <h2>5. PyO3 (Python) Binding Functions</h2>
+        <h3>Header Validation</h3>
+        <ul>
+            <li><code>validate_headers(headers: dict) -> Optional[str]</code></li>
+            <li><code>validate_headers_with_config(headers: dict, required_headers: Optional[list[str]], min_score: Optional[int]) -> Optional[str]</code></li>
+        </ul>
+        <h3>Feature Extraction</h3>
+        <ul>
+            <li><code>extract_features(records: list[dict], static_keywords: list[str]) -> list[dict]</code></li>
+            <li><code>extract_features_batch_with_state(records: list[dict], static_keywords: list[str], state: Optional[dict]) -> dict</code></li>
+            <li><code>finalize_feature_state(static_keywords: list[str], state: Optional[dict]) -> dict</code></li>
+        </ul>
+        <h3>Recent Behavior Analysis</h3>
+        <ul>
+            <li><code>analyze_recent_behavior(entries: list[dict], static_keywords: list[str]) -> Optional[dict]</code></li>
+        </ul>
+        <h3>IsolationForest (PyO3)</h3>
+        <ul>
+            <li>Constructor supports <code>n_estimators</code>, <code>max_samples</code>, <code>contamination</code>, <code>max_features</code>, <code>bootstrap</code>, <code>n_jobs</code> (ignored), <code>random_state</code>, <code>verbose</code>, <code>warm_start</code>.</li>
+            <li>Methods: <code>fit</code>, <code>retrain</code>, <code>anomaly_score</code>, <code>is_anomaly</code>, <code>score_samples</code>, <code>decision_function</code>, <code>predict</code>, <code>to_json</code>, <code>from_json</code>.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>6. Isolation Forest Internals And Semantics</h2>
+        <ul>
+            <li>Core implementation in <code>crates/aiwaf_core/src/lib.rs</code>.</li>
+            <li><code>fit</code> resets trees unless warm-start append is enabled.</li>
+            <li><code>retrain</code> temporarily forces warm-start append behavior.</li>
+            <li><code>anomaly_score</code>: higher means more anomalous.</li>
+            <li><code>score_samples</code>: higher means more normal (sklearn-aligned direction).</li>
+            <li><code>decision_function = score_samples - offset_</code>.</li>
+            <li><code>predict</code> returns <code>1</code> (inlier) and <code>-1</code> (outlier).</li>
+            <li>Contamination <code>"auto"</code> keeps <code>offset_ = -0.5</code>; fixed contamination computes percentile-based offset.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>7. WASM Binding Functions</h2>
+        <ul>
+            <li><code>validate_headers</code>, <code>validate_headers_with_config</code></li>
+            <li><code>extract_features</code>, <code>extract_features_batch_with_state</code>, <code>finalize_feature_state</code></li>
+            <li><code>analyze_recent_behavior</code></li>
+        </ul>
+        <h3>WASM IsolationForest class</h3>
+        <ul>
+            <li><code>new(config?)</code>, <code>fit</code>, <code>retrain</code>, <code>anomaly_score</code>, <code>is_anomaly</code>, <code>score_samples</code>, <code>decision_function</code>, <code>predict</code>, <code>to_json</code>, <code>from_json</code></li>
+        </ul>
+        <h3>Header Handling Notes</h3>
+        <ul>
+            <li>WASM accepts JS object or <code>Headers</code>.</li>
+            <li>Auto-fills <code>user-agent</code> from <code>navigator.userAgent</code> when absent.</li>
+            <li>Core still expects normalized <code>HTTP_*</code> style names internally.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>8. Integration Patterns</h2>
+        <h3>Python service pattern</h3>
+        <ol>
+            <li>Build normalized request dict.</li>
+            <li>Run header validation early; block on non-<code>None</code> reason.</li>
+            <li>Build feature records and update state incrementally.</li>
+            <li>Score with IsolationForest and combine with rule outcomes.</li>
+        </ol>
+        <h3>JS/browser WASM pattern</h3>
+        <ol>
+            <li><code>await init()</code> at startup.</li>
+            <li>Use wasm exports in request/event pipeline.</li>
+            <li>Persist forest/state with <code>to_json()</code> as needed.</li>
+        </ol>
+        <h3>Python ↔ WASM portability</h3>
+        <p>State JSON shapes differ across bindings. Use an explicit canonical transport schema and mapping adapters, with roundtrip tests.</p>
+    </section>
+</main>
+</div></div>
+</body>
+</html>

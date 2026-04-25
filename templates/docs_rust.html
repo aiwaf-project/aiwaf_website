@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#7b2cbf,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.09); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        pre { background: rgba(0,0,0,.5); border: 1px solid rgba(78,205,196,.3); border-radius: 10px; padding: .85rem; overflow-x: auto; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+    </style>
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">Rust Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="/docs/rust" class="active">Overview</a></li>
+        <li><a href="/docs/rust/bindings">Bindings API</a></li>
+        <li><a href="/docs/rust/operations">Build & Operations</a></li>
+    </ul>
+    <div style="margin-top: 2rem; padding: 1rem; background: rgba(78,205,196,.1); border-radius: 10px;">
+        <small>Rust accelerator package links.</small>
+        <div style="margin-top: 0.7rem;">
+            <a href="https://pypi.org/project/aiwaf-rust/" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">PyPI: aiwaf-rust</a><br>
+            <a href="https://www.npmjs.com/package/aiwaf-wasm" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">npm: aiwaf-wasm</a><br>
+            <a href="https://github.com/aiwaf-project/aiwaf-rust" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub: aiwaf-rust</a>
+        </div>
+    </div>
+</aside>
+<main class="content">
+    <div class="badge">Rust Accelerator</div>
+    <h1 class="page-title">aiwaf-rust Comprehensive Guide</h1>
+
+    <section class="section">
+        <h2>1. What This Guide Covers</h2>
+        <ul>
+            <li>Local environment setup for Rust, Python (PyO3), and WASM.</li>
+            <li>Function-level API reference for exported Python and WASM bindings.</li>
+            <li>Isolation Forest behavior and state model details.</li>
+            <li>Integration patterns for Python services and JS/browser runtimes.</li>
+            <li>Build/test/release commands used in this repo.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>2. Repository Architecture</h2>
+        <ul>
+            <li><code>crates/aiwaf_core</code>: shared Rust logic (headers, features, behavior, Isolation Forest).</li>
+            <li><code>src/lib.rs</code>: PyO3 bindings exposed as Python module <code>aiwaf_rust</code>.</li>
+            <li><code>crates/aiwaf_wasm/src/lib.rs</code>: <code>wasm-bindgen</code> bindings exposed as npm package <code>aiwaf-wasm</code>.</li>
+            <li><code>tests/test_python_api.py</code>: Python API contract tests.</li>
+            <li><code>crates/aiwaf_wasm/tests/wasm_api.rs</code>: WASM API contract tests.</li>
+        </ul>
+        <h3>Data Flow</h3>
+        <ol>
+            <li>Host runtime (Python or JS) calls binding function.</li>
+            <li>Binding converts runtime data into Rust structs.</li>
+            <li><code>aiwaf_core</code> executes logic.</li>
+            <li>Binding converts output back to runtime-native objects.</li>
+        </ol>
+    </section>
+
+    <section class="section">
+        <h2>3. Prerequisites</h2>
+        <h3>Core Tools</h3>
+        <ul>
+            <li>Rust stable (<code>rustup</code>, <code>cargo</code>)</li>
+            <li>Python 3.8+</li>
+            <li>Node.js 18+ recommended</li>
+        </ul>
+        <h3>Python Toolchain</h3>
+        <pre><code>python -m venv .venv
+source .venv/bin/activate  # Windows PowerShell: .venv\Scripts\Activate.ps1
+pip install -U pip maturin pytest</code></pre>
+        <h3>WASM Toolchain</h3>
+        <pre><code>cargo install wasm-pack</code></pre>
+    </section>
+
+    <section class="section">
+        <h2>4. Quick Start</h2>
+        <h3>PyO3 Local Build/Install</h3>
+        <pre><code>maturin develop
+python -c "import aiwaf_rust; print(aiwaf_rust.__doc__)"</code></pre>
+        <h3>Python API Tests</h3>
+        <pre><code>pytest tests/test_python_api.py -q</code></pre>
+        <h3>WASM Build</h3>
+        <pre><code>cd crates/aiwaf_wasm
+wasm-pack build --release --target bundler
+cd ../..</code></pre>
+        <h3>WASM Tests</h3>
+        <pre><code>cd crates/aiwaf_wasm
+wasm-pack test --node
+cd ../..</code></pre>
+    </section>
+
+    <section class="section">
+        <h2>Continue</h2>
+        <ul>
+            <li><a href="/docs/rust/bindings" style="color:#4ecdc4;">Bindings API</a>: PyO3 and WASM exported functions/classes.</li>
+            <li><a href="/docs/rust/operations" style="color:#4ecdc4;">Build & Operations</a>: packaging, troubleshooting, and validation checklist.</li>
+        </ul>
+    </section>
+</main>
+</div></div>
+</body>
+</html>

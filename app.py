@@ -72,6 +72,9 @@ def inject_seo_defaults():
         "/docs/php/setup": "AIWAF-PHP Setup Guide | End-to-End PHP Integration",
         "/docs/php/architecture": "AIWAF-PHP Architecture | Runtime Flow and Core Modules",
         "/docs/php/operations": "AIWAF-PHP Operations | Config, Testing, Packaging",
+        "/docs/rust": "aiwaf-rust Guide | PyO3 and WASM Accelerator Overview",
+        "/docs/rust/bindings": "aiwaf-rust Bindings API | Python and WASM Functions",
+        "/docs/rust/operations": "aiwaf-rust Build and Operations | Packaging and Validation",
     }
     description_map = {
         "/": "Official AIWAF documentation for Python and JavaScript integrations, setup guides, architecture, and operational best practices.",
@@ -89,6 +92,9 @@ def inject_seo_defaults():
         "/docs/php/setup": "End-to-end setup guide for aiwaf-php across plain PHP, Laravel, Symfony, and WordPress-style bootstraps.",
         "/docs/php/architecture": "Deep architecture reference for aiwaf-php including protect() flow, module responsibilities, persistence, and training lifecycle.",
         "/docs/php/operations": "Operational guide for aiwaf-php covering scripts, configuration layering, testing commands, packaging, and deployment notes.",
+        "/docs/rust": "End-to-end aiwaf-rust guide for Rust core, PyO3 Python module, and WASM package workflows.",
+        "/docs/rust/bindings": "Function-level aiwaf-rust API reference for PyO3 and wasm-bindgen exports, including IsolationForest semantics.",
+        "/docs/rust/operations": "Build, package, troubleshoot, and validate aiwaf-rust Python and WASM artifacts.",
     }
     seo_title = title_map.get(path, "AIWAF Documentation")
     seo_description = description_map.get(
@@ -155,6 +161,9 @@ def sitemap():
         "/docs/php/setup",
         "/docs/php/architecture",
         "/docs/php/operations",
+        "/docs/rust",
+        "/docs/rust/bindings",
+        "/docs/rust/operations",
     ]
     now = datetime.utcnow().strftime("%Y-%m-%d")
     url_nodes = "".join(
