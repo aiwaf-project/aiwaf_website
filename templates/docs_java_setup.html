@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#2d6a4f,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.09); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        pre { background: rgba(0,0,0,.5); border: 1px solid rgba(78,205,196,.3); border-radius: 10px; padding: .85rem; overflow-x: auto; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+    </style>
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">Java Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="/docs/java">Overview</a></li>
+        <li><a href="/docs/java/setup" class="active">Setup Guide</a></li>
+        <li><a href="/docs/java/architecture">Architecture</a></li>
+        <li><a href="/docs/java/operations">Operations</a></li>
+    </ul>
+</aside>
+<main class="content">
+    <div class="badge">Comprehensive Setup</div>
+    <h1 class="page-title">AIWAF-Java Comprehensive Setup Guide</h1>
+
+    <section class="section">
+        <h2>1. Prerequisites</h2>
+        <ul>
+            <li>Java <code>17+</code></li>
+            <li>Maven <code>3.9+</code></li>
+            <li>Optional Docker + Docker Compose for sandbox validation</li>
+            <li>Optional <code>mmdblookup</code> for GeoIP MMDB CLI lookup</li>
+            <li>Optional <code>python-whois</code> and system <code>whois</code> for CLI lookup operations</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>2. Install And Build</h2>
+        <pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;io.github.aiwaf-project&lt;/groupId&gt;
+  &lt;artifactId&gt;aiwaf-java&lt;/artifactId&gt;
+  &lt;version&gt;0.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+
+mvn clean test
+mvn clean package</code></pre>
+    </section>
+
+    <section class="section">
+        <h2>3. Core Engine Quick Start</h2>
+        <pre><code>AiwafConfig config = new AiwafConfig();
+config.headerValidationEnabled = true;
+config.rateLimitEnabled = true;
+
+AiwafEngine engine = new AiwafEngine(config);
+AiwafDecision decision = engine.evaluate(request);
+if (!decision.allowed()) {
+    // deny using decision.statusCode() + decision.reason()
+}</code></pre>
+    </section>
+
+    <section class="section">
+        <h2>4. Spring Integration</h2>
+        <ul>
+            <li><code>com.aiwaf.spring.AiwafFilter</code></li>
+            <li><code>com.aiwaf.spring.AiwafInterceptor</code></li>
+            <li><code>com.aiwaf.spring.support.AiwafRouteDecisions</code></li>
+            <li>Annotations: <code>@AiwafExempt</code>, <code>@AiwafExemptFrom</code>, <code>@AiwafOnly</code>, <code>@AiwafRequireProtection</code></li>
+        </ul>
+        <p>Create one shared <code>AiwafEngine</code> and wire the filter/interceptor into your request chain.</p>
+    </section>
+
+    <section class="section">
+        <h2>5. Servlet Integration</h2>
+        <ul>
+            <li><code>com.aiwaf.servlet.AiwafServletFilter</code></li>
+            <li>Maps <code>HttpServletRequest</code> to <code>AiwafRequest</code> via <code>ServletRequestMapper</code></li>
+            <li>Denied requests return <code>sendError(status, reason)</code></li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>6. Runtime Storage Backends</h2>
+        <pre><code>RuntimeStorage.initialize("memory", null);
+RuntimeStorage.initialize("file", "aiwaf_data.bin");
+RuntimeStorage.initialize("csv", "aiwaf_data.csv");</code></pre>
+        <ul>
+            <li><code>memory</code> default in-process backend</li>
+            <li><code>file</code> Java-serialized map for persistence</li>
+            <li><code>csv</code> CSV-backed persistence path</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>7. Admin CLI</h2>
+        <pre><code>mvn -q -DskipTests exec:java -Dexec.mainClass=com.aiwaf.cli.AiwafConsole -Dexec.args="stats"
+java -cp target/classes com.aiwaf.cli.AiwafConsole stats</code></pre>
+        <ul>
+            <li><code>stats</code>, <code>list ...</code>, <code>add ...</code>, <code>remove ...</code></li>
+            <li><code>export</code>, <code>import</code>, <code>reset</code>, <code>whois</code></li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>8. Production Checklist</h2>
+        <ol>
+            <li>Initialize persistent runtime storage during app bootstrap.</li>
+            <li>Tune <code>AiwafConfig</code> controls (header, rate, geo, exemptions) per environment.</li>
+            <li>Set path rules for high-volume or special endpoints.</li>
+            <li>Run <code>mvn clean test</code> and sandbox verification before release.</li>
+            <li>Capture and monitor deny telemetry for threshold refinement.</li>
+        </ol>
+    </section>
+</main>
+</div></div>
+</body>
+</html>
