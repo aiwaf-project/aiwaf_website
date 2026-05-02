@@ -40,7 +40,6 @@
         .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
         .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
-        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
         ul, ol { padding-left: 1.2rem; }
         li { margin-bottom: .35rem; }
         code { font-family: 'Fira Code', monospace; color: #f6c177; }
@@ -62,67 +61,77 @@
 </aside>
 <main class="content">
     <div class="badge">Ops And Release</div>
-    <h1 class="page-title">CLI, Config, Testing, Packaging</h1>
+    <h1 class="page-title">Java Operations and Runtime Controls</h1>
 
     <section class="section">
-        <h2>Admin CLI (<code>AiwafConsole</code>)</h2>
-        <pre><code>mvn -q -DskipTests exec:java \
-  -Dexec.mainClass=com.aiwaf.cli.AiwafConsole \
-  -Dexec.args="stats"
-
+        <h2>1. Admin CLI (<code>com.aiwaf.cli.AiwafConsole</code>)</h2>
+        <pre><code>mvn -q -DskipTests exec:java -Dexec.mainClass=com.aiwaf.cli.AiwafConsole -Dexec.args="stats"
 java -cp target/classes com.aiwaf.cli.AiwafConsole list all</code></pre>
-        <h3>Primary Commands</h3>
         <ul>
-            <li><code>stats</code></li>
-            <li><code>list [all|whitelist|blacklist|keywords|geo|exempt-path]</code></li>
-            <li><code>add/remove &lt;whitelist|blacklist|keyword|geo|exempt-path&gt; ...</code></li>
-            <li><code>geo &lt;list|add|remove&gt;</code>, <code>exempt-path &lt;list|add|remove&gt;</code></li>
-            <li><code>export</code>, <code>import</code>, <code>reset</code>, <code>whois</code></li>
+            <li>list/add/remove: whitelist, blacklist, keywords, geo, path exemptions.</li>
+            <li>export/import/reset flows.</li>
+            <li>stats and whois operations.</li>
         </ul>
     </section>
 
     <section class="section">
-        <h2>Core Parity CLI (<code>CoreCli</code>)</h2>
+        <h2>2. Core CLI (<code>CoreCli</code>)</h2>
         <ul>
             <li><code>analyze-request --request &lt;json_file&gt;</code></li>
             <li><code>analyze-behavior --events &lt;json_file&gt;</code></li>
             <li><code>replay --cases &lt;json_file&gt;</code></li>
-            <li><code>list [--targets ...]</code>, <code>reset [--targets ...]</code></li>
+            <li><code>list/reset --targets ...</code></li>
         </ul>
     </section>
 
     <section class="section">
-        <h2>Configuration Domains (<code>AiwafConfig</code>)</h2>
+        <h2>3. Runtime Observability</h2>
         <ul>
-            <li>Middleware toggles: header, rate, honeypot, UUID, keyword, geo, method checks</li>
-            <li>Rate controls: scope, window, max, flood, auto-block flags</li>
-            <li>Exemptions: IP/path sets, wildcard/prefix handling, private IP policy</li>
-            <li>Header policy: required headers, quality score, byte/count/length caps</li>
-            <li>Geo policy: allow/block country sets and geo-exempt paths</li>
-            <li>Route overrides: <code>pathRules</code> and middleware-name normalization</li>
+            <li>Enable with <code>observabilityEnabled=true</code>.</li>
+            <li>Metrics include request totals, allow/deny totals, blocked-by-status, blocked-by-outcome, middleware trigger counters, and latency histogram (<code>requests.evaluate.latency_ms</code>).</li>
+            <li>Access collector via <code>AiwafEngine.telemetry()</code>.</li>
+            <li>Reset via <code>AiwafEngine.clearState()</code>.</li>
         </ul>
     </section>
 
     <section class="section">
-        <h2>Testing And Validation</h2>
-        <pre><code>mvn clean test
-mvn clean package</code></pre>
+        <h2>4. AI Runtime Controls</h2>
         <ul>
-            <li>Core tests: engine, policy modules, replay, ingest/log IO</li>
-            <li>Runtime tests: memory/file/csv backend parity</li>
-            <li>Spring tests: route decisions and annotation behavior</li>
-            <li>CLI tests: console and manager command handling</li>
+            <li>Enablement: <code>aiEnabled</code>, <code>aiModelPath</code>, lazy/background model load flags.</li>
+            <li>Threshold: <code>aiAnomalyScoreThreshold</code> combined with artifact threshold.</li>
+            <li>Behavior confirmation gates: <code>aiRequireBehaviorConfirmation</code>, <code>aiRecentWindowSeconds</code>, <code>aiMinRecentSamplesToBlock</code>.</li>
+            <li>Context capture knobs: <code>storeExtendedBlockInfo</code>, redact/truncate limits.</li>
         </ul>
     </section>
 
     <section class="section">
-        <h2>Operational Notes</h2>
+        <h2>5. Storage and Persistence Ops</h2>
         <ul>
-            <li>Initialize persistent storage explicitly for multi-instance or restart-safe deployments.</li>
-            <li>Use route-level controls to suppress false positives on special endpoints.</li>
-            <li>Tune deny thresholds based on traffic and monitor status-code distribution (403/405/409/429).</li>
-            <li>Validate GeoIP and whois dependencies separately when those features are enabled.</li>
+            <li>Backend: <code>storageBackend</code> = <code>memory</code>, <code>file</code>, or <code>csv</code>.</li>
+            <li>Path: <code>storageFilePath</code>.</li>
+            <li>For restart-stable deployments, avoid <code>memory</code>.</li>
         </ul>
+    </section>
+
+    <section class="section">
+        <h2>6. Validation Workflows</h2>
+        <pre><code>mvn test
+docker compose -f examples/sandbox/docker-compose.yml up -d --build</code></pre>
+        <ul>
+            <li>Core/runtime/spring/cli test suites under <code>src/test/java/com/aiwaf/*</code>.</li>
+            <li>Sandbox targets: <code>localhost:8080</code>, <code>localhost:8081</code>, baseline <code>localhost:3001</code>.</li>
+            <li>Attack comparison tools: <code>AttackSuite</code>, <code>CompareResults</code>, <code>CompareResultsModes</code>.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>7. Production Guidance</h2>
+        <ol>
+            <li>Version path rules and route annotations as policy code.</li>
+            <li>Tune AI thresholds and confirmation mode per environment.</li>
+            <li>Validate model compatibility after schema/version bumps.</li>
+            <li>Keep telemetry enabled during initial rollout phases.</li>
+        </ol>
     </section>
 </main>
 </div></div>

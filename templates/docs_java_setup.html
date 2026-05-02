@@ -40,7 +40,6 @@
         .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .section { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.09); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
         .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
-        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
         ul, ol { padding-left: 1.2rem; }
         li { margin-bottom: .35rem; }
         code { font-family: 'Fira Code', monospace; color: #f6c177; }
@@ -65,22 +64,29 @@
     <h1 class="page-title">AIWAF-Java Comprehensive Setup Guide</h1>
 
     <section class="section">
-        <h2>1. Prerequisites</h2>
+        <h2>1. Scope</h2>
         <ul>
-            <li>Java <code>17+</code></li>
-            <li>Maven <code>3.9+</code></li>
-            <li>Optional Docker + Docker Compose for sandbox validation</li>
-            <li>Optional <code>mmdblookup</code> for GeoIP MMDB CLI lookup</li>
-            <li>Optional <code>python-whois</code> and system <code>whois</code> for CLI lookup operations</li>
+            <li>Plain Java/Servlet and Spring application integration.</li>
+            <li>Local development, sandbox validation, and production rollout.</li>
+            <li>Request pipeline order, runtime persistence, AI anomaly behavior, model artifact compatibility, observability, and structured config compatibility.</li>
         </ul>
     </section>
 
     <section class="section">
-        <h2>2. Install And Build</h2>
+        <h2>2. Prerequisites</h2>
+        <ul>
+            <li>Required: Java <code>17+</code>, Maven <code>3.9+</code>.</li>
+            <li>Optional: Docker + Compose, <code>mmdblookup</code>, <code>python-whois</code>, system <code>whois</code>.</li>
+            <li>Runtime defaults: model path <code>aiwaf-model.bin</code>, storage backend/path via <code>storageBackend</code>/<code>storageFilePath</code>.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>3. Install And Build</h2>
         <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;io.github.aiwaf-project&lt;/groupId&gt;
   &lt;artifactId&gt;aiwaf-java&lt;/artifactId&gt;
-  &lt;version&gt;0.1.0&lt;/version&gt;
+  &lt;version&gt;0.2.0&lt;/version&gt;
 &lt;/dependency&gt;
 
 mvn clean test
@@ -88,69 +94,82 @@ mvn clean package</code></pre>
     </section>
 
     <section class="section">
-        <h2>3. Core Engine Quick Start</h2>
+        <h2>4. Quick Start (Core Engine)</h2>
         <pre><code>AiwafConfig config = new AiwafConfig();
 config.headerValidationEnabled = true;
 config.rateLimitEnabled = true;
+config.storageBackend = "memory";
 
 AiwafEngine engine = new AiwafEngine(config);
 AiwafDecision decision = engine.evaluate(request);
 if (!decision.allowed()) {
-    // deny using decision.statusCode() + decision.reason()
+    // deny with decision.statusCode() and decision.reason()
 }</code></pre>
     </section>
 
     <section class="section">
-        <h2>4. Spring Integration</h2>
-        <ul>
-            <li><code>com.aiwaf.spring.AiwafFilter</code></li>
-            <li><code>com.aiwaf.spring.AiwafInterceptor</code></li>
-            <li><code>com.aiwaf.spring.support.AiwafRouteDecisions</code></li>
-            <li>Annotations: <code>@AiwafExempt</code>, <code>@AiwafExemptFrom</code>, <code>@AiwafOnly</code>, <code>@AiwafRequireProtection</code></li>
-        </ul>
-        <p>Create one shared <code>AiwafEngine</code> and wire the filter/interceptor into your request chain.</p>
-    </section>
-
-    <section class="section">
-        <h2>5. Servlet Integration</h2>
-        <ul>
-            <li><code>com.aiwaf.servlet.AiwafServletFilter</code></li>
-            <li>Maps <code>HttpServletRequest</code> to <code>AiwafRequest</code> via <code>ServletRequestMapper</code></li>
-            <li>Denied requests return <code>sendError(status, reason)</code></li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>6. Runtime Storage Backends</h2>
-        <pre><code>RuntimeStorage.initialize("memory", null);
-RuntimeStorage.initialize("file", "aiwaf_data.bin");
-RuntimeStorage.initialize("csv", "aiwaf_data.csv");</code></pre>
-        <ul>
-            <li><code>memory</code> default in-process backend</li>
-            <li><code>file</code> Java-serialized map for persistence</li>
-            <li><code>csv</code> CSV-backed persistence path</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>7. Admin CLI</h2>
-        <pre><code>mvn -q -DskipTests exec:java -Dexec.mainClass=com.aiwaf.cli.AiwafConsole -Dexec.args="stats"
-java -cp target/classes com.aiwaf.cli.AiwafConsole stats</code></pre>
-        <ul>
-            <li><code>stats</code>, <code>list ...</code>, <code>add ...</code>, <code>remove ...</code></li>
-            <li><code>export</code>, <code>import</code>, <code>reset</code>, <code>whois</code></li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>8. Production Checklist</h2>
+        <h2>5. Request Pipeline (Exact Order)</h2>
         <ol>
-            <li>Initialize persistent runtime storage during app bootstrap.</li>
-            <li>Tune <code>AiwafConfig</code> controls (header, rate, geo, exemptions) per environment.</li>
-            <li>Set path rules for high-volume or special endpoints.</li>
-            <li>Run <code>mvn clean test</code> and sandbox verification before release.</li>
-            <li>Capture and monitor deny telemetry for threshold refinement.</li>
+            <li>Resolve <code>PathRule</code> and middleware overrides.</li>
+            <li>Resolve path exemptions from config/store/geo-exempt sets.</li>
+            <li>Resolve IP exemptions.</li>
+            <li>Blacklist gate (<code>403</code>).</li>
+            <li>Method allow-list gate (<code>405</code>).</li>
+            <li>IP/keyword checks and contextual keyword learning.</li>
+            <li>UUID tamper check.</li>
+            <li>Honeypot timing checks (<code>403</code>/<code>409</code>).</li>
+            <li>Header validation checks.</li>
+            <li>Geo allow/block checks.</li>
+            <li>Rate/flood checks (<code>429</code>).</li>
+            <li>AI anomaly check.</li>
+            <li>Allow decision.</li>
         </ol>
+    </section>
+
+    <section class="section">
+        <h2>6. Integration Components</h2>
+        <ul>
+            <li>Spring: <code>AiwafFilter</code>, <code>AiwafInterceptor</code>, <code>AiwafRouteDecisions</code>, and annotations.</li>
+            <li>Servlet: <code>AiwafServletFilter</code> with <code>ServletRequestMapper</code> and deny/allow flow.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>7. Key Configuration Areas (<code>AiwafConfig</code>)</h2>
+        <ul>
+            <li>Middleware toggles, rate limits, exemptions, header policy, geo policy, method policy.</li>
+            <li>Keyword learning and route legitimacy hints.</li>
+            <li>AI model options: lazy/background load, threshold, behavior confirmation.</li>
+            <li>Observability + extended block context + storage backend/path.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>8. Runtime Storage</h2>
+        <pre><code>RuntimeStorage.initialize(config.storageBackend, config.storageFilePath);</code></pre>
+        <ul>
+            <li>Backends: <code>memory</code>, <code>file</code>, <code>csv</code>.</li>
+            <li>Stores: exemptions, path exemptions, blacklist, keywords, geo blocks.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>9. CLI + Validation</h2>
+        <pre><code>mvn -q -DskipTests exec:java -Dexec.mainClass=com.aiwaf.cli.AiwafConsole -Dexec.args="stats"
+java -cp target/classes com.aiwaf.cli.AiwafConsole stats
+mvn test</code></pre>
+        <p>Use <code>CoreCli</code> for request/behavior analysis and replay fixtures.</p>
+    </section>
+
+    <section class="section">
+        <h2>10. Production Checklist</h2>
+        <ul>
+            <li>Set explicit <code>AiwafConfig</code> values for real traffic.</li>
+            <li>Use persistent storage when restart stability is required.</li>
+            <li>Tune rate/header/AI thresholds and confirmation gates.</li>
+            <li>Keep telemetry enabled during rollout and monitor counters/histograms.</li>
+            <li>Run sandbox + fixture replay validation in CI.</li>
+        </ul>
     </section>
 </main>
 </div></div>

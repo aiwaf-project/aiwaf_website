@@ -90,48 +90,56 @@
 
         <main class="content">
             <div class="badge">Java Deep Dive</div>
-            <h1 class="page-title">AIWAF-Java Project Reference</h1>
-            <p>Comprehensive reference and setup path for integrating <code>aiwaf-java</code> in Spring MVC or Servlet applications.</p>
+            <h1 class="page-title">AIWAF-Java Full Project Reference</h1>
+            <p>Implementation-focused reference for <code>aiwaf-java</code> modules, request contracts, model lifecycle, telemetry, and adapter behavior.</p>
 
             <div class="meta-grid">
-                <div class="meta-card"><div class="meta-key">Runtime</div><div class="meta-val">Java <code>17+</code></div></div>
-                <div class="meta-card"><div class="meta-key">Build Tool</div><div class="meta-val">Maven <code>3.9+</code></div></div>
-                <div class="meta-card"><div class="meta-key">Maven Coordinates</div><div class="meta-val"><code>io.github.aiwaf-project:aiwaf-java:0.1.0</code></div></div>
-                <div class="meta-card"><div class="meta-key">Core Engine</div><div class="meta-val"><code>AiwafEngine</code></div></div>
+                <div class="meta-card"><div class="meta-key">Artifact</div><div class="meta-val"><code>io.github.aiwaf-project:aiwaf-java:0.2.0</code></div></div>
+                <div class="meta-card"><div class="meta-key">Java Target</div><div class="meta-val">Java <code>17</code></div></div>
+                <div class="meta-card"><div class="meta-key">Packaging</div><div class="meta-val"><code>jar</code></div></div>
+                <div class="meta-card"><div class="meta-key">Primary Integrations</div><div class="meta-val">Servlet + Spring MVC</div></div>
             </div>
 
             <h2 class="section-title">Scope</h2>
             <ul>
-                <li>Environment prerequisites and installation.</li>
-                <li>Spring and Servlet integration patterns.</li>
-                <li>Configuration model and path-rule override behavior.</li>
-                <li>Runtime storage backend setup (<code>memory</code>, <code>file</code>, <code>csv</code>).</li>
-                <li>CLI/admin command surface and parity utilities.</li>
-                <li>Testing and sandbox validation workflow.</li>
+                <li>Module boundaries and core runtime contracts.</li>
+                <li>Deterministic request pipeline and state ownership.</li>
+                <li>Configuration semantics and Python-style config compatibility.</li>
+                <li>Model artifact IO, migration, and lazy loading behavior.</li>
+                <li>Runtime telemetry counters/histogram semantics.</li>
+                <li>Integration adapters, CLI surfaces, and test topology.</li>
             </ul>
 
-            <h2 class="section-title">Integration Targets</h2>
+            <h2 class="section-title">Core Runtime Contracts</h2>
             <div class="feature-grid">
-                <div class="feature-card"><h4>Framework Agnostic Core</h4><p>Direct <code>AiwafEngine.evaluate(...)</code> integration with your own request mapper.</p></div>
-                <div class="feature-card"><h4>Spring MVC</h4><p><code>AiwafFilter</code>, <code>AiwafInterceptor</code>, and route annotations for middleware control.</p></div>
-                <div class="feature-card"><h4>Servlet API</h4><p><code>AiwafServletFilter</code> with <code>ServletRequestMapper</code> and response enforcement.</p></div>
-                <div class="feature-card"><h4>CLI/Admin Ops</h4><p><code>AiwafConsole</code> and <code>CoreCli</code> for runtime state and replay analysis.</p></div>
+                <div class="feature-card"><h4>AiwafRequest</h4><p>Normalized request contract consumed by engine pipeline.</p></div>
+                <div class="feature-card"><h4>AiwafDecision</h4><p>Immutable allow/deny result with status code and reason.</p></div>
+                <div class="feature-card"><h4>AiwafConfig</h4><p>Runtime policy model for middleware, AI, storage, and observability.</p></div>
+                <div class="feature-card"><h4>AiwafEngine</h4><p>Deterministic orchestration with per-stage deny short-circuit behavior.</p></div>
             </div>
 
-            <h2 class="section-title">Runtime Stores</h2>
+            <h2 class="section-title">Repository Layout</h2>
             <ul>
-                <li><code>ExemptionStore</code></li>
-                <li><code>PathExemptionStore</code></li>
-                <li><code>BlacklistStore</code></li>
-                <li><code>KeywordStore</code></li>
-                <li><code>GeoBlockStore</code></li>
+                <li><code>src/main/java/com/aiwaf/core</code></li>
+                <li><code>src/main/java/com/aiwaf/runtime</code></li>
+                <li><code>src/main/java/com/aiwaf/spring</code></li>
+                <li><code>src/main/java/com/aiwaf/servlet</code></li>
+                <li><code>src/main/java/com/aiwaf/cli</code></li>
+                <li><code>src/main/resources/geolock/ipinfo_lite.mmdb</code></li>
+                <li><code>src/test/java/com/aiwaf/*</code>, <code>examples/sandbox/*</code></li>
+            </ul>
+
+            <h2 class="section-title">Engine State Ownership</h2>
+            <ul>
+                <li>In-memory transient state: rate-limit buckets, honeypot GET timestamps, recent per-IP behavior windows.</li>
+                <li>Persistent/semi-persistent shared state: delegated to <code>RuntimeStorage</code> stores.</li>
             </ul>
 
             <div class="doc-card">
                 <h3 style="color:#ff6b6b; margin-bottom:.5rem;">Start Here</h3>
-                <p><a href="/docs/java/setup">Setup Guide</a> includes end-to-end installation, bootstrap config, storage setup, sandbox checks, and troubleshooting.</p>
-                <p><a href="/docs/java/architecture">Architecture</a> covers request pipeline order, core modules, runtime storage layer, and integration internals.</p>
-                <p><a href="/docs/java/operations">Operations</a> covers CLI commands, configuration controls, testing commands, and production hardening notes.</p>
+                <p><a href="/docs/java/setup">Setup Guide</a> covers build/install, exact pipeline behavior, configuration fields, AI model lifecycle, sandbox validation, and troubleshooting.</p>
+                <p><a href="/docs/java/architecture">Architecture</a> details the full engine sequence, config compatibility core, artifact migration, runtime stores, adapters, and tests.</p>
+                <p><a href="/docs/java/operations">Operations</a> covers CLI surfaces, observability access, environment tuning, and production rollout guidance.</p>
             </div>
         </main>
     </div>
