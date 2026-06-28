@@ -83,25 +83,42 @@
     </section>
 
     <section class="section">
-        <h2>2. Detailed Behavior Notes</h2>
+        <h2>2. Path Generation and Auto Middleware (<code>PathManifestCore.java</code>)</h2>
+        <p>Unlike scripting languages that rely on AST parsing, the Java implementation leverages JVM Reflection to build deterministic route manifests for protection gating, facilitating "auto middleware" orchestration.</p>
+        <ul>
+            <li><strong>Introspection & Path Generation:</strong> Analyzes <code>java.lang.reflect.Method</code> and <code>Class&lt;?&gt;</code> to extract route signatures, generating a deterministic tree of all endpoints and their supported HTTP methods.</li>
+            <li><strong>API Detection (<code>ApiDetectionCore</code>):</strong> Inspects method return types and <code>@RestController</code> / <code>@ResponseBody</code> annotations (in Spring) to accurately classify endpoints as APIs vs HTML Form controllers.</li>
+            <li><strong>Auth Detection (<code>AuthDetectionCore</code>):</strong> Uses heuristic matching on method names (e.g., <code>login</code>, <code>authenticate</code>) and paths to flag authentication boundaries.</li>
+            <li><strong>Manifest Compilation:</strong> Outputs a compiled <code>PathManifestEntry</code> JSON object that dictates which middleware should run on a given endpoint.</li>
+            <li><strong>Auto Middleware Planning:</strong> The <code>AiwafEngine</code> reads these generated properties dynamically at runtime to auto-configure protections:
+                <ul>
+                    <li>If a route is flagged as an API, it bypasses the HTML Honeypot check automatically.</li>
+                    <li>Global configurations (e.g., <code>enabledMiddlewares</code> vs <code>disabledMiddlewares</code>) combined with <code>PathRule</code> overrides allow fine-grained rate limit overwrites or complete bypasses for specific generated paths.</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>3. Detailed Behavior Notes</h2>
         <ul>
             <li>Path exemptions combine auto-prefixes, configured exemptions, runtime path store, and geo-exempt paths.</li>
             <li>IP exemptions combine explicit IPs and optional private-IP bypass.</li>
-            <li>Keyword learning runs only when <code>enableKeywordLearning=true</code> and uses malicious-context heuristics with bounded additions (<code>dynamicTopN</code>).</li>
-            <li>Honeypot tracks GET timestamps per <code>ip|path</code>; POST checks include lower and upper timing bounds with login-path override.</li>
+            <li>Keyword learning runs only when <code>enableKeywordLearning=true</code> and uses malicious-context heuristics (e.g. <code>cmd=</code>, <code>.php</code>, <code>union</code>) with bounded additions (<code>dynamicTopN</code>).</li>
+            <li>Honeypot tracks GET timestamps per <code>ip|path</code> in an internal map; POST checks calculate elapsed time and enforce a minimum duration (<code>minFormTimeSeconds</code> or <code>loginMinFormTimeSeconds</code>) and maximum duration (<code>maxFormPageTimeSeconds</code>).</li>
             <li>Header validation enforces required headers, suspicious patterns, quality threshold, and size/count caps.</li>
-            <li>Rate keys: <code>GLOBAL_IP=ip</code>, <code>PER_PATH=ip|path</code>; flood gate is evaluated before standard max gate.</li>
+            <li>Rate keys: <code>GLOBAL_IP=ip</code>, <code>PER_PATH=ip|path</code>; flood gate is evaluated before standard max gate using local memory `requestBuckets` (<code>Deque&lt;Long&gt;</code>).</li>
         </ul>
     </section>
 
     <section class="section">
         <h2>3. AI Anomaly Model Path</h2>
         <ul>
-            <li>Model source: <code>LazyModelProviderCore</code> via <code>aiModelPath</code>.</li>
-            <li>Expected payload key path: <code>payload["isolation_forest"]["model"]</code>.</li>
-            <li>Scoring via <code>IsolationForestCore.score(...)</code>.</li>
+            <li>Model source: <code>LazyModelProviderCore</code> via <code>aiModelPath</code>. Supports immediate load or background daemon thread preloading (<code>aiBackgroundPreload</code>).</li>
+            <li>Extracts exactly 9 features: <code>path_len</code>, <code>kw_hits</code>, <code>status_code</code>, <code>status_idx</code>, <code>response_time_ms</code>, <code>burst_count</code> (last 10s), <code>total_404</code> (in recent window), <code>path_depth</code>, and <code>method_is_post</code>.</li>
+            <li>Scoring via <code>IsolationForestCore.score(...)</code> on the payload located at <code>payload["isolation_forest"]["model"]</code>.</li>
             <li>Effective threshold: <code>min(artifact_threshold, config.aiAnomalyScoreThreshold)</code>.</li>
-            <li>Optional behavior confirmation gate: <code>aiRequireBehaviorConfirmation</code>, <code>aiMinRecentSamplesToBlock</code>, <code>aiRecentWindowSeconds</code>.</li>
+            <li>Behavior confirmation gate: If <code>aiRequireBehaviorConfirmation</code> is true, the anomaly block is suspended until at least <code>aiMinRecentSamplesToBlock</code> requests from that IP are observed within <code>aiRecentWindowSeconds</code>.</li>
         </ul>
     </section>
 

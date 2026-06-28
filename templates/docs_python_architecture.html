@@ -128,21 +128,74 @@
 
     <section class="section">
         <h2>Training And AI Lifecycle</h2>
+        <p>The Python trainer coordinates a multi-stage pipeline across core logic modules like <code>training.py</code> and <code>training_logic.py</code>:</p>
         <ol style="padding-left:1.2rem;">
-            <li>Parse logs from combined/common/csv/json/model fallbacks.</li>
-            <li>Build request feature records.</li>
-            <li>Use Rust acceleration when available.</li>
-            <li>Train anomaly model when thresholds permit.</li>
-            <li>Persist model artifact.</li>
-            <li>Learn suspicious keywords with malicious-context checks.</li>
-            <li>Exclude legitimate/exempt keywords to reduce false positives.</li>
+            <li><strong>Log Parsing:</strong> Extracts requests from configured sources (combined, common, CSV, JSON logs, or middleware fallbacks).</li>
+            <li><strong>Feature Extraction:</strong> Converts requests into a 6-dimensional feature vector for the Isolation Forest:
+                <ul>
+                    <li>Path length</li>
+                    <li>Keyword hits against known static lists</li>
+                    <li>Status code bucket (mapping to 200/403/404/500 indices)</li>
+                    <li>Response time</li>
+                    <li>Burst count (10-second rolling window)</li>
+                    <li>Per-IP 404 count</li>
+                </ul>
+            </li>
+            <li><strong>Rust Acceleration:</strong> If <code>AIWAF_USE_RUST=True</code>, feature extraction and ML model persistence are accelerated via the <code>aiwaf_rust</code> backend. A JSON model artifact is persisted since object serialization (like <code>pickle</code>) is strictly disallowed for security reasons.</li>
+            <li><strong>Anomaly Model Training:</strong> Trains a 200-tree Isolation Forest when thresholds (<code>AIWAF_MIN_AI_LOGS</code>) permit, and filters anomalous predictions (e.g. enforcing at least some suspicious keywords or 404s) before issuing blocks.</li>
+            <li><strong>Keyword Learning:</strong> Extracts tokens from 4xx/5xx requests evaluated via <code>is_malicious_context()</code>. Matches indicators like <code>../</code>, <code>.env</code>, <code>wp-admin</code>, <code>eval</code>, or extreme URL lengths/depths.</li>
+            <li><strong>Exemptions:</strong> Excludes legitimate/exempt keywords via <code>get_default_legitimate_keywords()</code> to drastically reduce false positives.</li>
         </ol>
         <h3>Execution Safeguards</h3>
         <ul>
-            <li>Disable AI path when logs are insufficient.</li>
-            <li>Post-filter anomaly predictions before hard blocks.</li>
-            <li>Fall back to keyword protections when AI deps are missing.</li>
+            <li>Disable AI path when logs are insufficient (<code>AIWAF_MIN_TRAIN_LOGS</code> fallback).</li>
+            <li>Post-filter anomaly predictions before hard blocks to keep burst-only harmless traffic unblocked.</li>
+            <li>Fall back to keyword protections when AI dependencies or rust integrations are missing.</li>
         </ul>
+    </section>
+
+    <section class="section">
+        <h2>AST Static Analysis (<code>aiwaf/core/api_detection.py</code>)</h2>
+        <p>AIWAF utilizes Python's built-in <code>ast</code> module to infer route capabilities statically, primarily used during manifest generation to correctly classify endpoints when framework metadata (like Django decorators) is missing.</p>
+        <ul>
+            <li><strong>Parsing:</strong> Source files are converted to an AST using <code>ast.parse(source)</code>.</li>
+            <li><strong>Traversal:</strong> Custom <code>ast.NodeVisitor</code> implementations (e.g., <code>ApiDetectorVisitor</code>) walk the tree to identify key signals.</li>
+            <li><strong>Method Inference:</strong> Detects explicit HTTP methods by scanning decorator lists (e.g., <code>@require_http_methods(['GET'])</code> or FastAPI's <code>@app.get()</code>) and internal <code>if request.method == 'POST'</code> checks.</li>
+            <li><strong>API Detection:</strong> Flags high <code>api_score</code> values when it detects <code>JsonResponse</code> returns, <code>@api_view</code> decorators, or serialization calls (<code>json.dumps</code>, <code>pydantic</code> models).</li>
+            <li><strong>Auth Detection:</strong> Detects authentication paths by searching for calls to <code>authenticate()</code>, <code>login()</code>, or typical auth-centric functions like <code>create_access_token</code>.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Path Generation and Auto Middleware (<code>aiwaf/core/path_manifest.py</code>)</h2>
+        <p>AIWAF intelligently generates optimized routing rules and toggles middleware autonomously by categorizing path intents.</p>
+        <ul>
+            <li><strong>Route Classification (<code>classify_route</code>):</strong> Interprets AST and framework metadata to group paths as <code>api</code>, <code>form</code>, <code>admin</code>, <code>upload</code>, <code>static</code>, or <code>auth</code>.</li>
+            <li><strong>Auto Middleware Planning:</strong> Automatically modifies the <code>protections</code> array for the target path based on its category:
+                <ul>
+                    <li><strong>API Endpoints:</strong> Disables HTML honeypots, raises rate limits (120 req/min), and enforces JSON payloads.</li>
+                    <li><strong>Form/Auth Endpoints:</strong> Enables strict Honeypot timing and limits requests to 30 req/min.</li>
+                    <li><strong>Static Assets:</strong> Automatically suppresses AI anomaly scoring, honeypots, and header validations to maintain max performance.</li>
+                </ul>
+            </li>
+            <li><strong>Rule Compilation (<code>compile_manifest_to_path_rules</code>):</strong> Compiles these abstracted protections into standardized <code>DISABLE</code> and <code>RATE_LIMIT</code> path rules injected directly into the runtime adapters.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Detailed Middleware Execution Chain</h2>
+        <p>Both Django and FastAPI adapters orchestrate a strict execution sequence. An example chain logic (as defined in <code>aiwaf/django/middleware.py</code>):</p>
+        <ol>
+            <li><strong>Exception/Response Wrapper:</strong> <code>JsonExceptionMiddleware</code> ensures that if an API is blocked, the response is formatted as JSON instead of HTML.</li>
+            <li><strong>Geo Blocking:</strong> <code>GeoBlockMiddleware</code> rejects requests from blocked country codes early to save resources.</li>
+            <li><strong>IP & Keyword Blocking:</strong> <code>IPAndKeywordBlockMiddleware</code> enforces the static blacklist and dynamic keyword protections (exemption-aware).</li>
+            <li><strong>Rate Limiting:</strong> <code>RateLimitMiddleware</code> executes sliding-window checks (burst & flood controls) backed by memory or Redis.</li>
+            <li><strong>AI Anomaly:</strong> <code>AIAnomalyMiddleware</code> executes the ML IsolationForest checks on unknown routes.</li>
+            <li><strong>Honeypot:</strong> <code>HoneypotTimingMiddleware</code> checks GET-to-POST timing thresholds and form submission misuse.</li>
+            <li><strong>UUID Tamper:</strong> <code>UUIDTamperMiddleware</code> validates UUID integrity and 404-probing rates.</li>
+            <li><strong>Header Validation:</strong> <code>HeaderValidationMiddleware</code> scores the request headers against bot signatures.</li>
+            <li><strong>Logging (Post-Response):</strong> <code>AIWAFLoggerMiddleware</code> captures telemetry and writes JSONL/CSV lines for offline training if configured.</li>
+        </ol>
     </section>
 
     <section class="section">

@@ -57,8 +57,8 @@ def inject_seo_defaults():
     """Inject SEO metadata defaults for all rendered pages."""
     path = request.path.rstrip("/") or "/"
     title_map = {
-        "/": "AIWAF Documentation | Python and JavaScript Security Guides",
-        "/docs": "AIWAF Documentation Hub | Python and JavaScript Deep Dives",
+        "/": "AIWAF Documentation | Python, JavaScript, PHP, Java, and Rust Security Guides",
+        "/docs": "AIWAF Documentation Hub | Comprehensive Deep Dives for All Languages",
         "/docs/python": "AIWAF Python Deep Dive | Architecture and Operations",
         "/docs/python/setup": "AIWAF Python Setup Guide | End-to-End Installation and Validation",
         "/docs/python/architecture": "AIWAF Python Architecture | Core Modules and Runtime Flow",
@@ -81,8 +81,8 @@ def inject_seo_defaults():
         "/docs/rust/operations": "aiwaf-rust Build and Operations | Packaging and Validation",
     }
     description_map = {
-        "/": "Official AIWAF documentation for Python and JavaScript integrations, setup guides, architecture, and operational best practices.",
-        "/docs": "Browse AIWAF deep-dive documentation for Python and JavaScript implementations, including setup, architecture, and operations.",
+        "/": "Official AIWAF documentation for Python, JavaScript, PHP, Java, and Rust integrations, setup guides, architecture, and operational best practices.",
+        "/docs": "Browse AIWAF deep-dive documentation for all implementations, including setup, architecture, and operations.",
         "/docs/python": "Comprehensive Python reference for AIWAF covering architecture, adapters, storage, training lifecycle, and runtime behavior.",
         "/docs/python/setup": "End-to-end setup guide for AIWAF in Django, Flask, and FastAPI with production-ready configuration and troubleshooting.",
         "/docs/python/architecture": "Detailed architecture guide for AIWAF Python core modules, storage primitives, training pipeline, and security controls.",

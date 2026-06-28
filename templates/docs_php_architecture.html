@@ -94,18 +94,65 @@
         <h2>6. Request Protection Flow (<code>AIWAF::protect</code>)</h2>
         <ol>
             <li>Build runtime config via <code>Config::toRuntimeConfig()</code>.</li>
+            <li>Configure rate limiter via <code>configureRateLimiter()</code> (auto-detects db, apcu, redis, or falls back to memory).</li>
             <li>Resolve request identity (<code>ip</code>, <code>path</code>).</li>
-            <li>Exemption short-circuit.</li>
-            <li>Header validation.</li>
+            <li>Exemption short-circuit (skips remaining checks if IP or Path is exempt via configurations or CIDR matches).</li>
+            <li>Method validation (ensures request method is allowed).</li>
+            <li>Header validation (evaluates <code>trust_legitimate_bots</code>, <code>custom_suspicious_patterns</code>, and <code>quality_threshold</code>).</li>
             <li>Blocked-IP enforcement.</li>
-            <li>Geo policy checks.</li>
-            <li>AI anomaly scoring (model + threshold gated).</li>
-            <li>Rate-limit enforcement (<code>429</code>, optional block persist).</li>
+            <li>Geo policy checks (compares IP against allow/block countries).</li>
+            <li><strong>AI Anomaly Scoring:</strong> Extracts an 8-dimensional feature vector:
+                <ul>
+                    <li><code>strlen($path)</code></li>
+                    <li><code>DynamicKeywordManager::detect($path)</code></li>
+                    <li><code>0.5</code> (baseline structural complexity)</li>
+                    <li>Status code anomaly (<code>1</code> if 404/500, else <code>0</code>)</li>
+                    <li>Reserved (<code>0</code>)</li>
+                    <li>Reserved (<code>0</code>)</li>
+                    <li>Honeypot trigger (<code>isset($_POST['aiwaf_honeytrap']) ? 1 : 0</code>)</li>
+                    <li>UUID tamper check (<code>UUIDTamperProtector::isSuspicious($path) ? 1 : 0</code>)</li>
+                </ul>
+                Scores the vector against <code>forest_model.json</code>. If score exceeds threshold, it runs a <strong>post-prediction guard</strong> ensuring at least one strong signal (e.g., keyword hits &ge; 2.0 or direct honeypot/UUID triggers) before blocking.
+            </li>
+            <li>Rate-limit enforcement (checks <code>max_requests</code> per <code>window_seconds</code>).</li>
             <li>Dynamic keyword checks.</li>
             <li>UUID tamper checks.</li>
-            <li>Honeypot checks.</li>
+            <li>Honeypot checks (evaluates <code>$_POST</code> payloads).</li>
         </ol>
         <p>Block responses use <code>403</code> for deny cases and <code>429</code> for rate-limit violations.</p>
+    </section>
+
+    <section class="section">
+        <h2>AST Static Analysis (<code>src/Core/ApiDetection.php</code>)</h2>
+        <p>PHP dynamically analyzes controller logic during startup using Abstract Syntax Trees to determine endpoint intent (API vs. Form vs. Auth). This is heavily utilized when native framework routes don't strictly typehint their return models.</p>
+        <ul>
+            <li><strong>Parsing:</strong> Uses <code>nikic/php-parser</code> (<code>PhpParser\ParserFactory</code>) to construct an AST directly from the controller's source file, using reflection (<code>ReflectionMethod</code>, <code>ReflectionFunction</code>) to locate the exact start and end lines of the closure or method.</li>
+            <li><strong>Traversal:</strong> A custom <code>NodeVisitorAbstract</code> traverses the statements strictly within the bounded line numbers.</li>
+            <li><strong>Call Inspection:</strong> Inspects <code>MethodCall</code>, <code>FuncCall</code>, and <code>StaticCall</code> nodes.
+                <ul>
+                    <li>Increases API confidence if it detects <code>json</code>, <code>json_encode</code>, <code>JsonResponse</code>, or <code>jsonify</code>.</li>
+                    <li>Increases Form confidence if it detects <code>view</code>, <code>render</code>, <code>redirect</code>, <code>back</code>, or <code>render_template</code>.</li>
+                </ul>
+            </li>
+            <li><strong>Object Instantiation:</strong> Inspects <code>New_</code> nodes. Instantiating <code>JsonResponse</code> yields a high API score.</li>
+            <li><strong>Payload Type:</strong> Scans for <code>post</code>, <code>all</code>, <code>input</code>, or <code>file</code> method calls on request objects to flag <code>requestBody = true</code> and classify the expected payload.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Path Generation and Auto Middleware (<code>MiddlewarePlan.php</code>)</h2>
+        <p>AIWAF for PHP includes intelligent path generation and middleware auto-negotiation to dynamically optimize the protection pipeline per endpoint:</p>
+        <ul>
+            <li><strong>Route Classification (<code>PathManifest::classifyRoute</code>):</strong> The manifest generator infers the primary intent of any given route, categorizing paths as <code>api</code>, <code>form</code>, <code>admin</code>, <code>upload</code>, <code>static</code>, or <code>auth</code>.</li>
+            <li><strong>Auto Middleware Planning:</strong> Based on the route classification, the engine automatically toggles specific middlewares on or off. For example:
+                <ul>
+                    <li><strong>API Endpoints:</strong> Disables HTML Honeypots, enforces strict JSON payload validation, and allocates a high rate-limit ceiling (120 req/min).</li>
+                    <li><strong>Form Endpoints:</strong> Enables Honeypot validation, sets strict rate limits (30 req/min), and enforces POST payload sizes.</li>
+                    <li><strong>Static Assets:</strong> Automatically disables AI Anomaly scoring, Honeypots, and Header Validation to drastically reduce CPU overhead on <code>/static/</code> or <code>.png</code> routes.</li>
+                </ul>
+            </li>
+            <li><strong>Config Sentinels:</strong> If <code>requested_middlewares</code> is set to <code>['auto']</code>, <code>MiddlewarePlan::planEnabledMiddlewares()</code> dynamically strips out unnecessary middlewares (e.g., completely unloading <code>uuid_tamper</code> if no UUIDs exist, or disabling <code>geo_block</code> if the MMDB isn't configured).</li>
+        </ul>
     </section>
 
     <section class="section">
@@ -138,11 +185,22 @@
             <li><code>php setup.php</code> ensures required baseline files exist.</li>
         </ul>
         <h3>Training Pipeline (<code>AIWAF::detectAndTrain</code>)</h3>
+        <p>The training pipeline executes robust anomaly detection and keyword learning strategies via CLI (<code>php cli/detect_and_train.php</code>):</p>
         <ul>
-            <li>Entry: <code>php cli/detect_and_train.php</code>.</li>
-            <li>Primary source: <code>AIWAF_ACCESS_LOG</code>, including rotated log handling.</li>
-            <li>Controls: min log thresholds, force/disable flags, anomaly threshold, known paths.</li>
-            <li>Outputs: model updates, dynamic keyword updates, optional anomaly-driven block updates, telemetry.</li>
+            <li><strong>Source Processing:</strong> Reads from <code>AIWAF_ACCESS_LOG</code>, automatically parsing rotated and gzipped logs via <code>Logs::readRotatedLogs</code>.</li>
+            <li><strong>Feature Extraction:</strong> Capable of parallelized feature extraction via <code>FeatureExtractor::pythonFeaturesBatched</code> if Python is available (managed by <code>AIWAF_PYTHON_PARALLEL_WORKERS</code>).</li>
+            <li><strong>Training Matrix:</strong> Extracted per request for the <code>IsolationForest</code> (configured with 200 trees, 32 sample size). The matrix maps 6 dimensions:
+                <ol>
+                    <li><code>path_len</code></li>
+                    <li><code>kw_hits</code></li>
+                    <li><code>resp_time</code></li>
+                    <li><code>status_idx</code></li>
+                    <li><code>burst_count</code></li>
+                    <li><code>total_404</code></li>
+                </ol>
+            </li>
+            <li><strong>Anomaly Evaluation:</strong> Evaluates the matrix against the model using <code>AIWAF_AI_ANOMALY_THRESHOLD</code>. Identifies anomalous IPs and runs a strict conservative check: keeps burst-only traffic with no suspicious footprint unblocked. Blocks only if: average keyword hits &ge; 2.0, max 404s &ge; 10.0, average burst &ge; 15.0, or total requests &ge; 100.</li>
+            <li><strong>Keyword Learning:</strong> Extracts suspicious path segments into the dynamic keyword store, skipping paths that match <code>exempt_paths</code> or <code>known_paths</code>.</li>
         </ul>
         <h3>Telemetry Includes</h3>
         <ul>

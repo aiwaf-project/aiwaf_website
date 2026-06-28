@@ -105,21 +105,28 @@
         <ol>
             <li>Resolve metadata (<code>ip/path/method</code>) and logger hooks.</li>
             <li>Optional method policy block (<code>AIWAF_METHOD_POLICY_ENABLED</code>).</li>
-            <li>Exemption short-circuit.</li>
-            <li>Blocked IP check.</li>
-            <li>Header validation.</li>
-            <li>Optional WASM checks (headers/url/content/recent behavior).</li>
-            <li>Geo policy check.</li>
-            <li>Honeypot/timing checks.</li>
-            <li>Rate limit record + block decision.</li>
-            <li>Static and dynamic keyword checks.</li>
-            <li>UUID tamper checks.</li>
-            <li>Unknown-route anomaly decision (trained-model-gated, behavior-filtered).</li>
-            <li>Response-finish keyword learning for suspicious 404 patterns.</li>
+            <li>Exemption short-circuit (bypasses remaining checks if IP or path is exempt).</li>
+            <li>Blocked IP check (early reject for known bad IPs).</li>
+            <li>Header validation (enforces structural constraints and presence of required headers).</li>
+            <li><strong>WASM Validation Checks</strong> (if <code>AIWAF_WASM_VALIDATION</code> is enabled):
+                <ul>
+                    <li><strong>Headers:</strong> Evaluates header combinations against high-performance WASM rules.</li>
+                    <li><strong>URL:</strong> Inspects full URL topology and request context via WASM.</li>
+                    <li><strong>Content:</strong> Validates raw or JSON parsed request bodies (<code>req.body</code>).</li>
+                    <li><strong>Recent Behavior:</strong> Aggregates up to 200 recent requests for temporal WASM evaluation (<code>AIWAF_WASM_VALIDATE_RECENT</code>).</li>
+                </ul>
+            </li>
+            <li>Geo policy check (compares <code>req</code> IP against block/allow lists).</li>
+            <li>Honeypot/timing checks (evaluates rapid form submissions against expected human interaction times).</li>
+            <li>Rate limit record + block decision (checks both burst/flood patterns and steady-rate thresholds).</li>
+            <li>Static and dynamic keyword checks (inspects path against known malicious strings and dynamically learned signatures).</li>
+            <li>UUID tamper checks (detects probing or malformed UUID injections).</li>
+            <li><strong>Unknown-Route Anomaly Decision:</strong> Only runs if the path does not match a known framework route (e.g., Express router). Evaluates a 6-feature vector against a trained Isolation Forest model. If anomalous, cross-references recent behavior (last 5000 requests over 5 minutes) measuring 404 scanning, burst rates, and keyword hits before issuing a block.</li>
+            <li>Response-finish keyword learning for suspicious 404 patterns (lazy learning step after response finishes).</li>
             <li><code>next()</code> when not blocked.</li>
         </ol>
         <h3>Block Response Model</h3>
-        <p>Responds with <code>403</code>/<code>405</code>/<code>429</code>, JSON-aware by request semantics or <code>AIWAF_FORCE_JSON_ERRORS</code>.</p>
+        <p>Responds with <code>403</code>, <code>405</code>, or <code>429</code>. Automatically falls back to JSON responses if the client sends <code>Accept: application/json</code>, is an XHR request, or if forced via <code>AIWAF_FORCE_JSON_ERRORS</code>.</p>
     </section>
 
     <section class="section">
@@ -136,6 +143,58 @@
     </section>
 
     <section class="section">
+        <h2>Detailed Middleware Execution Chain</h2>
+        <p>The core <code>lib/wafMiddleware.js</code> executes the following defense layers sequentially. Order is strictly enforced to ensure fast-path exits (like exemptions) prevent unnecessary processing of heavier tasks (like ML scoring):</p>
+        <ol>
+            <li><strong>Initialization & Hooks:</strong> Resolves request metadata (IP, path, method) and attaches the logger hook to the response <code>finish</code> event.</li>
+            <li><strong>Method Policy Block:</strong> Drops requests with unexpected verbs early if <code>AIWAF_METHOD_POLICY_ENABLED</code> is active.</li>
+            <li><strong>Exemption Short-Circuit:</strong> Evaluates IP and Path exemptions. Bypasses remaining checks if a match is found.</li>
+            <li><strong>Blocked IP Check:</strong> Rejects known bad IPs stored in the `blacklistManager`.</li>
+            <li><strong>Header Validation:</strong> Enforces structural constraints, verifies required headers, and drops bot-pattern signatures.</li>
+            <li><strong>WASM Validation Checks:</strong> (Optional) Evaluates high-performance WASM rules across Headers, full URL topology, Body content, and temporal behavior over the last 200 requests.</li>
+            <li><strong>Geo Policy Check:</strong> Evaluates the source IP against <code>MMDB</code> allow/block rules.</li>
+            <li><strong>Honeypot & Timing Checks:</strong> Defends against automated form abuse by comparing submission times against <code>AIWAF_MIN_FORM_TIME</code> and checking for expected user-agent delays.</li>
+            <li><strong>Rate Limit Check:</strong> Enforces burst and steady-state <code>AIWAF_RATE_MAX</code> windows via the <code>rateLimiter</code> backend.</li>
+            <li><strong>Keyword Checks (Static & Dynamic):</strong> Inspects the path against hardcoded signatures (e.g., <code>.php</code>, <code>wp-admin</code>) and dynamically learned strings from the <code>dynamicKeywordStore</code>.</li>
+            <li><strong>UUID Tamper Check:</strong> Evaluates the path for malformed UUID injections or UUID-specific 404 probing.</li>
+            <li><strong>Unknown-Route Anomaly Check:</strong> Only runs for unknown routes. Evaluates a 6-feature vector against the Isolation Forest model and cross-references recent temporal burst/404 scanning behaviors before blocking.</li>
+            <li><strong>Post-Response Learning:</strong> Triggers the dynamic keyword learning hook lazily after the response is sent to minimize latency.</li>
+        </ol>
+    </section>
+
+    <section class="section">
+        <h2>AST Static Analysis (<code>lib/sourceAst.js</code>)</h2>
+        <p>The AST layer extracts a deterministic route manifest during startup to selectively enforce rules without requiring runtime regex matching. It relies on bounded static source analysis when framework metadata is missing.</p>
+        <ul>
+            <li><strong>Parsing:</strong> Uses <code>@babel/parser</code> to parse route handlers via <code>Function.prototype.toString.call(handler)</code>. It handles JSX, TypeScript, and modern JS syntax.</li>
+            <li><strong>Traversal:</strong> Custom recursive traversal visits all nodes to build confidence scores (<code>apiScore</code>, <code>formScore</code>, <code>authScore</code>).</li>
+            <li><strong>Method Inference:</strong> Inspects <code>StringLiteral</code> and <code>BinaryExpression</code> nodes against <code>req.method</code> to infer supported HTTP verbs.</li>
+            <li><strong>API vs Form Scoring:</strong>
+                <ul>
+                    <li>Increases <code>apiScore</code> when it encounters <code>res.json()</code>, <code>res.send()</code> with Object Literals, or checks for <code>req.body</code>.</li>
+                    <li>Increases <code>formScore</code> when it finds <code>res.render()</code>, <code>res.redirect()</code>, or checks for <code>req.form</code>/<code>req.file</code>.</li>
+                </ul>
+            </li>
+            <li><strong>Auth Detection:</strong> Detects <code>logout</code>, <code>authenticate</code>, <code>register</code>, and token logic (e.g., <code>jwt</code>, <code>bcrypt</code>) from <code>CallExpression</code> and <code>Identifier</code> nodes to classify the endpoint as an authentication boundary.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Path Generation and Auto Middleware (<code>lib/pathManifest.js</code>)</h2>
+        <p>The AST data is ingested into the Path Manifest builder, which intelligently categorizes routes and automatically auto-toggles specific middlewares.</p>
+        <ul>
+            <li><strong>Route Classification (<code>classifyRoute</code>):</strong> Routes are binned into categories like <code>api</code>, <code>form</code>, <code>admin</code>, <code>upload</code>, <code>static</code>, or <code>auth</code> based on AST signals and Framework router introspection (Express/Fastify/Next).</li>
+            <li><strong>Auto Middleware Planning:</strong> The <code>protections</code> array is tailored to the route category. For instance:
+                <ul>
+                    <li><strong>API Endpoints:</strong> HTML honeypots are disabled, JSON payload checks are enforced, and rate limits are raised to 120 req/min.</li>
+                    <li><strong>Static Assets:</strong> CPU-heavy checks like ML anomaly scoring, honeypots, and header validations are automatically disabled on paths matching <code>/static/</code> or <code>.png</code>.</li>
+                </ul>
+            </li>
+            <li><strong>Rule Compilation (<code>compileManifestToPathRules</code>):</strong> These categorized protections are natively compiled into <code>DISABLE</code> arrays and <code>RATE_LIMIT</code> override configurations that the <code>wafMiddleware.js</code> directly consumes on every request.</li>
+        </ul>
+    </section>
+
+    <section class="section">
         <h2>Storage And Persistence Strategy</h2>
         <ul>
             <li>SQLite via Knex in <code>utils/db.js</code> (<code>:memory:</code> in tests; <code>./aiwaf.sqlite</code> otherwise).</li>
@@ -147,18 +206,43 @@
     <section class="section">
         <h2>Training And Learning Pipeline (<code>train.js</code>)</h2>
         <h3>Source Priority</h3>
+        <p>The training pipeline sequentially attempts to read requests from multiple sources, stopping at the first available populated source:</p>
         <ol>
-            <li>Access logs (<code>AIWAF_ACCESS_LOG</code>/<code>NODE_LOG_PATH</code> + glob/rotated gzip).</li>
-            <li>Middleware JSONL logs.</li>
-            <li>Middleware CSV logs.</li>
-            <li>DB request logs.</li>
+            <li>Access logs (<code>AIWAF_ACCESS_LOG</code>/<code>NODE_LOG_PATH</code> + glob/rotated gzip files). Defaults to <code>/var/log/nginx/access.log</code>.</li>
+            <li>Middleware JSONL logs (<code>AIWAF_MIDDLEWARE_LOG_PATH</code>).</li>
+            <li>Middleware CSV logs (<code>AIWAF_MIDDLEWARE_LOG_CSV_PATH</code>).</li>
+            <li>DB request logs (via <code>requestLogStore.recent(20000)</code>).</li>
         </ol>
-        <h3>Controls And Output</h3>
+        
+        <h3>Pre-Training Abuse Checks</h3>
         <ul>
-            <li>Threshold gates: <code>AIWAF_MIN_TRAIN_LOGS</code>, <code>AIWAF_MIN_AI_LOGS</code>, <code>AIWAF_FORCE_AI_TRAINING</code>.</li>
-            <li>Keyword-learning control: <code>AIWAF_ENABLE_KEYWORD_LEARNING</code>, <code>AIWAF_DYNAMIC_TOP_N</code>.</li>
-            <li>Feature vector has 6 dimensions: path length, keyword hits, status bucket, response time, burst count, per-IP 404 count.</li>
-            <li>Outputs include model save, optional anomaly IP blacklist, dynamic keyword updates, exemption cleanups, and geo summaries.</li>
+            <li><strong>Exemptions:</strong> Clears known exempt IPs from the blacklist prior to evaluation.</li>
+            <li><strong>404 Probing:</strong> Blocks IPs that generate at least 6 non-login 404 requests (e.g., dirbusting) if the non-login 404s exceed the login 404s.</li>
+        </ul>
+
+        <h3>Controls And AI Training</h3>
+        <ul>
+            <li>Threshold gates: <code>AIWAF_MIN_TRAIN_LOGS</code> (default: 50), <code>AIWAF_MIN_AI_LOGS</code> (default: 10000), <code>AIWAF_FORCE_AI_TRAINING</code>.</li>
+            <li><strong>Feature Vector (6 dimensions):</strong> Extracted per request for the Isolation Forest:
+                <ol>
+                    <li>Path length (<code>pathLen</code>).</li>
+                    <li>Keyword hits against static signatures (<code>kwHits</code>).</li>
+                    <li>Status bucket index (<code>statusIdx</code> mapping to 200, 403, 404, 500).</li>
+                    <li>Response time (<code>respTime</code>).</li>
+                    <li>Burst count (<code>burst</code>): requests from the same IP within a 10-second rolling window.</li>
+                    <li>Per-IP 404 count (<code>total404</code>).</li>
+                </ol>
+            </li>
+            <li><strong>Anomaly Evaluation:</strong> Fits the <code>IsolationForest</code> (100 trees, sample size 256). Identifies anomalous IPs (score > 0.5) and checks their behavior context. Blocks the IP only if it exceeds specific thresholds: average keyword hits &ge; 2, 404s &ge; 10, burst &ge; 15, or total requests &ge; 100. Saves the model to <code>model.json</code> with version metadata.</li>
+        </ul>
+        
+        <h3>Keyword Learning</h3>
+        <ul>
+            <li>Control: <code>AIWAF_ENABLE_KEYWORD_LEARNING</code> (default: true).</li>
+            <li>Extracts path tokens > 3 characters from 4xx/5xx requests that match a malicious context.</li>
+            <li><strong>Malicious Context Indicators:</strong> Includes path traversals (<code>../</code>), sensitive files (<code>.env</code>, <code>wp-admin</code>, <code>passwd</code>), command injection (<code>shell</code>, <code>eval</code>, <code>cmd</code>), XSS (<code>%3c%73%63%72%69%70%74</code>, <code>&lt;script</code>), or excessive 404 path length/depth.</li>
+            <li>Excludes known static keywords and <code>legitimate</code> tokens (e.g., <code>api</code>, <code>auth</code>, <code>login</code>, plus any from 2xx/3xx requests in the logs).</li>
+            <li>Adds the top occurrences (capped by <code>AIWAF_DYNAMIC_TOP_N</code>, default 10) to the <code>dynamicKeywordStore</code>.</li>
         </ul>
     </section>
 </main>
