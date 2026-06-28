@@ -54,7 +54,18 @@
     <h3 class="sidebar-title">JavaScript Docs</h3>
     <ul class="sidebar-nav">
         <li><a href="/docs/javascript">Overview</a></li>
-        <li><a href="/docs/javascript/setup">Setup Guide</a></li>
+        <li><a href="/docs/javascript/setup">Setup Guide</a>
+            <ul class="sidebar-subnav" style="list-style-type: none; padding-left: 1rem; margin-top: 0.5rem;">
+                <li><a href="/docs/javascript/setup/express">Express</a></li>
+                <li><a href="/docs/javascript/setup/fastify">Fastify</a></li>
+                <li><a href="/docs/javascript/setup/hapi">Hapi</a></li>
+                <li><a href="/docs/javascript/setup/koa">Koa</a></li>
+                <li><a href="/docs/javascript/setup/nestjs">NestJS</a></li>
+                <li><a href="/docs/javascript/setup/nextjs">Next.js</a></li>
+                <li><a href="/docs/javascript/setup/adonis">AdonisJS</a></li>
+                <li><a href="/docs/javascript/setup/sails">Sails</a></li>
+            </ul>
+</li>
         <li><a href="/docs/javascript/architecture" class="active">Architecture</a></li>
         <li><a href="/docs/javascript/operations">Operations</a></li>
     </ul>
@@ -192,6 +203,26 @@
             </li>
             <li><strong>Rule Compilation (<code>compileManifestToPathRules</code>):</strong> These categorized protections are natively compiled into <code>DISABLE</code> arrays and <code>RATE_LIMIT</code> override configurations that the <code>wafMiddleware.js</code> directly consumes on every request.</li>
         </ul>
+    </section>
+
+    <section class="section">
+        <h2>Deep Dive: Core Functions and Methods</h2>
+        <p>A reference of the core internal functions powering the Node.js AIWAF engine.</p>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Module / Class</th><th>Function / Method</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>wafMiddleware.js</code><br><strong>(Main Export)</strong></td><td><code>aiwaf(options)</code></td><td>Factory function that initializes the WAF middleware closure and returns the <code>evaluateRequest(req, res, next)</code> request handler.</td></tr>
+                    <tr><td><code>pathManifest.js</code><br><strong>(Manifest Generator)</strong></td><td><code>compileManifestToPathRules(manifest)</code></td><td>Converts the high-level AST abstractions into standard, runtime-optimized rules (e.g., explicitly disabling honeypots on paths classified as API).</td></tr>
+                    <tr><td><code>sourceAst.js</code><br><strong>(AST Parser)</strong></td><td><code>parseFileAST(filePath)</code></td><td>Utilizes <code>@babel/parser</code> to read the physical source code of Express/Fastify route controllers to infer HTTP methods and endpoints.</td></tr>
+                    <tr><td><code>rateLimiter.js</code><br><strong>RateLimiter</strong></td><td><code>checkLimit(ip, path)</code></td><td>Calculates standard sliding-window limits and extremely aggressive burst limits, interacting with Redis or in-memory LRU maps.</td></tr>
+                    <tr><td><code>isolationForest.js</code><br><strong>AnomalyDetector</strong></td><td><code>scoreVector(features)</code></td><td>Executes the machine learning prediction against the in-memory JSON artifact holding the 200 trees, outputting an anomaly float score.</td></tr>
+                    <tr><td><code>headerValidation.js</code><br><strong>HeaderPolicy</strong></td><td><code>calculateQualityScore(req)</code></td><td>Scores the incoming HTTP headers. Points are subtracted for missing standard browser headers or the presence of suspicious automation tool fingerprints.</td></tr>
+                </tbody>
+            </table>
+        </div>
     </section>
 
     <section class="section">

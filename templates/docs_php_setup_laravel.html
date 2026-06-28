@@ -56,7 +56,14 @@
     <h3 class="sidebar-title">PHP Docs</h3>
     <ul class="sidebar-nav">
         <li><a href="/docs/php">Overview</a></li>
-        <li><a href="/docs/php/setup" class="active">Setup Guide</a></li>
+        <li><a href="/docs/php/setup">Setup Guide</a>
+            <ul style="list-style-type: none; padding-left: 1rem; margin-top: 0.5rem;">
+                <li><a href="/docs/php/setup/plain" class="">Plain PHP</a></li>
+                <li><a href="/docs/php/setup/laravel" class="active">Laravel</a></li>
+                <li><a href="/docs/php/setup/symfony" class="">Symfony</a></li>
+                <li><a href="/docs/php/setup/wordpress" class="">WordPress</a></li>
+            </ul>
+</li>
         <li><a href="/docs/php/architecture">Architecture</a></li>
         <li><a href="/docs/php/operations">Operations</a></li>
     </ul>
@@ -77,7 +84,7 @@
             <li>Training workflow and verification.</li>
             <li>Troubleshooting and validation playbooks.</li>
         </ul>
-        <p>If you need architecture internals, use <code>PROJECT_DETAILED_REFERENCE.md</code>.</p>
+        <p></p>
     </section>
 
     <section class="section">
@@ -126,40 +133,19 @@ php setup.php</code></pre>
     </section>
 
     <section class="section">
-        <h2>5. Plain PHP Setup (Primary Path)</h2>
-        <h3>5.1 Basic wiring</h3>
-        <pre><code>&lt;?php
-declare(strict_types=1);
-
-require_once __DIR__ . '/vendor/autoload.php';
-
-use AIWAF\AIWAF;
-use AIWAF\RateLimiter;
-use AIWAF\Adapters\InMemoryAdapter;
-
-RateLimiter::initAdapter(new InMemoryAdapter());
-AIWAF::protect();</code></pre>
-        <h3>5.2 Middleware/order guidance</h3>
-        <ul>
-            <li>Run AIWAF as early as possible in request bootstrap.</li>
-            <li>Keep known-safe endpoints in exemption lists.</li>
-            <li>Ensure honeypot checks can access expected POST fields.</li>
-        </ul>
-        <h3>5.3 Baseline production env</h3>
-        <pre><code>AIWAF_HEADER_VALIDATION_ENABLED=true
-AIWAF_HEADER_BLOCK_SUSPICIOUS=true
-AIWAF_HEADER_QUALITY_THRESHOLD=3
-AIWAF_RATE_LIMITING_ENABLED=true
-AIWAF_RATE_MAX_REQUESTS=60
-AIWAF_RATE_WINDOW_SECONDS=60
-AIWAF_IP_KEYWORD_BLOCK_ENABLED=true
-AIWAF_HONEYPOT_ENABLED=true
-AIWAF_AI_ANOMALY_ENABLED=true</code></pre>
+        <h2>5. Auto Middleware & Path Manifest Setup</h2>
+        <p>AIWAF-PHP can automatically tune your middleware protections based on your application's routing structure. By generating a Path Manifest, AIWAF categorizes your endpoints (e.g., API vs HTML Form) and automatically disables unnecessary middlewares (like Honeypots for APIs) and enforces strict rate limits where appropriate.</p>
+        <pre><code># Generate the path manifest automatically
+php cli/detect_and_train.php --generate-manifest</code></pre>
+        <p>At startup, AIWAF reads the manifest from <code>.aiwaf/paths.json</code> to auto-configure the execution chain.</p>
+        <p>If you prefer fine-grained manual control over your middleware stack rather than relying on auto-generation, proceed to the framework-specific "All Middlewares" manual setup sections below.</p>
     </section>
 
+    
+
     <section class="section">
-        <h2>6. Framework Integration Patterns</h2>
-        <h3>6.1 Laravel</h3>
+        <h2>6. Framework Setup (All Middlewares)</h2>
+        <h3> Laravel</h3>
         <p>Use patterns under <code>examples/laravel/</code> (service provider + train command).</p>
         <pre><code>AIWAF::setPathExistsResolver(function (string $path): bool {
     $candidate = '/' . ltrim((string) strtok($path, '?'), '/');
@@ -171,26 +157,11 @@ AIWAF_AI_ANOMALY_ENABLED=true</code></pre>
     }
     return false;
 });</code></pre>
-        <h3>6.2 Symfony</h3>
-        <p>Use references in <code>examples/symfony/</code>.</p>
-        <pre><code>AIWAF::setPathExistsResolver(function (string $path) use ($router): bool {
-    $candidate = '/' . ltrim((string) strtok($path, '?'), '/');
-    foreach ($router->getRouteCollection() as $route) {
-        $routePath = (string) $route->getPath();
-        if ($routePath !== '' && ($candidate === $routePath || strpos($candidate, rtrim($routePath, '/') . '/') === 0)) {
-            return true;
-        }
-    }
-    return false;
-});</code></pre>
-        <h3>6.3 WordPress</h3>
-        <p>Use integration assets in <code>examples/wordpress/</code>, including MU-plugin bootstrap and WP-CLI training command.</p>
-        <h3>6.4 Generic custom framework</h3>
-        <p>Provide <code>setPathExistsResolver</code> callback to align unknown-route anomaly behavior with real route registry.</p>
+        
     </section>
 
     <section class="section">
-        <h2>7. Storage Setup and Backend Choices</h2>
+        <h2>8. Storage Setup and Backend Choices</h2>
         <h3>7.1 Default behavior</h3>
         <ul>
             <li>Core runtime artifacts are file-backed under <code>resources/</code>.</li>
@@ -213,7 +184,7 @@ AIWAF_AI_ANOMALY_ENABLED=true</code></pre>
     </section>
 
     <section class="section">
-        <h2>8. Training Setup</h2>
+        <h2>9. Training Setup</h2>
         <h3>8.1 Configure training log source</h3>
         <pre><code># Linux/macOS
 export AIWAF_ACCESS_LOG=/var/log/nginx/access.log
@@ -237,7 +208,7 @@ AIWAF_KNOWN_PATHS=/app,/api,/wp-json</code></pre>
     </section>
 
     <section class="section">
-        <h2>9. Optional GeoIP Enablement</h2>
+        <h2>10. Optional GeoIP Enablement</h2>
         <pre><code>AIWAF_GEO_BLOCK_ENABLED=true
 AIWAF_GEO_BLOCK_COUNTRIES=CN,RU
 # or allowlist mode
@@ -246,7 +217,7 @@ AIWAF_GEO_ALLOW_COUNTRIES=US,CA</code></pre>
     </section>
 
     <section class="section">
-        <h2>10. Optional Redis/APCu Setup</h2>
+        <h2>11. Optional Redis/APCu Setup</h2>
         <h3>10.1 Redis adapter example</h3>
         <pre><code>$redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
@@ -256,7 +227,7 @@ RateLimiter::initAdapter(new RedisAdapter($redis));</code></pre>
     </section>
 
     <section class="section">
-        <h2>11. Production Baseline Checklist</h2>
+        <h2>12. Production Baseline Checklist</h2>
         <ul class="checklist">
             <li>[ ] Package installed and app starts with AIWAF enabled.</li>
             <li>[ ] <code>php setup.php</code> executed in target environment.</li>
@@ -270,7 +241,7 @@ RateLimiter::initAdapter(new RedisAdapter($redis));</code></pre>
     </section>
 
     <section class="section">
-        <h2>12. Validation Playbook</h2>
+        <h2>13. Validation Playbook</h2>
         <ol>
             <li>Smoke checks: health/static pass, suspicious probe blocks.</li>
             <li>Rate-limit checks: burst traffic transitions to <code>429</code> and/or IP block.</li>
@@ -280,7 +251,7 @@ RateLimiter::initAdapter(new RedisAdapter($redis));</code></pre>
     </section>
 
     <section class="section">
-        <h2>13. Troubleshooting</h2>
+        <h2>14. Troubleshooting</h2>
         <ul>
             <li>Training skipped: verify log path/readability and thresholds.</li>
             <li>Too many false positives: tune exemptions/known paths and anomaly threshold.</li>
@@ -291,7 +262,7 @@ RateLimiter::initAdapter(new RedisAdapter($redis));</code></pre>
     </section>
 
     <section class="section">
-        <h2>14. Contributor Setup (Repository)</h2>
+        <h2>15. Contributor Setup (Repository)</h2>
         <pre><code>composer install
 composer test
 
@@ -300,7 +271,7 @@ php cli/detect_and_train.php
 composer run cover-everything
 composer run test-adapters-matrix
 composer run validate-all</code></pre>
-        <p>Suggested docs: <code>README.md</code>, <code>PROJECT_DETAILED_REFERENCE.md</code>.</p>
+        <p>Suggested docs: <code>README.md</code>.</p>
     </section>
 </main>
 </div></div>

@@ -53,7 +53,12 @@
     <h3 class="sidebar-title">Java Docs</h3>
     <ul class="sidebar-nav">
         <li><a href="/docs/java">Overview</a></li>
-        <li><a href="/docs/java/setup">Setup Guide</a></li>
+        <li><a href="/docs/java/setup">Setup Guide</a>
+            <ul class="sidebar-subnav" style="list-style-type: none; padding-left: 1rem; margin-top: 0.5rem;">
+                <li><a href="/docs/java/setup/servlet">Servlet (Core)</a></li>
+                <li><a href="/docs/java/setup/spring">Spring Boot</a></li>
+            </ul>
+</li>
         <li><a href="/docs/java/architecture" class="active">Architecture</a></li>
         <li><a href="/docs/java/operations">Operations</a></li>
     </ul>
@@ -97,6 +102,26 @@
                 </ul>
             </li>
         </ul>
+    </section>
+
+    <section class="section">
+        <h2>Deep Dive: Core Functions and Methods</h2>
+        <p>A reference of the core internal functions powering the Java AIWAF engine.</p>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Module / Class</th><th>Function / Method</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>AiwafEngine.java</code><br><strong>AiwafEngine</strong></td><td><code>evaluate(HttpRequest req)</code></td><td>The core gate. Evaluates the incoming request against all configured middleware tiers, returning an <code>AiwafDecision</code> (allow/deny + reason).</td></tr>
+                    <tr><td><code>PathManifestCore.java</code><br><strong>PathManifestCore</strong></td><td><code>scanControllers(String pkg)</code></td><td>Utilizes Java Reflection to crawl the specified package, extracting `@RequestMapping`, `@GetMapping`, and custom annotations.</td></tr>
+                    <tr><td><code>ApiDetectionCore.java</code><br><strong>ApiDetectionCore</strong></td><td><code>analyzeMethod(Method m)</code></td><td>Inspects method return types (e.g., <code>ResponseEntity<?></code> vs <code>ModelAndView</code>) and `@ResponseBody` presence to infer API vs Form intents.</td></tr>
+                    <tr><td><code>AiwafFilter.java</code><br><strong>AiwafFilter</strong></td><td><code>doFilterInternal(...)</code></td><td>Standard Spring <code>OncePerRequestFilter</code> implementation that wraps <code>AiwafEngine.evaluate()</code> and returns 403/429 JSON payloads on rejection.</td></tr>
+                    <tr><td><code>AiwafConfig.java</code><br><strong>AiwafConfig</strong></td><td><code>loadFromProperties(Properties p)</code></td><td>Hydrates the runtime configuration, mapping legacy <code>AIWAF_SETTINGS</code> or environment variables to typed Engine limits.</td></tr>
+                    <tr><td><code>IsolationForestModel.java</code><br><strong>IsolationForestModel</strong></td><td><code>predict(double[] features)</code></td><td>Java port of the Isolation Forest evaluation, computing the average path length of the feature array across the 200 loaded trees.</td></tr>
+                </tbody>
+            </table>
+        </div>
     </section>
 
     <section class="section">

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#2d6a4f,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.09); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        pre { background: rgba(0,0,0,.5); border: 1px solid rgba(78,205,196,.3); border-radius: 10px; padding: .85rem; overflow-x: auto; }
+        .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: .8rem; }
+        .checklist li { list-style: none; padding-left: 0; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+    </style>
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">Python Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="/docs/python">Overview</a></li>
+        <li><a href="/docs/python/setup">Setup Guide</a>
+            <ul style="list-style-type: none; padding-left: 1rem; margin-top: 0.5rem;">
+                <li><a href="/docs/python/setup/django" class="">Django</a></li>
+                <li><a href="/docs/python/setup/flask" class="">Flask</a></li>
+                <li><a href="/docs/python/setup/fastapi" class="active">FastAPI</a></li>
+            </ul>
+</li>
+        <li><a href="/docs/python/architecture">Architecture</a></li>
+        <li><a href="/docs/python/adapters">Adapters</a></li>
+        <li><a href="/docs/python/operations">Operations</a></li>
+    </ul>
+</aside>
+<main class="content">
+    <div class="badge">Comprehensive Setup</div>
+    <h1 class="page-title">AIWAF End-To-End Setup Guide</h1>
+
+    <section class="section">
+        <h2>1. What This Guide Is</h2>
+        <p>End-to-end setup manual for running AIWAF in real projects across Django, Flask, and FastAPI.</p>
+        <ul>
+            <li>Environment prerequisites</li>
+            <li>Installation paths and configuration baselines</li>
+            <li>Storage/model backend options</li>
+            <li>Training, Rust enablement, validation, troubleshooting</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>2. Prerequisites</h2>
+        <h3>Runtime</h3>
+        <ul>
+            <li>Python <code>3.8+</code>, <code>pip</code></li>
+            <li>Running app in Django, Flask, or FastAPI</li>
+        </ul>
+        <h3>Recommended For Production</h3>
+        <ul>
+            <li>Access logs from Nginx/Apache/Gunicorn/Uvicorn</li>
+            <li>Persistent filesystem path for AIWAF data/logs</li>
+            <li>Scheduled training (daily minimum for internet-facing apps)</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>3. Installation Options</h2>
+        <pre><code>pip install aiwaf
+pip install "aiwaf[django]"
+pip install "aiwaf[flask]"
+pip install "aiwaf[fastapi]"
+pip install "aiwaf[rust]"  # optional</code></pre>
+        <p>Rust mode is optional. AIWAF falls back to Python logic automatically.</p>
+    </section>
+
+    <section class="section">
+        <h2>4. Shared Configuration Concepts</h2>
+        <p>AIWAF uses flat <code>AIWAF_*</code> keys.</p>
+        <div class="two-col">
+            <ul>
+                <li><code>AIWAF_ACCESS_LOG</code></li>
+                <li><code>AIWAF_DISABLE_AI</code></li>
+                <li><code>AIWAF_MIN_AI_LOGS</code></li>
+                <li><code>AIWAF_MIN_TRAIN_LOGS</code></li>
+                <li><code>AIWAF_FORCE_AI_TRAINING</code></li>
+                <li><code>AIWAF_USE_RUST</code></li>
+            </ul>
+            <ul>
+                <li><code>AIWAF_RATE_WINDOW</code>, <code>AIWAF_RATE_MAX</code>, <code>AIWAF_RATE_FLOOD</code></li>
+                <li><code>AIWAF_REQUIRED_HEADERS</code>, <code>AIWAF_HEADER_QUALITY_MIN_SCORE</code></li>
+                <li><code>AIWAF_EXEMPT_PATHS</code>, <code>AIWAF_EXEMPT_KEYWORDS</code>, <code>AIWAF_ALLOWED_PATH_KEYWORDS</code></li>
+                <li><code>AIWAF_GEO_BLOCK_ENABLED</code>, <code>AIWAF_GEO_BLOCK_COUNTRIES</code>, <code>AIWAF_GEO_ALLOW_COUNTRIES</code></li>
+            </ul>
+        </div>
+        <h3>Django Model Artifact Storage</h3>
+        <ul>
+            <li><code>AIWAF_MODEL_STORAGE = "file" | "db" | "cache"</code></li>
+            <li><code>AIWAF_MODEL_PATH</code></li>
+            <li><code>AIWAF_MODEL_STORAGE_FALLBACK</code></li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>5. Auto Middleware & Path Manifest Setup</h2>
+        <p>AIWAF can automatically tune your middleware protections based on your application's routing structure. By generating a Path Manifest, AIWAF categorizes your endpoints (e.g., API vs HTML Form) and automatically disables unnecessary middlewares (like Honeypots for APIs) and enforces strict rate limits where appropriate.</p>
+        <p>At startup, AIWAF reads the manifest from <code>.aiwaf/paths.json</code> (or via the <code>path_rules</code> configuration) to auto-configure the execution chain.</p>
+        <p>If you prefer fine-grained manual control over your middleware stack rather than relying on auto-generation, proceed to the framework-specific "All Middlewares" manual setup sections below.</p>
+    </section>
+
+    
+
+    
+
+    <section class="section">
+        <h2>8. FastAPI Setup (All Middlewares)</h2>
+        <h3>Install + Basic Wiring</h3>
+        <pre><code>pip install "aiwaf[fastapi]"
+
+from fastapi import FastAPI
+from aiwaf.fast import AIWAF
+
+app = FastAPI()
+aiwaf = AIWAF(
+    app,
+    storage={"backend": "file", "file_path": "aiwaf_data.json"},
+    rate_limiting={"enabled": True, "max_requests": 20, "window_seconds": 10, "flood_threshold": 40},
+    header_validation={"enabled": True, "quality_threshold": 3},
+    geo_block={"enabled": False},
+)</code></pre>
+        <h3>Path Rules + Decorators + CLI</h3>
+        <pre><code>aiwaf = AIWAF(
+    app,
+    path_rules=[
+        {"PREFIX": "/health", "DISABLE": ["rate_limit", "ai_anomaly", "header_validation"]},
+        {"PREFIX": "/api/heavy", "RATE_LIMIT": {"WINDOW": 10, "MAX": 60, "FLOOD": 120}},
+    ],
+)
+
+from aiwaf.fast import aiwaf_exempt
+
+@app.get("/health")
+@aiwaf_exempt
+async def health():
+    return {"ok": True}
+
+# CLI
+aiwaf fast --help</code></pre>
+    </section>
+
+    <section class="section">
+        <h2>9-11. Storage, Training, Rust</h2>
+        <h3>Runtime Storage Backends</h3>
+        <ul>
+            <li><code>memory</code>: local non-persistent tests</li>
+            <li><code>file</code>: simple persistent single-node runtime</li>
+            <li><code>csv</code>: human-readable, lock-aware utilities</li>
+            <li><code>db</code>: SQLite-backed persistent key-value runtime</li>
+        </ul>
+        <h3>Multi-Instance Note</h3>
+        <p>For horizontal scaling, use shared/centralized state or a custom storage integration so block/exemption decisions stay consistent.</p>
+        <h3>Rust Enablement</h3>
+        <pre><code>pip install "aiwaf[rust]"
+# then set
+AIWAF_USE_RUST = True</code></pre>
+    </section>
+
+    <section class="section">
+        <h2>12-13. Production Checklist And Validation</h2>
+        <ul class="checklist">
+            <li>[ ] Framework extra installed.</li>
+            <li>[ ] Access logs configured and readable/writable.</li>
+            <li>[ ] Middleware order reviewed.</li>
+            <li>[ ] Exempt paths configured for health/static/webhooks.</li>
+            <li>[ ] Rate and header policies tuned.</li>
+            <li>[ ] Training scheduled.</li>
+            <li>[ ] Geo-blocking intentionally configured (or disabled).</li>
+            <li>[ ] Observability and log rotation in place.</li>
+            <li>[ ] Verified block and exemption behavior in staging.</li>
+        </ul>
+        <h3>Validation Playbook</h3>
+        <ol>
+            <li>Smoke: normal/static/health requests should pass.</li>
+            <li>Rate burst: observe pass then <code>429</code>, optionally <code>403</code> flood block.</li>
+            <li>Header check: low-header curl should trigger header policy behavior.</li>
+            <li>Keyword/anomaly check: malicious-style probe should be logged/blocked in staging.</li>
+        </ol>
+    </section>
+
+    <section class="section">
+        <h2>14-17. Troubleshooting, Contributor Setup, Minimal Snippets</h2>
+        <h3>Troubleshooting Highlights</h3>
+        <ul>
+            <li>Django model app errors: ensure <code>"aiwaf.django"</code> in <code>INSTALLED_APPS</code>, rerun migrations.</li>
+            <li>No training: verify access-log path, parseable format, and thresholds.</li>
+            <li>False positives: tune exemptions/header score/path rules/allowed keywords.</li>
+            <li>Missing persistence: validate backend mode and writable dirs.</li>
+            <li>Rust inactive: check <code>pip show aiwaf-rust</code> and <code>AIWAF_USE_RUST=True</code>.</li>
+        </ul>
+        <h3>Contributor Local Setup</h3>
+        <pre><code>python -m venv .venv
+source .venv/bin/activate
+pip install -U pip
+pip install -e .
+pip install -e ".[django,flask,fastapi,rust]"
+pytest -q
+pytest -q -m django
+pytest -q -m flask
+pytest -q -m fast</code></pre>
+        <h3>Quick Minimal Config Snippets</h3>
+        <pre><code># Django
+INSTALLED_APPS += ["aiwaf.django"]
+MIDDLEWARE += [
+    "aiwaf.django.middleware.HeaderValidationMiddleware",
+    "aiwaf.django.middleware.IPAndKeywordBlockMiddleware",
+]
+AIWAF_ACCESS_LOG = "/var/log/nginx/access.log"
+
+# Flask
+app.config["AIWAF_USE_CSV"] = True
+import aiwaf.flask as aiwaf
+aiwaf.register_aiwaf_middlewares(app, middlewares=["ip_keyword_block", "rate_limit"])
+
+# FastAPI
+from aiwaf.fast import AIWAF
+aiwaf = AIWAF(app)</code></pre>
+        <h3>Related Docs</h3>
+        <ul>
+            <li><code>README.md</code></li>
+            <li><code>INSTALLATION.md</code></li>
+            <li><code>AIWAF_SETTINGS_GUIDE.py</code></li>
+            
+            <li><code>aiwaf/core/KEYWORD_FALLBACK_DETAILED.md</code></li>
+        </ul>
+    </section>
+</main>
+</div></div>
+</body>
+</html>

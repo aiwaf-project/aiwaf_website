@@ -38,18 +38,7 @@ app.config['AIWAF_MIN_FORM_TIME'] = 2.0  # Minimum form submission time
 
 from aiwaf.flask import AIWAF
 
-aiwaf = AIWAF(
-    app,
-    middlewares=[
-        "logging",
-        "header_validation",
-        "ip_keyword_block",
-        "rate_limit",
-        "geo_block",
-        "ai_anomaly",
-        "uuid_tamper",
-    ],
-)
+aiwaf = AIWAF(app)
 
 
 @app.context_processor
@@ -60,20 +49,32 @@ def inject_seo_defaults():
         "/": "AIWAF Documentation | Python, JavaScript, PHP, Java, and Rust Security Guides",
         "/docs": "AIWAF Documentation Hub | Comprehensive Deep Dives for All Languages",
         "/docs/python": "AIWAF Python Deep Dive | Architecture and Operations",
-        "/docs/python/setup": "AIWAF Python Setup Guide | End-to-End Installation and Validation",
-        "/docs/python/architecture": "AIWAF Python Architecture | Core Modules and Runtime Flow",
-        "/docs/python/adapters": "AIWAF Python Adapters | Django, Flask, FastAPI Integration",
-        "/docs/python/operations": "AIWAF Python Operations | CLI, Testing, Packaging",
-        "/docs/javascript": "AIWAF-JS Deep Dive | Node.js Security Middleware Reference",
+        "/docs/python/setup/django": "AIWAF Django Setup Guide | End-to-End Installation",
+        "/docs/python/setup/flask": "AIWAF Flask Setup Guide | End-to-End Installation",
+        "/docs/python/setup/fastapi": "AIWAF FastAPI Setup Guide | End-to-End Installation",
         "/docs/javascript/setup": "AIWAF-JS Setup Guide | Node.js End-to-End Integration",
+        "/docs/javascript/setup/express": "AIWAF Express Setup Guide | Node.js Integration",
+        "/docs/javascript/setup/fastify": "AIWAF Fastify Setup Guide | Node.js Integration",
+        "/docs/javascript/setup/hapi": "AIWAF Hapi Setup Guide | Node.js Integration",
+        "/docs/javascript/setup/koa": "AIWAF Koa Setup Guide | Node.js Integration",
+        "/docs/javascript/setup/nestjs": "AIWAF NestJS Setup Guide | Node.js Integration",
+        "/docs/javascript/setup/nextjs": "AIWAF Next.js Setup Guide | Node.js Integration",
+        "/docs/javascript/setup/adonis": "AIWAF AdonisJS Setup Guide | Node.js Integration",
+        "/docs/javascript/setup/sails": "AIWAF Sails Setup Guide | Node.js Integration",
         "/docs/javascript/architecture": "AIWAF-JS Architecture | Middleware Pipeline and Adapters",
         "/docs/javascript/operations": "AIWAF-JS Operations | CLI, Config, Testing, Packaging",
         "/docs/php": "AIWAF-PHP Deep Dive | PHP Security Integration Reference",
         "/docs/php/setup": "AIWAF-PHP Setup Guide | End-to-End PHP Integration",
+        "/docs/php/setup/plain": "AIWAF Plain PHP Setup Guide | PHP Integration",
+        "/docs/php/setup/laravel": "AIWAF Laravel Setup Guide | PHP Integration",
+        "/docs/php/setup/symfony": "AIWAF Symfony Setup Guide | PHP Integration",
+        "/docs/php/setup/wordpress": "AIWAF WordPress Setup Guide | PHP Integration",
         "/docs/php/architecture": "AIWAF-PHP Architecture | Runtime Flow and Core Modules",
         "/docs/php/operations": "AIWAF-PHP Operations | Config, Testing, Packaging",
         "/docs/java": "AIWAF-Java Deep Dive | Spring and Servlet Security Reference",
         "/docs/java/setup": "AIWAF-Java Setup Guide | End-to-End Java Integration",
+        "/docs/java/setup/servlet": "AIWAF Java Servlet Setup Guide | Core Integration",
+        "/docs/java/setup/spring": "AIWAF Spring Setup Guide | Java Integration",
         "/docs/java/architecture": "AIWAF-Java Architecture | Request Pipeline and Core Modules",
         "/docs/java/operations": "AIWAF-Java Operations | CLI, Config, Testing, Packaging",
         "/docs/rust": "aiwaf-rust Guide | PyO3 and WASM Accelerator Overview",
@@ -84,20 +85,37 @@ def inject_seo_defaults():
         "/": "Official AIWAF documentation for Python, JavaScript, PHP, Java, and Rust integrations, setup guides, architecture, and operational best practices.",
         "/docs": "Browse AIWAF deep-dive documentation for all implementations, including setup, architecture, and operations.",
         "/docs/python": "Comprehensive Python reference for AIWAF covering architecture, adapters, storage, training lifecycle, and runtime behavior.",
-        "/docs/python/setup": "End-to-end setup guide for AIWAF in Django, Flask, and FastAPI with production-ready configuration and troubleshooting.",
+        "/docs/python/setup": "End-to-end setup guide for AIWAF in Python with production-ready configuration and troubleshooting.",
+        "/docs/python/setup/django": "End-to-end setup guide for AIWAF in Django with production-ready configuration and troubleshooting.",
+        "/docs/python/setup/flask": "End-to-end setup guide for AIWAF in Flask with production-ready configuration and troubleshooting.",
+        "/docs/python/setup/fastapi": "End-to-end setup guide for AIWAF in FastAPI with production-ready configuration and troubleshooting.",
         "/docs/python/architecture": "Detailed architecture guide for AIWAF Python core modules, storage primitives, training pipeline, and security controls.",
         "/docs/python/adapters": "Framework execution details for AIWAF Python adapters across Django, Flask, and FastAPI.",
         "/docs/python/operations": "AIWAF Python operational guide with CLI, testing strategy, release surface, and production checklists.",
         "/docs/javascript": "Comprehensive Node.js reference for aiwaf-js covering middleware pipeline, framework adapters, and core runtime behavior.",
-        "/docs/javascript/setup": "End-to-end setup guide for aiwaf-js across Express, Fastify, Hapi, Koa, NestJS, Next.js, AdonisJS, and Sails.",
+        "/docs/javascript/setup": "End-to-end setup guide for aiwaf-js across all Node frameworks.",
+        "/docs/javascript/setup/express": "End-to-end setup guide for aiwaf-js in Express.",
+        "/docs/javascript/setup/fastify": "End-to-end setup guide for aiwaf-js in Fastify.",
+        "/docs/javascript/setup/hapi": "End-to-end setup guide for aiwaf-js in Hapi.",
+        "/docs/javascript/setup/koa": "End-to-end setup guide for aiwaf-js in Koa.",
+        "/docs/javascript/setup/nestjs": "End-to-end setup guide for aiwaf-js in NestJS.",
+        "/docs/javascript/setup/nextjs": "End-to-end setup guide for aiwaf-js in Next.js.",
+        "/docs/javascript/setup/adonis": "End-to-end setup guide for aiwaf-js in AdonisJS.",
+        "/docs/javascript/setup/sails": "End-to-end setup guide for aiwaf-js in Sails.",
         "/docs/javascript/architecture": "aiwaf-js architecture guide covering request flow, adapters, storage strategy, and model training lifecycle.",
         "/docs/javascript/operations": "aiwaf-js operations guide for CLI commands, AIWAF_* config, testing workflow, packaging, and operational notes.",
         "/docs/php": "Comprehensive PHP reference for aiwaf-php covering integration patterns, configuration model, runtime artifacts, and training workflow.",
-        "/docs/php/setup": "End-to-end setup guide for aiwaf-php across plain PHP, Laravel, Symfony, and WordPress-style bootstraps.",
+        "/docs/php/setup": "End-to-end setup guide for aiwaf-php across plain PHP and frameworks.",
+        "/docs/php/setup/plain": "End-to-end setup guide for aiwaf-php for Plain PHP.",
+        "/docs/php/setup/laravel": "End-to-end setup guide for aiwaf-php for Laravel.",
+        "/docs/php/setup/symfony": "End-to-end setup guide for aiwaf-php for Symfony.",
+        "/docs/php/setup/wordpress": "End-to-end setup guide for aiwaf-php for WordPress.",
         "/docs/php/architecture": "Deep architecture reference for aiwaf-php including protect() flow, module responsibilities, persistence, and training lifecycle.",
         "/docs/php/operations": "Operational guide for aiwaf-php covering scripts, configuration layering, testing commands, packaging, and deployment notes.",
         "/docs/java": "Comprehensive Java reference for aiwaf-java covering Spring/Servlet integration, configuration model, runtime stores, and request pipeline behavior.",
-        "/docs/java/setup": "End-to-end setup guide for aiwaf-java with Maven install, Spring/Servlet wiring, runtime storage setup, and validation steps.",
+        "/docs/java/setup": "End-to-end setup guide for aiwaf-java with Maven install.",
+        "/docs/java/setup/servlet": "End-to-end setup guide for aiwaf-java with Servlet integration.",
+        "/docs/java/setup/spring": "End-to-end setup guide for aiwaf-java with Spring Boot integration.",
         "/docs/java/architecture": "Deep architecture reference for aiwaf-java including AiwafEngine flow, module responsibilities, path-rule behavior, and runtime layering.",
         "/docs/java/operations": "Operational guide for aiwaf-java covering CLI commands, AiwafConfig controls, test workflows, and production hardening notes.",
         "/docs/rust": "End-to-end aiwaf-rust guide for Rust core, PyO3 Python module, and WASM package workflows.",
@@ -158,19 +176,36 @@ def sitemap():
         "/docs",
         "/docs/python",
         "/docs/python/setup",
+        "/docs/python/setup/django",
+        "/docs/python/setup/flask",
+        "/docs/python/setup/fastapi",
         "/docs/python/architecture",
         "/docs/python/adapters",
         "/docs/python/operations",
         "/docs/javascript",
         "/docs/javascript/setup",
+        "/docs/javascript/setup/express",
+        "/docs/javascript/setup/fastify",
+        "/docs/javascript/setup/hapi",
+        "/docs/javascript/setup/koa",
+        "/docs/javascript/setup/nestjs",
+        "/docs/javascript/setup/nextjs",
+        "/docs/javascript/setup/adonis",
+        "/docs/javascript/setup/sails",
         "/docs/javascript/architecture",
         "/docs/javascript/operations",
         "/docs/php",
         "/docs/php/setup",
+        "/docs/php/setup/plain",
+        "/docs/php/setup/laravel",
+        "/docs/php/setup/symfony",
+        "/docs/php/setup/wordpress",
         "/docs/php/architecture",
         "/docs/php/operations",
         "/docs/java",
         "/docs/java/setup",
+        "/docs/java/setup/servlet",
+        "/docs/java/setup/spring",
         "/docs/java/architecture",
         "/docs/java/operations",
         "/docs/rust",
@@ -207,15 +242,34 @@ def framework_docs(framework):
 @app.route('/docs/<framework>/<page>')
 def doc_page(framework, page):
     """Specific documentation pages"""
+    # Legacy framework redirects
     if framework in {'django', 'flask', 'fastapi', 'fast'}:
         if page in {'installation', 'middleware', 'commands', 'setup'}:
-            return redirect('/docs/python/setup', code=302)
+            fw = 'fastapi' if framework == 'fast' else framework
+            return redirect(f'/docs/python/setup/{fw}', code=302)
         if page in {'architecture', 'reference'}:
             return redirect('/docs/python/architecture', code=302)
         if page in {'operations', 'cli', 'testing'}:
             return redirect('/docs/python/operations', code=302)
         return redirect('/docs/python/adapters', code=302)
+        
+    # Setup page redirects to primary framework
+    if page == 'setup':
+        if framework == 'python':
+            return redirect('/docs/python/setup/django', code=302)
+        elif framework == 'javascript':
+            return redirect('/docs/javascript/setup/express', code=302)
+        elif framework == 'php':
+            return redirect('/docs/php/setup/plain', code=302)
+        elif framework == 'java':
+            return redirect('/docs/java/setup/servlet', code=302)
+            
     return render_template(f'docs_{framework}_{page}.html')
+
+@app.route('/docs/<language>/setup/<subframework>')
+def doc_setup_subframework(language, subframework):
+    """Sub-framework specific setup pages"""
+    return render_template(f'docs_{language}_setup_{subframework}.html')
 
 @app.route('/aiwaf/admin')
 def aiwaf_admin():

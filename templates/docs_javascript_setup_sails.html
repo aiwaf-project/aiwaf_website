@@ -56,7 +56,18 @@
     <h3 class="sidebar-title">JavaScript Docs</h3>
     <ul class="sidebar-nav">
         <li><a href="/docs/javascript">Overview</a></li>
-        <li><a href="/docs/javascript/setup" class="active">Setup Guide</a></li>
+        <li><a href="/docs/javascript/setup">Setup Guide</a>
+            <ul style="list-style-type: none; padding-left: 1rem; margin-top: 0.5rem;">
+                <li><a href="/docs/javascript/setup/express" class="">Express</a></li>
+                <li><a href="/docs/javascript/setup/fastify" class="">Fastify</a></li>
+                <li><a href="/docs/javascript/setup/hapi" class="">Hapi</a></li>
+                <li><a href="/docs/javascript/setup/koa" class="">Koa</a></li>
+                <li><a href="/docs/javascript/setup/nestjs" class="">NestJS</a></li>
+                <li><a href="/docs/javascript/setup/nextjs" class="">Next.js</a></li>
+                <li><a href="/docs/javascript/setup/adonis" class="">AdonisJS</a></li>
+                <li><a href="/docs/javascript/setup/sails" class="active">Sails</a></li>
+            </ul>
+</li>
         <li><a href="/docs/javascript/architecture">Architecture</a></li>
         <li><a href="/docs/javascript/operations">Operations</a></li>
     </ul>
@@ -67,7 +78,7 @@
 
     <section class="section">
         <h2>1. What This Guide Is</h2>
-        <p>End-to-end setup manual for running <code>aiwaf-js</code> in production Node.js applications. For internals, use <code>PROJECT_DETAILED_REFERENCE.md</code>.</p>
+        <p>End-to-end setup manual for running <code>aiwaf-js</code> in production Node.js applications.</p>
         <ul>
             <li>Prerequisites and installation for app usage and repo development.</li>
             <li>Framework integration for Express, Fastify, Hapi, Koa, NestJS, Next.js, AdonisJS, and Sails.</li>
@@ -126,86 +137,25 @@ npm install maxmind</code></pre>
     </section>
 
     <section class="section">
-        <h2>5. Express Setup (Primary Path)</h2>
-        <h3>Basic Wiring</h3>
-        <pre><code>const express = require('express');
-const aiwaf = require('aiwaf-js');
+        <h2>5. Auto Middleware & Path Manifest Setup</h2>
+        <p>AIWAF-JS can automatically tune your middleware protections based on your application's routing structure. By generating a Path Manifest, AIWAF categorizes your endpoints (e.g., API vs HTML Form) and automatically disables unnecessary middlewares (like Honeypots for APIs) and enforces strict rate limits where appropriate.</p>
+        <pre><code># Generate the path manifest automatically
+npm run aiwaf -- generate-manifest</code></pre>
+        <p>At startup, AIWAF reads the manifest from <code>.aiwaf/paths.json</code> to auto-configure the execution chain.</p>
+        <p>If you prefer fine-grained manual control over your middleware stack rather than relying on auto-generation, proceed to the framework-specific "All Middlewares" manual setup sections below.</p>
+    </section>
 
-const app = express();
-app.use(express.json());
+    
 
-app.use(aiwaf({
-  staticKeywords: ['.php', '.env', '.git'],
-  dynamicTopN: 10,
-  WINDOW_SEC: 10,
-  MAX_REQ: 20,
-  FLOOD_REQ: 40,
-  HONEYPOT_FIELD: 'hp_field',
-  AIWAF_HEADER_VALIDATION: true,
-  AIWAF_METHOD_POLICY_ENABLED: true,
-  AIWAF_ALLOWED_METHODS: ['GET', 'POST', 'HEAD', 'OPTIONS']
-}));
+    <section class="section">
+        <h2>6. Sails Setup (All Middlewares)</h2>
+        <h3>Sails</h3>
+<pre><code>aiwaf.sails({ AIWAF_HEADER_VALIDATION: true })</code></pre>
 
-app.get('/health', (req, res) => res.json({ ok: true }));
-app.listen(3000);</code></pre>
-        <h3>Middleware Order Guidance</h3>
-        <ul>
-            <li>Body parser before AIWAF when honeypot/content checks require parsed body.</li>
-            <li>Place AIWAF early to block before expensive downstream handlers.</li>
-            <li>Keep known-safe endpoints in exemptions (health/static/webhooks as needed).</li>
-        </ul>
-        <h3>Production Baseline Env</h3>
-        <pre><code>AIWAF_MIDDLEWARE_LOGGING=true
-AIWAF_MIDDLEWARE_LOG_DB=true
-AIWAF_MIDDLEWARE_LOG_CSV=true
-AIWAF_RATE_WINDOW=10
-AIWAF_RATE_MAX=60
-AIWAF_RATE_FLOOD=120
-AIWAF_HEADER_VALIDATION=true
-AIWAF_HEADER_QUALITY_MIN_SCORE=3
-AIWAF_EXEMPT_PATHS=/health,/favicon.ico,/robots.txt,/static/
-AIWAF_EXEMPTIONS_DB=true</code></pre>
     </section>
 
     <section class="section">
-        <h2>6. Other Framework Setup</h2>
-        <h3>Fastify</h3>
-        <pre><code>const fastify = require('fastify')();
-const aiwaf = require('aiwaf-js');
-
-fastify.register(aiwaf.fastify, {
-  WINDOW_SEC: 10,
-  MAX_REQ: 20,
-  FLOOD_REQ: 40,
-  AIWAF_HEADER_VALIDATION: true
-});</code></pre>
-        <h3>Hapi</h3>
-        <pre><code>await server.register({
-  plugin: aiwaf.hapi,
-  options: { WINDOW_SEC: 10, MAX_REQ: 20, FLOOD_REQ: 40 }
-});</code></pre>
-        <h3>Koa</h3>
-        <pre><code>app.use(bodyParser());
-app.use(aiwaf.koa({ AIWAF_HEADER_VALIDATION: true }));</code></pre>
-        <h3>NestJS</h3>
-        <pre><code>// Express adapter
-consumer.apply(aiwaf.nest({ AIWAF_HEADER_VALIDATION: true })).forRoutes('*');
-
-// Fastify adapter
-await app.register(aiwaf.fastify, { AIWAF_HEADER_VALIDATION: true });</code></pre>
-        <h3>Next.js / AdonisJS / Sails</h3>
-        <pre><code>// Next.js
-export default aiwaf.next(handler, { AIWAF_HEADER_VALIDATION: true });
-
-// Adonis
-() => aiwaf.adonis({ AIWAF_HEADER_VALIDATION: true })
-
-// Sails
-aiwaf.sails({ AIWAF_HEADER_VALIDATION: true })</code></pre>
-    </section>
-
-    <section class="section">
-        <h2>7-12. Storage, Training, CLI, Optional Features</h2>
+        <h2>8-13. Storage, Training, CLI, Optional Features</h2>
         <h3>Storage And Persistence</h3>
         <ul>
             <li>Default SQLite DB at <code>./aiwaf.sqlite</code>, lazy table creation.</li>
@@ -252,7 +202,7 @@ AIWAF_REDIS_URL=redis://localhost:6379</code></pre>
     </section>
 
     <section class="section">
-        <h2>13-16. Production Checklist, Validation, Troubleshooting, Contributor Setup</h2>
+        <h2>14-17. Production Checklist, Validation, Troubleshooting, Contributor Setup</h2>
         <h3>Production Baseline Checklist</h3>
         <ul class="checklist">
             <li>[ ] Middleware enabled and app startup verified.</li>
@@ -285,7 +235,7 @@ AIWAF_REDIS_URL=redis://localhost:6379</code></pre>
 npm test
 npm run train
 npm run aiwaf -- help</code></pre>
-        <p>Read next: <code>README.md</code>, <code>INSTALLATION.md</code>, <code>PROJECT_DETAILED_REFERENCE.md</code>.</p>
+        <p>Read next: <code>README.md</code>, <code>INSTALLATION.md</code>.</p>
     </section>
 </main>
 </div></div>

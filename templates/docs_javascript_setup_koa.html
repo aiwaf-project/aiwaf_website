@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#2d6a4f,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.09); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        pre { background: rgba(0,0,0,.5); border: 1px solid rgba(78,205,196,.3); border-radius: 10px; padding: .85rem; overflow-x: auto; }
+        .checklist li { list-style: none; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+    </style>
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">JavaScript Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="/docs/javascript">Overview</a></li>
+        <li><a href="/docs/javascript/setup">Setup Guide</a>
+            <ul style="list-style-type: none; padding-left: 1rem; margin-top: 0.5rem;">
+                <li><a href="/docs/javascript/setup/express" class="">Express</a></li>
+                <li><a href="/docs/javascript/setup/fastify" class="">Fastify</a></li>
+                <li><a href="/docs/javascript/setup/hapi" class="">Hapi</a></li>
+                <li><a href="/docs/javascript/setup/koa" class="active">Koa</a></li>
+                <li><a href="/docs/javascript/setup/nestjs" class="">NestJS</a></li>
+                <li><a href="/docs/javascript/setup/nextjs" class="">Next.js</a></li>
+                <li><a href="/docs/javascript/setup/adonis" class="">AdonisJS</a></li>
+                <li><a href="/docs/javascript/setup/sails" class="">Sails</a></li>
+            </ul>
+</li>
+        <li><a href="/docs/javascript/architecture">Architecture</a></li>
+        <li><a href="/docs/javascript/operations">Operations</a></li>
+    </ul>
+</aside>
+<main class="content">
+    <div class="badge">Comprehensive Setup</div>
+    <h1 class="page-title">AIWAF-JS End-To-End Setup Guide</h1>
+
+    <section class="section">
+        <h2>1. What This Guide Is</h2>
+        <p>End-to-end setup manual for running <code>aiwaf-js</code> in production Node.js applications.</p>
+        <ul>
+            <li>Prerequisites and installation for app usage and repo development.</li>
+            <li>Framework integration for Express, Fastify, Hapi, Koa, NestJS, Next.js, AdonisJS, and Sails.</li>
+            <li>Baseline and production-oriented configuration, storage, model backend, training, and verification.</li>
+            <li>Optional WASM/GeoIP/Redis enablement plus troubleshooting and validation playbooks.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>2. Prerequisites</h2>
+        <h3>Runtime</h3>
+        <ul>
+            <li>Node.js 18+ recommended.</li>
+            <li>npm 9+ recommended.</li>
+            <li>Supported app frameworks: Express, Fastify, Hapi, Koa, NestJS, Next.js API routes, AdonisJS, Sails.js.</li>
+        </ul>
+        <h3>System Dependencies</h3>
+        <ul>
+            <li>Build tooling required by <code>sqlite3</code> for your OS.</li>
+            <li>Writable filesystem paths for <code>aiwaf.sqlite</code>, <code>logs/</code>, and <code>resources/model.json</code> if file model storage is used.</li>
+        </ul>
+        <h3>Production Recommendations</h3>
+        <ul>
+            <li>Access logs from reverse proxy/app layer.</li>
+            <li>Persistent volume for DB/log/model artifacts.</li>
+            <li>Scheduled training run (<code>train.js</code>) at least daily.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>3. Installation Paths</h2>
+        <pre><code># Application install
+npm install aiwaf-js
+
+# Local development
+npm install
+
+# Optional features
+npm install aiwaf-wasm
+npm install maxmind</code></pre>
+        <p>Redis integration is enabled by setting <code>REDIS_URL</code> or <code>AIWAF_REDIS_URL</code>.</p>
+    </section>
+
+    <section class="section">
+        <h2>4. Core Configuration Concepts</h2>
+        <p>Config is normalized from middleware options, optional <code>AIWAF_SETTINGS</code>, and environment variables.</p>
+        <ul>
+            <li>Rate: <code>AIWAF_RATE_WINDOW</code>, <code>AIWAF_RATE_MAX</code>, <code>AIWAF_RATE_FLOOD</code></li>
+            <li>Exemptions: <code>AIWAF_EXEMPT_PATHS</code>, <code>AIWAF_EXEMPT_IPS</code>, <code>AIWAF_ALLOWED_PATH_KEYWORDS</code>, <code>AIWAF_EXEMPT_KEYWORDS</code>, <code>AIWAF_EXEMPTIONS_DB</code></li>
+            <li>Headers: <code>AIWAF_HEADER_VALIDATION</code>, <code>AIWAF_REQUIRED_HEADERS</code>, <code>AIWAF_HEADER_QUALITY_MIN_SCORE</code>, size/count caps</li>
+            <li>Geo: <code>AIWAF_GEO_BLOCK_ENABLED</code>, country allow/block sets, <code>AIWAF_GEO_MMDB_PATH</code></li>
+            <li>Logging/training: middleware logging toggles + train thresholds + keyword learning flags</li>
+            <li>Model: <code>AIWAF_MODEL_STORAGE</code>, <code>AIWAF_MODEL_PATH</code>, fallback/cache settings</li>
+            <li>WASM: <code>AIWAF_WASM_VALIDATION</code>, header/recent toggles</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>5. Auto Middleware & Path Manifest Setup</h2>
+        <p>AIWAF-JS can automatically tune your middleware protections based on your application's routing structure. By generating a Path Manifest, AIWAF categorizes your endpoints (e.g., API vs HTML Form) and automatically disables unnecessary middlewares (like Honeypots for APIs) and enforces strict rate limits where appropriate.</p>
+        <pre><code># Generate the path manifest automatically
+npm run aiwaf -- generate-manifest</code></pre>
+        <p>At startup, AIWAF reads the manifest from <code>.aiwaf/paths.json</code> to auto-configure the execution chain.</p>
+        <p>If you prefer fine-grained manual control over your middleware stack rather than relying on auto-generation, proceed to the framework-specific "All Middlewares" manual setup sections below.</p>
+    </section>
+
+    
+
+    <section class="section">
+        <h2>6. Koa Setup (All Middlewares)</h2>
+        <h3>Koa</h3>
+        <pre><code>app.use(bodyParser());
+app.use(aiwaf.koa({ AIWAF_HEADER_VALIDATION: true }));</code></pre>
+        
+    </section>
+
+    <section class="section">
+        <h2>8-13. Storage, Training, CLI, Optional Features</h2>
+        <h3>Storage And Persistence</h3>
+        <ul>
+            <li>Default SQLite DB at <code>./aiwaf.sqlite</code>, lazy table creation.</li>
+            <li>Managed tables: blocked/exemptions/geo/request logs/dynamic keywords/model artifacts.</li>
+            <li>CSV fallback under <code>logs/storage/</code> if DB calls fail.</li>
+            <li>Model storage: <code>file</code>, <code>db</code>, or <code>cache</code>.</li>
+        </ul>
+        <h3>Training Setup</h3>
+        <pre><code>npm run train
+
+NODE_LOG_PATH=/var/log/nginx/access.log
+NODE_LOG_GLOB='/var/log/nginx/access.log.*'
+AIWAF_MIN_TRAIN_LOGS=50
+AIWAF_MIN_AI_LOGS=10000
+AIWAF_FORCE_AI_TRAINING=false
+AIWAF_ENABLE_KEYWORD_LEARNING=true</code></pre>
+        <p>Training source priority: access logs, middleware JSONL, middleware CSV, DB request logs.</p>
+        <h3>CLI Operations</h3>
+        <pre><code>npm run aiwaf -- &lt;command&gt;
+# or
+node bin/aiwaf.js &lt;command&gt;</code></pre>
+        <ul>
+            <li>List: blacklist/exemptions/geo/request logs/dynamic keywords/model info</li>
+            <li>Add/remove exemptions, geo block/unblock</li>
+            <li>Clear blacklist/request logs/dynamic keywords</li>
+            <li><code>train</code> and <code>diagnose &lt;ip&gt;</code></li>
+        </ul>
+        <h3>Optional WASM</h3>
+        <pre><code>npm install aiwaf-wasm
+AIWAF_WASM_VALIDATION=true
+AIWAF_WASM_HEADER_VALIDATION=true
+AIWAF_WASM_VALIDATE_RECENT=false</code></pre>
+        <h3>Optional GeoIP</h3>
+        <pre><code>npm install maxmind
+AIWAF_GEO_BLOCK_ENABLED=true
+AIWAF_GEO_MMDB_PATH=/absolute/path/to/ipinfo_lite.mmdb
+AIWAF_GEO_BLOCK_COUNTRIES=CN,RU
+# or allowlist mode
+AIWAF_GEO_ALLOW_COUNTRIES=US,CA</code></pre>
+        <h3>Optional Redis</h3>
+        <pre><code>REDIS_URL=redis://localhost:6379
+# or
+AIWAF_REDIS_URL=redis://localhost:6379</code></pre>
+    </section>
+
+    <section class="section">
+        <h2>14-17. Production Checklist, Validation, Troubleshooting, Contributor Setup</h2>
+        <h3>Production Baseline Checklist</h3>
+        <ul class="checklist">
+            <li>[ ] Middleware enabled and app startup verified.</li>
+            <li>[ ] Body parser ordering confirmed where required.</li>
+            <li>[ ] Exempt paths configured for health/static/known-safe callbacks.</li>
+            <li>[ ] Rate and header policies tuned with real traffic profile.</li>
+            <li>[ ] Middleware logging persisted.</li>
+            <li>[ ] Training scheduled and validated.</li>
+            <li>[ ] Intentional block event verified in staging.</li>
+            <li>[ ] CLI operations validated (<code>list</code>, <code>diagnose</code>, <code>train</code>).</li>
+        </ul>
+        <h3>Validation Playbook</h3>
+        <ol>
+            <li>Smoke: <code>/health</code> and static routes pass; suspicious probe path blocks.</li>
+            <li>Rate limits: burst non-exempt endpoint and observe <code>429</code>/<code>403</code> behavior.</li>
+            <li>Header checks: low-quality headers trigger expected validation behavior.</li>
+            <li>Training: verify source detection and <code>npm run train</code> output.</li>
+        </ol>
+        <h3>Troubleshooting Highlights</h3>
+        <ul>
+            <li><code>sqlite3</code> build failure: install platform-native build tools and reinstall deps.</li>
+            <li>DB errors: ensure write permissions for DB/working directory.</li>
+            <li>No training data: verify log paths/globs and enable middleware logging fallback.</li>
+            <li>Model load issues: train and verify model storage path/backend permissions.</li>
+            <li>False positives: tune exemptions/allowed keywords and thresholds gradually.</li>
+            <li>Geo issues: verify <code>maxmind</code>, MMDB path, ISO country codes, and proxy IP resolution.</li>
+        </ul>
+        <h3>Contributor Setup</h3>
+        <pre><code>npm install
+npm test
+npm run train
+npm run aiwaf -- help</code></pre>
+        <p>Read next: <code>README.md</code>, <code>INSTALLATION.md</code>.</p>
+    </section>
+</main>
+</div></div>
+</body>
+</html>

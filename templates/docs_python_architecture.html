@@ -58,7 +58,13 @@
     <h3 class="sidebar-title">Python Docs</h3>
     <ul class="sidebar-nav">
         <li><a href="/docs/python">Overview</a></li>
-        <li><a href="/docs/python/setup">Setup Guide</a></li>
+        <li><a href="/docs/python/setup">Setup Guide</a>
+            <ul class="sidebar-subnav" style="list-style-type: none; padding-left: 1rem; margin-top: 0.5rem;">
+                <li><a href="/docs/python/setup/django">Django</a></li>
+                <li><a href="/docs/python/setup/flask">Flask</a></li>
+                <li><a href="/docs/python/setup/fastapi">FastAPI</a></li>
+            </ul>
+</li>
         <li><a href="/docs/python/architecture" class="active">Architecture</a></li>
         <li><a href="/docs/python/adapters">Adapters</a></li>
         <li><a href="/docs/python/operations">Operations</a></li>
@@ -196,6 +202,27 @@
             <li><strong>Header Validation:</strong> <code>HeaderValidationMiddleware</code> scores the request headers against bot signatures.</li>
             <li><strong>Logging (Post-Response):</strong> <code>AIWAFLoggerMiddleware</code> captures telemetry and writes JSONL/CSV lines for offline training if configured.</li>
         </ol>
+    </section>
+
+    <section class="section">
+        <h2>Deep Dive: Core Functions and Methods</h2>
+        <p>A reference of the core internal functions powering the Python AIWAF engine.</p>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Module / Class</th><th>Function / Method</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>runtime_fastapi.py</code><br><strong>FastAPI_AIWAF_Engine</strong></td><td><code>__call__(request)</code></td><td>Primary ASGI middleware entry point. Resolves path rules and orchestrates the execution chain.</td></tr>
+                    <tr><td><code>path_manifest.py</code><br><strong>ManifestGenerator</strong></td><td><code>build()</code></td><td>Crawls the application directory, invoking AST visitors to output the final <code>paths.json</code> categorizations.</td></tr>
+                    <tr><td><code>api_detection.py</code><br><strong>ASTAnalyzer</strong></td><td><code>visit_FunctionDef(node)</code></td><td>Overrides the Python <code>ast.NodeVisitor</code> to scan method decorators, return types, and arguments to infer endpoint capabilities (API vs Form).</td></tr>
+                    <tr><td><code>api_detection.py</code><br><strong>ASTAnalyzer</strong></td><td><code>extract_decorators(node)</code></td><td>Parses a function's decorator list to resolve explicit HTTP verbs (e.g., <code>@require_http_methods</code>).</td></tr>
+                    <tr><td><code>anomaly.py</code><br><strong>IsolationForest</strong></td><td><code>predict(vector)</code></td><td>Evaluates a 6-dimension numerical vector against the 200-tree ensemble. Returns -1 for anomaly, 1 for normal.</td></tr>
+                    <tr><td><code>anomaly.py</code><br><strong>FeatureExtractor</strong></td><td><code>extract_vector(request)</code></td><td>Extracts runtime dimensions (path length, keyword hits, response time, 404 count) to feed into the prediction model.</td></tr>
+                    <tr><td><code>runtime_storage.py</code><br><strong>StorageBackend</strong></td><td><code>get_exemptions()</code></td><td>Retrieves the cached exemption lists from the underlying storage layer (Memory, DB, or CSV).</td></tr>
+                </tbody>
+            </table>
+        </div>
     </section>
 
     <section class="section">

@@ -54,7 +54,12 @@
     <h3 class="sidebar-title">Java Docs</h3>
     <ul class="sidebar-nav">
         <li><a href="/docs/java">Overview</a></li>
-        <li><a href="/docs/java/setup" class="active">Setup Guide</a></li>
+        <li><a href="/docs/java/setup">Setup Guide</a>
+            <ul style="list-style-type: none; padding-left: 1rem; margin-top: 0.5rem;">
+                <li><a href="/docs/java/setup/servlet" class="active">Servlet (Core)</a></li>
+                <li><a href="/docs/java/setup/spring" class="">Spring Boot</a></li>
+            </ul>
+</li>
         <li><a href="/docs/java/architecture">Architecture</a></li>
         <li><a href="/docs/java/operations">Operations</a></li>
     </ul>
@@ -94,7 +99,16 @@ mvn clean package</code></pre>
     </section>
 
     <section class="section">
-        <h2>4. Quick Start (Core Engine)</h2>
+        <h2>4. Auto Middleware & Path Manifest Setup</h2>
+        <p>AIWAF-Java can automatically tune your middleware protections based on your application's routing structure. By generating a Path Manifest, AIWAF categorizes your endpoints (e.g., API vs HTML Form) and automatically disables unnecessary middlewares (like Honeypots for APIs) and enforces strict rate limits where appropriate.</p>
+        <pre><code># Generate the path manifest automatically via CLI
+java -cp target/classes com.aiwaf.cli.AiwafConsole generate-manifest</code></pre>
+        <p>At startup, the <code>AiwafEngine</code> reads this manifest to auto-configure the execution chain.</p>
+        <p>If you prefer fine-grained manual control over your middleware stack rather than relying on auto-generation, proceed to the "All Middlewares" manual setup sections below.</p>
+    </section>
+
+    <section class="section">
+        <h2>5. Quick Start (All Middlewares)</h2>
         <pre><code>AiwafConfig config = new AiwafConfig();
 config.headerValidationEnabled = true;
 config.rateLimitEnabled = true;
@@ -108,7 +122,7 @@ if (!decision.allowed()) {
     </section>
 
     <section class="section">
-        <h2>5. Request Pipeline (Exact Order)</h2>
+        <h2>6. Request Pipeline (Exact Order)</h2>
         <ol>
             <li>Resolve <code>PathRule</code> and middleware overrides.</li>
             <li>Resolve path exemptions from config/store/geo-exempt sets.</li>
@@ -127,7 +141,7 @@ if (!decision.allowed()) {
     </section>
 
     <section class="section">
-        <h2>6. Integration Components</h2>
+        <h2>7. Integration Components</h2>
         <ul>
             <li>Spring: <code>AiwafFilter</code>, <code>AiwafInterceptor</code>, <code>AiwafRouteDecisions</code>, and annotations.</li>
             <li>Servlet: <code>AiwafServletFilter</code> with <code>ServletRequestMapper</code> and deny/allow flow.</li>
@@ -135,7 +149,7 @@ if (!decision.allowed()) {
     </section>
 
     <section class="section">
-        <h2>7. Key Configuration Areas (<code>AiwafConfig</code>)</h2>
+        <h2>8. Key Configuration Areas (<code>AiwafConfig</code>)</h2>
         <ul>
             <li>Middleware toggles, rate limits, exemptions, header policy, geo policy, method policy.</li>
             <li>Keyword learning and route legitimacy hints.</li>
@@ -145,7 +159,7 @@ if (!decision.allowed()) {
     </section>
 
     <section class="section">
-        <h2>8. Runtime Storage</h2>
+        <h2>9. Runtime Storage</h2>
         <pre><code>RuntimeStorage.initialize(config.storageBackend, config.storageFilePath);</code></pre>
         <ul>
             <li>Backends: <code>memory</code>, <code>file</code>, <code>csv</code>.</li>
@@ -154,7 +168,7 @@ if (!decision.allowed()) {
     </section>
 
     <section class="section">
-        <h2>9. CLI + Validation</h2>
+        <h2>10. CLI + Validation</h2>
         <pre><code>mvn -q -DskipTests exec:java -Dexec.mainClass=com.aiwaf.cli.AiwafConsole -Dexec.args="stats"
 java -cp target/classes com.aiwaf.cli.AiwafConsole stats
 mvn test</code></pre>
@@ -162,7 +176,7 @@ mvn test</code></pre>
     </section>
 
     <section class="section">
-        <h2>10. Production Checklist</h2>
+        <h2>11. Production Checklist</h2>
         <ul>
             <li>Set explicit <code>AiwafConfig</code> values for real traffic.</li>
             <li>Use persistent storage when restart stability is required.</li>

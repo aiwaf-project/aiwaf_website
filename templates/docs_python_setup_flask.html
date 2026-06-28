@@ -57,7 +57,13 @@
     <h3 class="sidebar-title">Python Docs</h3>
     <ul class="sidebar-nav">
         <li><a href="/docs/python">Overview</a></li>
-        <li><a href="/docs/python/setup" class="active">Setup Guide</a></li>
+        <li><a href="/docs/python/setup">Setup Guide</a>
+            <ul style="list-style-type: none; padding-left: 1rem; margin-top: 0.5rem;">
+                <li><a href="/docs/python/setup/django" class="">Django</a></li>
+                <li><a href="/docs/python/setup/flask" class="active">Flask</a></li>
+                <li><a href="/docs/python/setup/fastapi" class="">FastAPI</a></li>
+            </ul>
+</li>
         <li><a href="/docs/python/architecture">Architecture</a></li>
         <li><a href="/docs/python/adapters">Adapters</a></li>
         <li><a href="/docs/python/operations">Operations</a></li>
@@ -69,7 +75,7 @@
 
     <section class="section">
         <h2>1. What This Guide Is</h2>
-        <p>End-to-end setup manual for running AIWAF in real projects across Django, Flask, and FastAPI. For internals, use <code>PROJECT_DETAILED_REFERENCE.md</code>.</p>
+        <p>End-to-end setup manual for running AIWAF in real projects across Django, Flask, and FastAPI.</p>
         <ul>
             <li>Environment prerequisites</li>
             <li>Installation paths and configuration baselines</li>
@@ -131,51 +137,16 @@ pip install "aiwaf[rust]"  # optional</code></pre>
     </section>
 
     <section class="section">
-        <h2>5. Django Setup</h2>
-        <h3>Install</h3>
-        <pre><code>pip install "aiwaf[django]"</code></pre>
-        <h3>App + Middleware</h3>
-        <pre><code>INSTALLED_APPS = [
-    "aiwaf.django",
-]
-
-MIDDLEWARE = [
-    "aiwaf.django.middleware.JsonExceptionMiddleware",
-    "aiwaf.django.middleware.GeoBlockMiddleware",
-    "aiwaf.django.middleware.IPAndKeywordBlockMiddleware",
-    "aiwaf.django.middleware.RateLimitMiddleware",
-    "aiwaf.django.middleware.AIAnomalyMiddleware",
-    "aiwaf.django.middleware.HoneypotTimingMiddleware",
-    "aiwaf.django.middleware.UUIDTamperMiddleware",
-    "aiwaf.django.middleware.HeaderValidationMiddleware",
-    "aiwaf.django.middleware_logger.AIWAFLoggerMiddleware",
-]</code></pre>
-        <h3>Minimum Settings</h3>
-        <pre><code>AIWAF_ACCESS_LOG = "/var/log/nginx/access.log"
-AIWAF_DISABLE_AI = False
-AIWAF_MIN_AI_LOGS = 10000
-AIWAF_MIN_TRAIN_LOGS = 50
-AIWAF_FORCE_AI_TRAINING = False
-AIWAF_RATE_WINDOW = 10
-AIWAF_RATE_MAX = 20
-AIWAF_RATE_FLOOD = 40
-AIWAF_HEADER_QUALITY_MIN_SCORE = 3
-AIWAF_REQUIRED_HEADERS = None
-AIWAF_EXEMPT_PATHS = ["/favicon.ico", "/robots.txt", "/static/", "/health/"]
-AIWAF_ALLOWED_PATH_KEYWORDS = ["profile", "user", "account", "dashboard"]
-AIWAF_EXEMPT_KEYWORDS = ["api", "webhook", "health", "static", "media"]</code></pre>
-        <h3>Migrate + Verify + Train</h3>
-        <pre><code>python manage.py makemigrations aiwaf
-python manage.py migrate
-python manage.py check
-python manage.py aiwaf_logging --status
-python manage.py aiwaf_list --all
-python manage.py detect_and_train</code></pre>
-        <p>CSV storage mode optional via <code>AIWAF_STORAGE_MODE="csv"</code>, <code>AIWAF_DATA_DIR="aiwaf_data"</code>.</p>
+        <h2>5. Auto Middleware & Path Manifest Setup</h2>
+        <p>AIWAF can automatically tune your middleware protections based on your application's routing structure. By generating a Path Manifest, AIWAF categorizes your endpoints (e.g., API vs HTML Form) and automatically disables unnecessary middlewares (like Honeypots for APIs) and enforces strict rate limits where appropriate.</p>
+        <p>At startup, AIWAF reads the manifest from <code>.aiwaf/paths.json</code> (or via the <code>path_rules</code> configuration) to auto-configure the execution chain.</p>
+        <p>If you prefer fine-grained manual control over your middleware stack rather than relying on auto-generation, proceed to the framework-specific "All Middlewares" manual setup sections below.</p>
     </section>
 
+    
+
     <section class="section">
-        <h2>6. Flask Setup</h2>
+        <h2>7. Flask Setup (All Middlewares)</h2>
         <h3>Install</h3>
         <pre><code>pip install "aiwaf[flask]"
 pip install Flask-SQLAlchemy  # optional DB mode</code></pre>
@@ -215,44 +186,10 @@ def webhook():
 aiwaf flask train</code></pre>
     </section>
 
-    <section class="section">
-        <h2>7. FastAPI Setup</h2>
-        <h3>Install + Basic Wiring</h3>
-        <pre><code>pip install "aiwaf[fastapi]"
-
-from fastapi import FastAPI
-from aiwaf.fast import AIWAF
-
-app = FastAPI()
-aiwaf = AIWAF(
-    app,
-    storage={"backend": "file", "file_path": "aiwaf_data.json"},
-    rate_limiting={"enabled": True, "max_requests": 20, "window_seconds": 10, "flood_threshold": 40},
-    header_validation={"enabled": True, "quality_threshold": 3},
-    geo_block={"enabled": False},
-)</code></pre>
-        <h3>Path Rules + Decorators + CLI</h3>
-        <pre><code>aiwaf = AIWAF(
-    app,
-    path_rules=[
-        {"PREFIX": "/health", "DISABLE": ["rate_limit", "ai_anomaly", "header_validation"]},
-        {"PREFIX": "/api/heavy", "RATE_LIMIT": {"WINDOW": 10, "MAX": 60, "FLOOD": 120}},
-    ],
-)
-
-from aiwaf.fast import aiwaf_exempt
-
-@app.get("/health")
-@aiwaf_exempt
-async def health():
-    return {"ok": True}
-
-# CLI
-aiwaf fast --help</code></pre>
-    </section>
+    
 
     <section class="section">
-        <h2>8-10. Storage, Training, Rust</h2>
+        <h2>9-11. Storage, Training, Rust</h2>
         <h3>Runtime Storage Backends</h3>
         <ul>
             <li><code>memory</code>: local non-persistent tests</li>
@@ -269,7 +206,7 @@ AIWAF_USE_RUST = True</code></pre>
     </section>
 
     <section class="section">
-        <h2>11-12. Production Checklist And Validation</h2>
+        <h2>12-13. Production Checklist And Validation</h2>
         <ul class="checklist">
             <li>[ ] Framework extra installed.</li>
             <li>[ ] Access logs configured and readable/writable.</li>
@@ -291,7 +228,7 @@ AIWAF_USE_RUST = True</code></pre>
     </section>
 
     <section class="section">
-        <h2>13-16. Troubleshooting, Contributor Setup, Minimal Snippets</h2>
+        <h2>14-17. Troubleshooting, Contributor Setup, Minimal Snippets</h2>
         <h3>Troubleshooting Highlights</h3>
         <ul>
             <li>Django model app errors: ensure <code>"aiwaf.django"</code> in <code>INSTALLED_APPS</code>, rerun migrations.</li>
@@ -332,7 +269,7 @@ aiwaf = AIWAF(app)</code></pre>
             <li><code>README.md</code></li>
             <li><code>INSTALLATION.md</code></li>
             <li><code>AIWAF_SETTINGS_GUIDE.py</code></li>
-            <li><code>PROJECT_DETAILED_REFERENCE.md</code></li>
+            
             <li><code>aiwaf/core/KEYWORD_FALLBACK_DETAILED.md</code></li>
         </ul>
     </section>

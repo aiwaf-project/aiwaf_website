@@ -54,7 +54,14 @@
     <h3 class="sidebar-title">PHP Docs</h3>
     <ul class="sidebar-nav">
         <li><a href="/docs/php">Overview</a></li>
-        <li><a href="/docs/php/setup">Setup Guide</a></li>
+        <li><a href="/docs/php/setup">Setup Guide</a>
+            <ul class="sidebar-subnav" style="list-style-type: none; padding-left: 1rem; margin-top: 0.5rem;">
+                <li><a href="/docs/php/setup/plain">Plain PHP</a></li>
+                <li><a href="/docs/php/setup/laravel">Laravel</a></li>
+                <li><a href="/docs/php/setup/symfony">Symfony</a></li>
+                <li><a href="/docs/php/setup/wordpress">WordPress</a></li>
+            </ul>
+</li>
         <li><a href="/docs/php/architecture" class="active">Architecture</a></li>
         <li><a href="/docs/php/operations">Operations</a></li>
     </ul>
@@ -153,6 +160,26 @@
             </li>
             <li><strong>Config Sentinels:</strong> If <code>requested_middlewares</code> is set to <code>['auto']</code>, <code>MiddlewarePlan::planEnabledMiddlewares()</code> dynamically strips out unnecessary middlewares (e.g., completely unloading <code>uuid_tamper</code> if no UUIDs exist, or disabling <code>geo_block</code> if the MMDB isn't configured).</li>
         </ul>
+    </section>
+
+    <section class="section">
+        <h2>Deep Dive: Core Functions and Methods</h2>
+        <p>A reference of the core internal functions powering the PHP AIWAF engine.</p>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Module / Class</th><th>Function / Method</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>AIWAF.php</code><br><strong>AIWAF</strong></td><td><code>protect()</code></td><td>The primary execution gate. Iterates through the resolved middleware plan, terminating the request with a 403 or 429 payload if any middleware rejects.</td></tr>
+                    <tr><td><code>PathManifest.php</code><br><strong>PathManifest</strong></td><td><code>classifyRoute($path, $methods)</code></td><td>Matches standard heuristic signatures (e.g., <code>/api/*</code> or <code>/login</code>) and combines them with AST outputs to bin the route type.</td></tr>
+                    <tr><td><code>ApiDetection.php</code><br><strong>RouteVisitor</strong></td><td><code>enterNode(Node $node)</code></td><td>Implements <code>PhpParser\NodeVisitorAbstract</code> to inspect method calls like <code>json()</code> or <code>validate()</code> to build confidence scores for API intents.</td></tr>
+                    <tr><td><code>MiddlewarePlan.php</code><br><strong>MiddlewarePlan</strong></td><td><code>resolve($path, $category)</code></td><td>Yields the final array of active middlewares. Trims expensive operations (like HTML honing) when <code>$category === 'api'</code>.</td></tr>
+                    <tr><td><code>detect_and_train.php</code><br><strong>(CLI Script)</strong></td><td><code>extractFeatures($logLine)</code></td><td>Parses a line of access logs into the 6-dimension float array needed for training the Isolation Forest.</td></tr>
+                    <tr><td><code>detect_and_train.php</code><br><strong>(CLI Script)</strong></td><td><code>calculateThresholds()</code></td><td>Evaluates historical traffic baselines to automatically tune <code>max_req</code> and <code>flood_req</code> dynamically.</td></tr>
+                </tbody>
+            </table>
+        </div>
     </section>
 
     <section class="section">
