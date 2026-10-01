@@ -266,9 +266,12 @@ def doc_page(framework, page):
             
     return render_template(f'docs_{framework}_{page}.html')
 
-@app.route('/docs/<language>/setup/<subframework>')
+@app.route('/<language>/setup/<subframework>', strict_slashes=False)
+@app.route('/docs/<language>/setup/<subframework>', strict_slashes=False)
 def doc_setup_subframework(language, subframework):
     """Sub-framework specific setup pages"""
+    if not request.path.startswith('/docs/'):
+        return redirect(f'/docs/{language}/setup/{subframework}', code=302)
     return render_template(f'docs_{language}_setup_{subframework}.html')
 
 @app.route('/aiwaf/admin')

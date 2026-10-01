@@ -12,7 +12,7 @@ except ImportError:
     print("⚠️ python-dotenv not available, using system environment variables")
 
 try:
-    from flask import Flask, render_template, jsonify
+    from flask import Flask, render_template, jsonify, request, redirect
     print("✅ Flask imported successfully")
 except ImportError:
     print("❌ Flask not available. Please install: pip install Flask")
@@ -118,6 +118,14 @@ def framework_docs(framework):
 @app.route('/docs/<framework>/<page>')
 def doc_page(framework, page):
     return render_template(f'docs_{framework}_{page}.html')
+
+@app.route('/<language>/setup/<subframework>', strict_slashes=False)
+@app.route('/docs/<language>/setup/<subframework>', strict_slashes=False)
+def doc_setup_subframework(language, subframework):
+    """Serve setup guides and redirect short URLs to their documentation URL."""
+    if not request.path.startswith('/docs/'):
+        return redirect(f'/docs/{language}/setup/{subframework}', code=302)
+    return render_template(f'docs_{language}_setup_{subframework}.html')
 
 if __name__ == '__main__':
     print("Initializing database...")
