@@ -45,7 +45,9 @@
         li { margin-bottom: .35rem; }
         code { font-family: 'Fira Code', monospace; color: #f6c177; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
 <header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
@@ -62,13 +64,14 @@
         <div style="margin-top: 0.7rem;">
             <a href="https://pypi.org/project/aiwaf-rust/" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">PyPI: aiwaf-rust</a><br>
             <a href="https://www.npmjs.com/package/aiwaf-wasm" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">npm: aiwaf-wasm</a><br>
-            <a href="https://github.com/aiwaf-project/aiwaf-rust" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub: aiwaf-rust</a>
+            <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub: AIWAF Monorepo</a>
         </div>
     </div>
 </aside>
 <main class="content">
     <div class="badge">Bindings API</div>
     <h1 class="page-title">PyO3 And WASM Function Reference</h1>
+{% include '_docs_source.html' %}
 
     <section class="section">
         <h2>5. PyO3 (Python) Binding Functions</h2>
@@ -76,6 +79,12 @@
         <ul>
             <li><code>validate_headers(headers: dict) -> Optional[str]</code></li>
             <li><code>validate_headers_with_config(headers: dict, required_headers: Optional[list[str]], min_score: Optional[int]) -> Optional[str]</code></li>
+        </ul>
+        <h3>Matchers and record conversion</h3>
+        <ul>
+            <li><code>KeywordMatcher(keywords).first_match(path)</code> returns the first matching keyword or <code>None</code>.</li>
+            <li><code>RouteMatcher(prefixes).match_index(path)</code> returns the matching prefix index or <code>None</code>.</li>
+            <li>Record helpers include <code>build_records</code>, <code>extract_raw_features</code>, and <code>extract_training_features</code>.</li>
         </ul>
         <h3>Feature Extraction</h3>
         <ul>
@@ -97,7 +106,7 @@
     <section class="section">
         <h2>6. Isolation Forest Internals And Semantics</h2>
         <ul>
-            <li>Core implementation in <code>crates/aiwaf_core/src/lib.rs</code>.</li>
+            <li>Core implementation in <code>rust/crates/aiwaf_core/src/lib.rs</code>.</li>
             <li><code>fit</code> resets trees unless warm-start append is enabled.</li>
             <li><code>retrain</code> temporarily forces warm-start append behavior.</li>
             <li><code>anomaly_score</code>: higher means more anomalous.</li>
@@ -115,6 +124,7 @@
             <li><code>extract_features</code>, <code>extract_features_batch_with_state</code>, <code>finalize_feature_state</code></li>
             <li><code>analyze_recent_behavior</code></li>
         </ul>
+        <p>WASM also exports <code>KeywordMatcher</code>, <code>RouteMatcher</code>, <code>validate_url</code>, <code>validate_content</code>, and record-conversion helpers.</p>
         <h3>WASM IsolationForest class</h3>
         <ul>
             <li><code>new(config?)</code>, <code>fit</code>, <code>retrain</code>, <code>anomaly_score</code>, <code>is_anomaly</code>, <code>score_samples</code>, <code>decision_function</code>, <code>predict</code>, <code>to_json</code>, <code>from_json</code></li>
@@ -143,7 +153,7 @@
             <li>Persist forest/state with <code>to_json()</code> as needed.</li>
         </ol>
         <h3>Python ↔ WASM portability</h3>
-        <p>State JSON shapes differ across bindings. Use an explicit canonical transport schema and mapping adapters, with roundtrip tests.</p>
+        <p>Both bindings expose JSON state from the shared Rust core. Validate the serialized feature schema and forest version before exchanging artifacts. Java supports Python Rust-model JSON state; JavaScript-native and legacy artifacts are not generally interchangeable.</p>
     </section>
 </main>
 </div></div>

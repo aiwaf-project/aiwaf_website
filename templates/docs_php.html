@@ -55,7 +55,9 @@
         li { margin-bottom: .4rem; }
         code { font-family: 'Fira Code', monospace; color: #f6c177; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
 <header class="header">
@@ -91,7 +93,7 @@
                 <small>Official PHP package and source links.</small>
                 <div style="margin-top: 0.7rem;">
                     <a href="https://packagist.org/packages/aayushgauba/aiwaf" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">Packagist Package</a><br>
-                    <a href="https://github.com/aiwaf-project/aiwaf-php" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub Repository</a>
+                    <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">Current AIWAF Monorepo (PHP absent)</a>
                 </div>
             </div>
         </aside>
@@ -99,6 +101,8 @@
         <main class="content">
             <div class="badge">PHP Deep Dive</div>
             <h1 class="page-title">AIWAF-PHP Project Reference</h1>
+{% include '_docs_source.html' %}
+<aside class="source-note legacy-note"><strong>Legacy PHP reference.</strong> The current monorepo does not contain a PHP package or PHP release workflow. These historical examples have not been validated against the current repo. Use the current Python, Node.js, Java, or Rust/WASM guides for new integrations.</aside>
             <p>Comprehensive reference and setup path for integrating <code>aiwaf-php</code> in real PHP applications.</p>
 
             <div class="meta-grid">

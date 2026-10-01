@@ -45,7 +45,9 @@
         code { font-family: 'Fira Code', monospace; color: #f6c177; }
         pre { background: rgba(0,0,0,.5); border: 1px solid rgba(78,205,196,.3); border-radius: 10px; padding: .85rem; overflow-x: auto; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
 <header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
@@ -65,126 +67,93 @@
     </ul>
 </aside>
 <main class="content">
-    <div class="badge">Comprehensive Setup</div>
-    <h1 class="page-title">AIWAF-Java Comprehensive Setup Guide</h1>
-
-    <section class="section">
-        <h2>1. Scope</h2>
-        <ul>
-            <li>Plain Java/Servlet and Spring application integration.</li>
-            <li>Local development, sandbox validation, and production rollout.</li>
-            <li>Request pipeline order, runtime persistence, AI anomaly behavior, model artifact compatibility, observability, and structured config compatibility.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>2. Prerequisites</h2>
-        <ul>
-            <li>Required: Java <code>17+</code>, Maven <code>3.9+</code>.</li>
-            <li>Optional: Docker + Compose, <code>mmdblookup</code>, <code>python-whois</code>, system <code>whois</code>.</li>
-            <li>Runtime defaults: model path <code>aiwaf-model.bin</code>, storage backend/path via <code>storageBackend</code>/<code>storageFilePath</code>.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>3. Install And Build</h2>
-        <pre><code>&lt;dependency&gt;
+<h1 class="page-title">Jakarta Servlet Setup</h1>
+{% include '_docs_source.html' %}
+<p>Java source version <code>1.3.0</code> is declared in <code>java/pom.xml</code>. It targets Java 17, Spring Framework 7.0, and Jakarta Servlet 6.1, and runs natively without Rust. Use the Maven dependency below once this version is published to Maven Central; source builds are available from the monorepo.</p>
+<pre><code class="language-xml">&lt;dependency&gt;
   &lt;groupId&gt;io.github.aiwaf-project&lt;/groupId&gt;
   &lt;artifactId&gt;aiwaf-java&lt;/artifactId&gt;
-  &lt;version&gt;0.2.0&lt;/version&gt;
-&lt;/dependency&gt;
+  &lt;version&gt;1.3.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<h2>Core engine</h2>
+<p>Use the two-stage API when the integration can observe the handler response. Deterministic controls run before the application; anomaly scoring then receives the actual status and elapsed time.</p>
+<pre><code class="language-java">import com.aiwaf.core.AiwafConfig;
+import com.aiwaf.core.AiwafDecision;
+import com.aiwaf.core.AiwafEngine;
+import com.aiwaf.core.AiwafRequest;
 
-mvn clean test
-mvn clean package</code></pre>
-    </section>
+import java.util.Map;
+import java.util.Set;
 
-    <section class="section">
-        <h2>4. Auto Middleware & Path Manifest Setup</h2>
-        <p>AIWAF-Java can automatically tune your middleware protections based on your application's routing structure. By generating a Path Manifest, AIWAF categorizes your endpoints (e.g., API vs HTML Form) and automatically disables unnecessary middlewares (like Honeypots for APIs) and enforces strict rate limits where appropriate.</p>
-        <pre><code># Generate the path manifest automatically via CLI
-java -cp target/classes com.aiwaf.cli.AiwafConsole generate-manifest</code></pre>
-        <p>At startup, the <code>AiwafEngine</code> reads this manifest to auto-configure the execution chain.</p>
-        <p>If you prefer fine-grained manual control over your middleware stack rather than relying on auto-generation, proceed to the "All Middlewares" manual setup sections below.</p>
-    </section>
-
-    <section class="section">
-        <h2>5. Quick Start (All Middlewares)</h2>
-        <pre><code>AiwafConfig config = new AiwafConfig();
-config.headerValidationEnabled = true;
+AiwafConfig config = new AiwafConfig();
 config.rateLimitEnabled = true;
-config.storageBackend = "memory";
+config.rateLimitMax = 20;
+config.rateLimitWindowSeconds = 10;
 
 AiwafEngine engine = new AiwafEngine(config);
-AiwafDecision decision = engine.evaluate(request);
-if (!decision.allowed()) {
-    // deny with decision.statusCode() and decision.reason()
+AiwafRequest request = new AiwafRequest(
+    &quot;GET&quot;,
+    &quot;/api/profile&quot;,
+    &quot;203.0.113.10&quot;,
+    &quot;US&quot;,
+    Map.of(&quot;User-Agent&quot;, &quot;Mozilla/5.0&quot;, &quot;Accept&quot;, &quot;application/json&quot;),
+    Map.of(),
+    System.currentTimeMillis(),
+    Set.of()
+);
+
+long started = System.currentTimeMillis();
+AiwafDecision decision = engine.evaluateBeforeResponse(request);
+if (decision.allowed()) {
+    decision = engine.evaluateAfterResponse(
+        request,
+        200,
+        System.currentTimeMillis() - started
+    );
 }</code></pre>
-    </section>
+<p><code>evaluate(request)</code> remains available for request-only integrations and uses provisional response values for AI features.</p>
+<h2>Servlet filter</h2>
+<pre><code class="language-java">AiwafConfig config = new AiwafConfig();
+AiwafEngine engine = new AiwafEngine(config);
 
-    <section class="section">
-        <h2>6. Request Pipeline (Exact Order)</h2>
-        <ol>
-            <li>Resolve <code>PathRule</code> and middleware overrides.</li>
-            <li>Resolve path exemptions from config/store/geo-exempt sets.</li>
-            <li>Resolve IP exemptions.</li>
-            <li>Blacklist gate (<code>403</code>).</li>
-            <li>Method allow-list gate (<code>405</code>).</li>
-            <li>IP/keyword checks and contextual keyword learning.</li>
-            <li>UUID tamper check.</li>
-            <li>Honeypot timing checks (<code>403</code>/<code>409</code>).</li>
-            <li>Header validation checks.</li>
-            <li>Geo allow/block checks.</li>
-            <li>Rate/flood checks (<code>429</code>).</li>
-            <li>AI anomaly check.</li>
-            <li>Allow decision.</li>
-        </ol>
-    </section>
-
-    <section class="section">
-        <h2>7. Integration Components</h2>
-        <ul>
-            <li>Spring: <code>AiwafFilter</code>, <code>AiwafInterceptor</code>, <code>AiwafRouteDecisions</code>, and annotations.</li>
-            <li>Servlet: <code>AiwafServletFilter</code> with <code>ServletRequestMapper</code> and deny/allow flow.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>8. Key Configuration Areas (<code>AiwafConfig</code>)</h2>
-        <ul>
-            <li>Middleware toggles, rate limits, exemptions, header policy, geo policy, method policy.</li>
-            <li>Keyword learning and route legitimacy hints.</li>
-            <li>AI model options: lazy/background load, threshold, behavior confirmation.</li>
-            <li>Observability + extended block context + storage backend/path.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>9. Runtime Storage</h2>
-        <pre><code>RuntimeStorage.initialize(config.storageBackend, config.storageFilePath);</code></pre>
-        <ul>
-            <li>Backends: <code>memory</code>, <code>file</code>, <code>csv</code>.</li>
-            <li>Stores: exemptions, path exemptions, blacklist, keywords, geo blocks.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>10. CLI + Validation</h2>
-        <pre><code>mvn -q -DskipTests exec:java -Dexec.mainClass=com.aiwaf.cli.AiwafConsole -Dexec.args="stats"
-java -cp target/classes com.aiwaf.cli.AiwafConsole stats
-mvn test</code></pre>
-        <p>Use <code>CoreCli</code> for request/behavior analysis and replay fixtures.</p>
-    </section>
-
-    <section class="section">
-        <h2>11. Production Checklist</h2>
-        <ul>
-            <li>Set explicit <code>AiwafConfig</code> values for real traffic.</li>
-            <li>Use persistent storage when restart stability is required.</li>
-            <li>Tune rate/header/AI thresholds and confirmation gates.</li>
-            <li>Keep telemetry enabled during rollout and monitor counters/histograms.</li>
-            <li>Run sandbox + fixture replay validation in CI.</li>
-        </ul>
-    </section>
+servletContext
+    .addFilter(&quot;aiwaf&quot;, new AiwafServletFilter(engine))
+    .addMappingForUrlPatterns(null, false, &quot;/*&quot;);</code></pre>
+<p>The generic servlet filter uses request-time evaluation. Spring applications should prefer <code>AiwafFilter</code> for handler metadata and post-response scoring.</p>
+<h2>Configuration and operations</h2>
+<div class="table-wrap"><table><thead><tr><th>Area</th><th>Main <code>AiwafConfig</code> fields</th></tr></thead><tbody>
+<tr><td>Rate limiting</td><td><code>rateLimitEnabled</code>, <code>rateLimitScope</code>, <code>rateLimitWindowSeconds</code>, <code>rateLimitMax</code>, <code>rateLimitFloodThreshold</code></td></tr>
+<tr><td>Headers</td><td><code>headerValidationEnabled</code>, <code>requiredHeadersByMethod</code>, <code>minHeaderQualityScore</code>, size/count limits</td></tr>
+<tr><td>Request</td><td>body, parameter, method, and content-type limits</td></tr>
+<tr><td>Proxies</td><td><code>trustedProxyCidrs</code>, <code>maxForwardedForEntries</code></td></tr>
+<tr><td>Exemptions</td><td><code>exemptIps</code>, <code>exemptPaths</code>, <code>autoExemptPathPrefixes</code></td></tr>
+<tr><td>GeoIP</td><td><code>geoBlockEnabled</code>, <code>geoAllowedCountries</code>, <code>geoBlockedCountries</code>, <code>geoIpDatabasePath</code>, cache limits</td></tr>
+<tr><td>Route manifest</td><td><code>pathManifestEnabled</code>, <code>pathManifestPath</code>, <code>pathRules</code></td></tr>
+<tr><td>UUID checks</td><td><code>uuidTamperEnabled</code>, <code>uuidScoreWindowSeconds</code>, <code>uuidScoreBlockThreshold</code>, signal weights, <code>uuidParameterNames</code></td></tr>
+<tr><td>AI</td><td><code>aiEnabled</code>, <code>aiModelPath</code>, <code>aiAnomalyScoreThreshold</code></td></tr>
+<tr><td>Storage</td><td><code>storageBackend</code>, <code>storageFilePath</code>, <code>storageRedisUrl</code>, <code>storageKeyPrefix</code>, <code>storageRedisFailureMode</code>, Redis timeout and pool limits</td></tr>
+<tr><td>Telemetry</td><td><code>observabilityEnabled</code></td></tr>
+</tbody></table></div>
+<p>GeoIP uses the bundled MMDB through the native Java reader; it does not require the external <code>mmdblookup</code> executable. A valid <code>X-Country</code> value is accepted only from a peer in <code>trustedProxyCidrs</code>; otherwise AIWAF resolves the client address itself. Default blacklist calls use Python-compatible reputation scoring and temporary escalation (15 minutes, 1 hour, then 24 hours). Use <code>BlacklistManager.blockPermanent(ip, reason)</code> for an explicit permanent administrative block.</p>
+<p><code>storageBackend="redis"</code> makes rate-limit buckets, honeypot timing, weighted UUID scores, recent-request anomaly state, blacklist data, exemptions, geo policy, and learned keywords visible to every application instance using the same key prefix. Redis enforcement updates use atomic server-side scripts. Memory, file, CSV, and SQLite engines keep request state isolated per <code>AiwafEngine</code>; constructing another engine no longer replaces an existing engine's stores. The static <code>RuntimeStorage</code> and <code>BlacklistManager</code> methods remain compatibility facades for command-line and administrative code.</p>
+<p>The Java 1.3 Redis backend supports <strong>standalone Redis only</strong>. Sentinel and Cluster configurations are rejected during validation instead of silently operating with incomplete semantics. <code>fail_closed</code> is the default: an unavailable Redis instance prevents startup or raises a request-path storage failure, which results in the application denying availability rather than bypassing protection. <code>fail_open</code> permits startup and returns non-blocking enforcement fallbacks while Redis is unavailable; failed mutations return <code>false</code> at the <code>StorageBackend</code> boundary. Connection, socket, pool size, and pool wait limits are bounded and configurable. <code>RedisStorage.diagnostics()</code> reports operation/failure counts, latency, and live pool utilization.</p>
+<p>Redis keys include a state-schema version, and each base key prefix has an atomic compatibility marker. Releases using the same schema can share state during a rolling upgrade. A runtime with an incompatible schema refuses the namespace—even in <code>fail_open</code> mode. Use a unique key prefix per application and environment; deploy an incompatible schema with a new prefix, migrate deliberately, then retire the old namespace. Serialized persistent values remain JSON within a schema version.</p>
+<p>New Java models use the Python-aligned six-feature schema and are written as safe JSON containing the Python <code>aiwaf_rust.IsolationForest</code> state. Python can restore Java-generated forest state, and Java can load Python Rust-model artifacts. Existing signed Java binary artifacts, including nine-feature models, remain readable through the restricted legacy loader. Scikit-learn object artifacts are intentionally unsupported.</p>
+<p>Java operational commands mirror the common Python workflow:</p>
+<pre><code class="language-bash">aiwaf-cli status
+aiwaf-cli diagnose --model model.json
+aiwaf-cli blocked
+aiwaf-cli unblock 203.0.113.10
+aiwaf-cli clear
+aiwaf-cli train --events events.json --out model.json --backend java
+aiwaf-cli replay --cases replay.json
+aiwaf-cli model status --path model.json
+aiwaf-cli logs --dir aiwaf_logs</code></pre>
+<p>Build Java from the repository root:</p>
+<pre><code class="language-bash">cd java
+mvn test
+mvn -Dgpg.skip=true package</code></pre>
+<p>The build produces the main, source, and Javadoc JARs under <code>java/target/</code>. The main JAR embeds the root license as <code>META-INF/LICENSE</code>. FastR training is optional and falls back to the Java trainer when R or <code>jsonlite</code> is unavailable.</p>
 </main>
 </div></div>
 </body>

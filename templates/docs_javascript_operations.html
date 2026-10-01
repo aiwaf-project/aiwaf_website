@@ -46,7 +46,9 @@
         code { font-family: 'Fira Code', monospace; color: #f6c177; }
         pre { background: rgba(0,0,0,.5); border: 1px solid rgba(78,205,196,.3); border-radius: 10px; padding: .85rem; overflow-x: auto; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
 <header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
@@ -72,105 +74,43 @@
     </ul>
 </aside>
 <main class="content">
-    <div class="badge">Ops And Release</div>
-    <h1 class="page-title">CLI, Config, Testing, Packaging</h1>
+<h1 class="page-title">Node.js Operations</h1>
+{% include '_docs_source.html' %}
+<h2>CLI and training from source</h2>
+<pre><code class="language-bash">cd js
 
-    <section class="section">
-        <h2>CLI And Operational Commands (<code>bin/aiwaf.js</code>)</h2>
-        <pre><code>npm run aiwaf -- &lt;command&gt;
-# or
-node bin/aiwaf.js &lt;command&gt;</code></pre>
-        <h3>Supported Commands</h3>
-        <ul>
-            <li><code>list blacklist</code>, <code>list exemptions</code>, <code>list geo</code></li>
-            <li><code>list request-logs [limit]</code>, <code>list dynamic-keywords [limit]</code>, <code>list model-info</code></li>
-            <li><code>add/remove ip-exemption</code>, <code>add/remove path-exemption</code></li>
-            <li><code>geo block/unblock/summary</code></li>
-            <li><code>clear blacklist</code>, <code>clear request-logs</code>, <code>clear dynamic-keywords</code></li>
-            <li><code>train</code>, <code>diagnose &lt;ip&gt;</code></li>
-        </ul>
-        <p>Output is JSON-first for script-friendly automation. <code>train</code> delegates to <code>node train.js</code>.</p>
-    </section>
-
-    <section class="section">
-        <h2>Configuration Model (<code>AIWAF_*</code>)</h2>
-        <p>Settings are normalized by <code>lib/settingsCompat.js</code> from middleware options, legacy nested settings, and environment variables.</p>
-        <h3>High-Impact Groups</h3>
-        <ul>
-            <li>Rate limiting: <code>AIWAF_RATE_WINDOW</code>, <code>AIWAF_RATE_MAX</code>, <code>AIWAF_RATE_FLOOD</code></li>
-            <li>Honeypot/method policy: <code>AIWAF_MIN_FORM_TIME</code>, <code>AIWAF_MAX_PAGE_TIME</code>, <code>AIWAF_ALLOWED_METHODS</code>, <code>AIWAF_METHOD_POLICY_ENABLED</code></li>
-            <li>Exemptions: <code>AIWAF_EXEMPT_PATHS</code>, <code>AIWAF_EXEMPT_IPS</code>, <code>AIWAF_ALLOWED_PATH_KEYWORDS</code>, <code>AIWAF_EXEMPT_KEYWORDS</code>, <code>AIWAF_EXEMPTIONS_DB</code></li>
-            <li>Header validation: <code>AIWAF_HEADER_VALIDATION</code>, <code>AIWAF_REQUIRED_HEADERS</code>, <code>AIWAF_HEADER_QUALITY_MIN_SCORE</code>, and header size/count limits</li>
-            <li>Geo controls: <code>AIWAF_GEO_BLOCK_ENABLED</code>, geo allow/block country sets, MMDB path, cache controls</li>
-            <li>Model/training: storage/path/fallback/cache options + AI training threshold flags</li>
-            <li>Logging controls: JSONL/CSV/DB toggles and paths</li>
-            <li>WASM toggles: <code>AIWAF_WASM_VALIDATION</code>, header/recent validation flags</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>Request Lifecycle (Simplified)</h2>
-        <ol>
-            <li>Request enters unified middleware.</li>
-            <li>Exemption checks evaluate IP/path bypass.</li>
-            <li>Header and optional WASM validations run.</li>
-            <li>Geo checks run.</li>
-            <li>Honeypot/timing checks run.</li>
-            <li>Rate limiter records and enforces thresholds.</li>
-            <li>Static + dynamic keyword checks run.</li>
-            <li>UUID tamper checks run.</li>
-            <li>Unknown-route anomaly checks run when model is sufficiently trained.</li>
-            <li>Blocked requests are denied and logged; all requests can be logged to JSONL/CSV/DB.</li>
-        </ol>
-    </section>
-
-    <section class="section">
-        <h2>Testing And Local Development</h2>
-        <ul>
-            <li>Node.js LTS, npm, and sqlite3 compatibility required.</li>
-            <li>Common commands:</li>
-        </ul>
-        <pre><code>npm install
-npm test
-npm run train
-npm run aiwaf -- help
-npm run perf:wasm
-npm run test:wasm-real</code></pre>
-        <p>Jest notes: <code>--runInBand</code>, teardown via <code>test/jest.teardown.js</code>, and <code>forceExit: true</code>.</p>
-    </section>
-
-    <section class="section">
-        <h2>Packaging And Release Surface</h2>
-        <ul>
-            <li>Published files include <code>index.js</code>, <code>bin/</code>, <code>lib/</code>, <code>resources/</code>, <code>utils/</code>, <code>train.js</code>, docs/license files.</li>
-            <li>Published CLI binary: <code>aiwaf -&gt; bin/aiwaf.js</code>.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>Operational Notes</h2>
-        <ul>
-            <li>Middleware order is security-critical and false-positive-sensitive.</li>
-            <li>Anomaly model failures should not break request handling.</li>
-            <li>Geo lookups can run via MMDB or header fallback.</li>
-            <li>Store modules are defensive: DB failures should not disable core protections.</li>
-            <li>Unknown-route anomaly checks stay conservative until model training is sufficient.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>Suggested Onboarding Order</h2>
-        <ol>
-            <li><code>README.md</code></li>
-            <li><code>INSTALLATION.md</code></li>
-            <li><code>index.js</code></li>
-            <li><code>lib/wafMiddleware.js</code></li>
-            <li><code>train.js</code></li>
-            <li><code>lib/*Store.js</code>, <code>lib/blacklistManager.js</code>, <code>lib/exemptions.js</code></li>
-            <li><code>bin/aiwaf.js</code></li>
-            <li><code>test/</code> suite</li>
-        </ol>
-    </section>
+AIWAF_ACCESS_LOG=/path/to/access.log npm run train
+npm run aiwaf -- status
+npm run aiwaf -- list blacklist
+npm run aiwaf -- add blacklist 203.0.113.9 &quot;manual block&quot;
+npm run aiwaf -- add ip-exemption 203.0.113.10 &quot;trusted monitor&quot;
+npm run aiwaf -- geo summary
+npm run aiwaf -- model info
+npm run aiwaf -- export aiwaf-export.json</code></pre>
+<p>Use Redis or another shared cache for consistent rate limiting across multiple Node processes. Without shared state, the in-memory fallback is process-local.</p>
+<p>The <code>npm run</code> commands above use the package scripts in the monorepo's <code>js/</code> directory. In an application that installed the package, use the installed binary, for example <code>npx aiwaf status</code> or <code>npx aiwaf --help</code>.</p>
+<h2>Configuration</h2>
+<div class="table-wrap"><table><thead><tr><th>Area</th><th>Important options</th></tr></thead><tbody>
+<tr><td>Middleware</td><td><code>AIWAF_MIDDLEWARES</code>, <code>AIWAF_DISABLE_MIDDLEWARES</code>, <code>AIWAF_PATH_RULES</code></td></tr>
+<tr><td>Rate limiting</td><td><code>WINDOW_SEC</code>, <code>MAX_REQ</code>, <code>FLOOD_REQ</code>, <code>cache</code></td></tr>
+<tr><td>Headers</td><td><code>AIWAF_HEADER_VALIDATION</code>, <code>AIWAF_REQUIRED_HEADERS</code>, <code>AIWAF_HEADER_QUALITY_MIN_SCORE</code></td></tr>
+<tr><td>Methods</td><td><code>AIWAF_METHOD_POLICY_ENABLED</code>, <code>AIWAF_ALLOWED_METHODS</code></td></tr>
+<tr><td>Keywords</td><td><code>staticKeywords</code>, <code>AIWAF_ENABLE_KEYWORD_LEARNING</code>, <code>AIWAF_DYNAMIC_TOP_N</code></td></tr>
+<tr><td>Honeypot</td><td><code>HONEYPOT_FIELD</code>, timing settings</td></tr>
+<tr><td>GeoIP</td><td><code>AIWAF_GEO_BLOCK_ENABLED</code>, <code>AIWAF_GEO_BLOCK_COUNTRIES</code>, <code>AIWAF_GEO_ALLOW_COUNTRIES</code></td></tr>
+<tr><td>Models</td><td><code>AIWAF_MODEL_STORAGE</code>, <code>AIWAF_MODEL_PATH</code>, <code>AIWAF_MODEL_CACHE_KEY</code></td></tr>
+<tr><td>Logging</td><td><code>AIWAF_MIDDLEWARE_LOGGING</code>, <code>AIWAF_MIDDLEWARE_LOG_PATH</code>, DB/CSV options</td></tr>
+<tr><td>WASM</td><td><code>AIWAF_WASM_VALIDATION</code>, <code>AIWAF_WASM_VALIDATE_RECENT</code></td></tr>
+</tbody></table></div>
+<p>AIWAF loads <code>aiwaf-wasm</code> when available and falls back to the JavaScript implementation when WASM initialization or conversion is not worthwhile. Small, object-heavy operations can be faster in JavaScript because crossing the JS/WASM boundary and serializing objects has a fixed cost. WASM is most useful for sufficiently large feature batches and model scoring workloads.</p>
+<h2>Development checks</h2>
+<p>Run from the monorepo root:</p>
+<pre><code class="language-bash">npm ci --prefix js
+npm test --prefix js
+python aiwaf_test.py --js-only
+python aiwaf_test.py --wasm-only</code></pre>
+<h2>Packaging</h2>
+<p>The package manifest is <code>js/package.json</code>; the CLI entry is <code>js/bin/aiwaf.js</code>. Release tags use <code>js-v&lt;version&gt;</code> and the <code>npm-publish.yml</code> workflow. The root README and LICENSE are staged into package artifacts by release automation.</p>
 </main>
 </div></div>
 </body>

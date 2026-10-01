@@ -46,7 +46,9 @@
         code { font-family: 'Fira Code', monospace; color: #f6c177; }
         pre { background: rgba(0,0,0,.5); border: 1px solid rgba(78,205,196,.3); border-radius: 10px; padding: .85rem; overflow-x: auto; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
 <header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
@@ -63,83 +65,93 @@
         <div style="margin-top: 0.7rem;">
             <a href="https://pypi.org/project/aiwaf-rust/" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">PyPI: aiwaf-rust</a><br>
             <a href="https://www.npmjs.com/package/aiwaf-wasm" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">npm: aiwaf-wasm</a><br>
-            <a href="https://github.com/aiwaf-project/aiwaf-rust" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub: aiwaf-rust</a>
+            <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub: AIWAF Monorepo</a>
         </div>
     </div>
 </aside>
 <main class="content">
-    <div class="badge">Rust Accelerator</div>
-    <h1 class="page-title">aiwaf-rust Comprehensive Guide</h1>
+<h1 class="page-title">Rust and WebAssembly Accelerators</h1>
+{% include '_docs_source.html' %}
+<p><code>aiwaf-rust</code> and <code>aiwaf-wasm</code> are versioned independently from the Python and Node packages. Both currently declare version <code>0.2.1</code> in the local monorepo. They share <code>rust/crates/aiwaf_core/</code>; PyO3 bindings live in <code>rust/src/lib.rs</code>, and WASM bindings in <code>rust/crates/aiwaf_wasm/</code>.</p>
+<h2>Python bindings</h2>
+<p><code>aiwaf-rust</code> exposes the shared Rust core through PyO3 and ABI3 wheels for Python 3.8 and newer.</p>
+<pre><code class="language-bash">pip install aiwaf-rust</code></pre>
+<p>The module provides:</p>
+<ul>
+<li><code>validate_headers</code> and <code>validate_headers_with_config</code></li>
+<li><code>KeywordMatcher</code> and <code>RouteMatcher</code></li>
+<li>request-record construction and six-feature extraction</li>
+<li>incremental feature extraction with explicit state</li>
+<li>recent-behavior analysis</li>
+<li><code>IsolationForest</code> training, scoring, prediction, retraining, and JSON state</li>
+</ul>
+<pre><code class="language-python">import aiwaf_rust
 
-    <section class="section">
-        <h2>1. What This Guide Covers</h2>
-        <ul>
-            <li>Local environment setup for Rust, Python (PyO3), and WASM.</li>
-            <li>Function-level API reference for exported Python and WASM bindings.</li>
-            <li>Isolation Forest behavior and state model details.</li>
-            <li>Integration patterns for Python services and JS/browser runtimes.</li>
-            <li>Build/test/release commands used in this repo.</li>
-        </ul>
-    </section>
+reason = aiwaf_rust.validate_headers({
+    &quot;HTTP_USER_AGENT&quot;: &quot;Mozilla/5.0&quot;,
+    &quot;HTTP_ACCEPT&quot;: &quot;text/html&quot;,
+})
 
-    <section class="section">
-        <h2>2. Repository Architecture</h2>
-        <ul>
-            <li><code>crates/aiwaf_core</code>: shared Rust logic (headers, features, behavior, Isolation Forest).</li>
-            <li><code>src/lib.rs</code>: PyO3 bindings exposed as Python module <code>aiwaf_rust</code>.</li>
-            <li><code>crates/aiwaf_wasm/src/lib.rs</code>: <code>wasm-bindgen</code> bindings exposed as npm package <code>aiwaf-wasm</code>.</li>
-            <li><code>tests/test_python_api.py</code>: Python API contract tests.</li>
-            <li><code>crates/aiwaf_wasm/tests/wasm_api.rs</code>: WASM API contract tests.</li>
-        </ul>
-        <h3>Data Flow</h3>
-        <ol>
-            <li>Host runtime (Python or JS) calls binding function.</li>
-            <li>Binding converts runtime data into Rust structs.</li>
-            <li><code>aiwaf_core</code> executes logic.</li>
-            <li>Binding converts output back to runtime-native objects.</li>
-        </ol>
-    </section>
+forest = aiwaf_rust.IsolationForest(
+    n_estimators=100,
+    max_samples=&quot;auto&quot;,
+    contamination=&quot;auto&quot;,
+    max_features=1.0,
+    bootstrap=False,
+    random_state=42,
+    warm_start=False,
+)
+forest.fit([[0.1, 1.0], [0.2, 1.1], [9.0, 9.0]])
+score = forest.anomaly_score([9.0, 9.0])
+state = forest.to_json()
+restored = aiwaf_rust.IsolationForest.from_json(state)</code></pre>
+<p>For a local native build, stage the two canonical repository assets and run maturin:</p>
+<pre><code class="language-bash">cp README.md rust/README.md
+cp LICENSE rust/LICENSE
+python -m pip install maturin
+cd rust
+maturin develop</code></pre>
+<p>The staged files are ignored by Git. Release automation performs the same staging before building wheels and the source distribution.</p>
+<h2>WebAssembly bindings</h2>
+<p><code>aiwaf-wasm</code> exposes the shared Rust core to browsers and Node-compatible bundlers.</p>
+<pre><code class="language-javascript">import init, {
+  IsolationForest,
+  KeywordMatcher,
+  RouteMatcher,
+  analyze_recent_behavior,
+  extract_features,
+  validate_headers,
+} from &#x27;aiwaf-wasm&#x27;;
 
-    <section class="section">
-        <h2>3. Prerequisites</h2>
-        <h3>Core Tools</h3>
-        <ul>
-            <li>Rust stable (<code>rustup</code>, <code>cargo</code>)</li>
-            <li>Python 3.8+</li>
-            <li>Node.js 18+ recommended</li>
-        </ul>
-        <h3>Python Toolchain</h3>
-        <pre><code>python -m venv .venv
-source .venv/bin/activate  # Windows PowerShell: .venv\Scripts\Activate.ps1
-pip install -U pip maturin pytest</code></pre>
-        <h3>WASM Toolchain</h3>
-        <pre><code>cargo install wasm-pack</code></pre>
-    </section>
+await init();
 
-    <section class="section">
-        <h2>4. Quick Start</h2>
-        <h3>PyO3 Local Build/Install</h3>
-        <pre><code>maturin develop
-python -c "import aiwaf_rust; print(aiwaf_rust.__doc__)"</code></pre>
-        <h3>Python API Tests</h3>
-        <pre><code>pytest tests/test_python_api.py -q</code></pre>
-        <h3>WASM Build</h3>
-        <pre><code>cd crates/aiwaf_wasm
-wasm-pack build --release --target bundler
-cd ../..</code></pre>
-        <h3>WASM Tests</h3>
-        <pre><code>cd crates/aiwaf_wasm
+const reason = validate_headers({
+  &#x27;user-agent&#x27;: &#x27;Mozilla/5.0&#x27;,
+  accept: &#x27;text/html&#x27;
+});
+
+const forest = new IsolationForest({
+  n_estimators: 100,
+  max_samples: &#x27;auto&#x27;,
+  contamination: &#x27;auto&#x27;,
+  random_state: 42
+});
+forest.fit([[0.1, 1.0], [0.2, 1.1], [9.0, 9.0]]);
+const score = forest.anomaly_score([9.0, 9.0]);</code></pre>
+<p>The WASM API includes header, URL, and content validation; keyword and route matchers; record conversion; batched feature extraction; recent-behavior analysis; and Isolation Forest lifecycle methods. Browser use requires a bundler that understands WebAssembly assets.</p>
+<p>Build and test it locally:</p>
+<pre><code class="language-bash">cargo test --manifest-path rust/Cargo.toml --locked -p aiwaf_core
+cd rust/crates/aiwaf_wasm
 wasm-pack test --node
-cd ../..</code></pre>
-    </section>
-
-    <section class="section">
-        <h2>Continue</h2>
-        <ul>
-            <li><a href="/docs/rust/bindings" style="color:#4ecdc4;">Bindings API</a>: PyO3 and WASM exported functions/classes.</li>
-            <li><a href="/docs/rust/operations" style="color:#4ecdc4;">Build & Operations</a>: packaging, troubleshooting, and validation checklist.</li>
-        </ul>
-    </section>
+wasm-pack build --release --target bundler
+cd ../..
+python scripts/patch_wasm_pkg.py
+cp ../LICENSE crates/aiwaf_wasm/pkg/LICENSE</code></pre>
+<h2>Continue</h2>
+<ul>
+<li><a href="/docs/rust/bindings">Binding API and scoring semantics</a></li>
+<li><a href="/docs/rust/operations">Build, tests, and packaging</a></li>
+</ul>
 </main>
 </div></div>
 </body>

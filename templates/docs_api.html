@@ -44,7 +44,9 @@
         .api-section h3 { color: #ff6b6b; margin-bottom: 1rem; }
         .method-badge { background: #4ecdc4; color: #000; padding: 0.2rem 0.8rem; border-radius: 20px; font-weight: 600; font-size: 0.8rem; margin-right: 1rem; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
     <header class="header">
@@ -71,71 +73,56 @@
             </aside>
 
             <main class="content">
-                <h1 class="page-title">API Reference</h1>
-                
-                <p>Complete reference for the AIWAF Management API. All endpoints require authentication using a bearer token.</p>
+<h1 class="page-title">Runtime and CLI Reference</h1>
+{% include '_docs_source.html' %}
+<p>AIWAF exposes language-specific middleware, engine, and CLI APIs. There is no shared <code>/api/v1</code> bearer-token management service in the current repo.</p>
+<h2>Python</h2>
+<pre><code class="language-bash"># Unified CLI
+aiwaf --help
+aiwaf blacklist migrate
+aiwaf status
 
-                <div class="api-section">
-                    <h3>Authentication</h3>
-                    <p><span class="method-badge">POST</span>/api/v1/auth/token</p>
-                    <p>Generate an authentication token for API access.</p>
-                    
-                    <div class="code-block">
-curl -X POST https://your-aiwaf:8080/api/v1/auth/token \
-  -H "Content-Type: application/json" \
-  -d '{"username": "admin", "password": "your-password"}'
-                    </div>
-                </div>
+# Django management commands
+python manage.py detect_and_train
+python manage.py regenerate_model
+python manage.py aiwaf_reset --keywords --confirm
+python manage.py aiwaf_logging --status
+python manage.py geo_block_country list
 
-                <div class="api-section">
-                    <h3>Get Status</h3>
-                    <p><span class="method-badge">GET</span>/api/v1/status</p>
-                    <p>Retrieve current protection status and statistics.</p>
-                    
-                    <div class="code-block">
-curl -H "Authorization: Bearer YOUR_TOKEN" \
-  https://your-aiwaf:8080/api/v1/status
+# Explicit adapter dispatch
+aiwaf django aiwaf_list --all
+aiwaf flask --help
+aiwaf fast --help</code></pre>
+<h2>Node.js</h2>
+<pre><code class="language-bash">cd js
 
-Response:
-{
-  "status": "active",
-  "mode": "block", 
-  "threats_blocked": 1247,
-  "requests_processed": 45829,
-  "uptime": "15d 4h 32m"
-}
-                    </div>
-                </div>
-
-                <div class="api-section">
-                    <h3>Update Configuration</h3>
-                    <p><span class="method-badge">PUT</span>/api/v1/config</p>
-                    <p>Update AIWAF configuration settings.</p>
-                    
-                    <div class="code-block">
-curl -X PUT https://your-aiwaf:8080/api/v1/config \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "protection": {
-      "mode": "block",
-      "sensitivity": "high"
-    }
-  }'
-                    </div>
-                </div>
-
-                <div class="api-section">
-                    <h3>Get Threat Log</h3>
-                    <p><span class="method-badge">GET</span>/api/v1/threats</p>
-                    <p>Retrieve recent threat detection events.</p>
-                    
-                    <div class="code-block">
-curl -H "Authorization: Bearer YOUR_TOKEN" \
-  "https://your-aiwaf:8080/api/v1/threats?limit=100&since=2024-01-01"
-                    </div>
-                </div>
-            </main>
+AIWAF_ACCESS_LOG=/path/to/access.log npm run train
+npm run aiwaf -- status
+npm run aiwaf -- list blacklist
+npm run aiwaf -- add blacklist 203.0.113.9 &quot;manual block&quot;
+npm run aiwaf -- add ip-exemption 203.0.113.10 &quot;trusted monitor&quot;
+npm run aiwaf -- geo summary
+npm run aiwaf -- model info
+npm run aiwaf -- export aiwaf-export.json</code></pre>
+<p>Use Redis or another shared cache for consistent rate limiting across multiple Node processes. Without shared state, the in-memory fallback is process-local.</p>
+<p>In an application with the npm package installed, use <code>npx aiwaf --help</code>; the source commands above run from <code>js/</code>.</p>
+<h2>Java</h2>
+<pre><code class="language-bash">aiwaf-cli status
+aiwaf-cli diagnose --model model.json
+aiwaf-cli blocked
+aiwaf-cli unblock 203.0.113.10
+aiwaf-cli train --events events.json --out model.json --backend java
+aiwaf-cli model status --path model.json</code></pre>
+<h2>Adapter and binding references</h2>
+<ul>
+<li><a href="/docs/python/adapters">Python adapters</a></li>
+<li><a href="/docs/javascript">Node.js entry points</a></li>
+<li><a href="/docs/java/setup/servlet">Java engine</a></li>
+<li><a href="/docs/rust/bindings">Rust/Python and WASM functions</a></li>
+</ul>
+<h2>Website endpoints</h2>
+<p>This Flask documentation application defines its own <code>/health</code>, <code>/aiwaf/status</code>, <code>/aiwaf/whitelist</code>, <code>/aiwaf/blacklist</code>, and <code>/aiwaf/keywords</code> routes. Those are website-specific handlers, not a portable AIWAF API. Their implementation does not provide the bearer-token authentication previously described here.</p>
+</main>
         </div>
     </div>
 

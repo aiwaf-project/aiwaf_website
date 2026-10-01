@@ -47,7 +47,9 @@
         pre { background: rgba(0,0,0,.5); border: 1px solid rgba(78,205,196,.3); border-radius: 10px; padding: .85rem; overflow-x: auto; }
         .checklist li { list-style: none; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
 <header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
@@ -73,170 +75,57 @@
     </ul>
 </aside>
 <main class="content">
-    <div class="badge">Comprehensive Setup</div>
-    <h1 class="page-title">AIWAF-JS End-To-End Setup Guide</h1>
+<h1 class="page-title">AdonisJS Setup</h1>
+{% include '_docs_source.html' %}
+<h2>Install</h2>
+<pre><code class="language-bash">npm install aiwaf</code></pre>
+<p>Install the framework dependencies used by your existing application. The Node middleware package is <code>aiwaf</code>; source code and package scripts live in the monorepo's <code>js/</code> directory.</p>
+<h2>Register the adapter</h2>
+<p>The adapter returns an asynchronous <code>(ctx, next)</code> function. Wrap it in an Adonis middleware class and register that class through your application's middleware configuration:</p>
+<pre><code class="language-javascript">import aiwaf from &#x27;aiwaf&#x27;;
 
-    <section class="section">
-        <h2>1. What This Guide Is</h2>
-        <p>End-to-end setup manual for running <code>aiwaf-js</code> in production Node.js applications.</p>
-        <ul>
-            <li>Prerequisites and installation for app usage and repo development.</li>
-            <li>Framework integration for Express, Fastify, Hapi, Koa, NestJS, Next.js, AdonisJS, and Sails.</li>
-            <li>Baseline and production-oriented configuration, storage, model backend, training, and verification.</li>
-            <li>Optional WASM/GeoIP/Redis enablement plus troubleshooting and validation playbooks.</li>
-        </ul>
-    </section>
+const protect = aiwaf.adonis({ AIWAF_MIDDLEWARES: [&#x27;auto&#x27;] });
 
-    <section class="section">
-        <h2>2. Prerequisites</h2>
-        <h3>Runtime</h3>
-        <ul>
-            <li>Node.js 18+ recommended.</li>
-            <li>npm 9+ recommended.</li>
-            <li>Supported app frameworks: Express, Fastify, Hapi, Koa, NestJS, Next.js API routes, AdonisJS, Sails.js.</li>
-        </ul>
-        <h3>System Dependencies</h3>
-        <ul>
-            <li>Build tooling required by <code>sqlite3</code> for your OS.</li>
-            <li>Writable filesystem paths for <code>aiwaf.sqlite</code>, <code>logs/</code>, and <code>resources/model.json</code> if file model storage is used.</li>
-        </ul>
-        <h3>Production Recommendations</h3>
-        <ul>
-            <li>Access logs from reverse proxy/app layer.</li>
-            <li>Persistent volume for DB/log/model artifacts.</li>
-            <li>Scheduled training run (<code>train.js</code>) at least daily.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>3. Installation Paths</h2>
-        <pre><code># Application install
-npm install aiwaf-js
-
-# Local development
-npm install
-
-# Optional features
-npm install aiwaf-wasm
-npm install maxmind</code></pre>
-        <p>Redis integration is enabled by setting <code>REDIS_URL</code> or <code>AIWAF_REDIS_URL</code>.</p>
-    </section>
-
-    <section class="section">
-        <h2>4. Core Configuration Concepts</h2>
-        <p>Config is normalized from middleware options, optional <code>AIWAF_SETTINGS</code>, and environment variables.</p>
-        <ul>
-            <li>Rate: <code>AIWAF_RATE_WINDOW</code>, <code>AIWAF_RATE_MAX</code>, <code>AIWAF_RATE_FLOOD</code></li>
-            <li>Exemptions: <code>AIWAF_EXEMPT_PATHS</code>, <code>AIWAF_EXEMPT_IPS</code>, <code>AIWAF_ALLOWED_PATH_KEYWORDS</code>, <code>AIWAF_EXEMPT_KEYWORDS</code>, <code>AIWAF_EXEMPTIONS_DB</code></li>
-            <li>Headers: <code>AIWAF_HEADER_VALIDATION</code>, <code>AIWAF_REQUIRED_HEADERS</code>, <code>AIWAF_HEADER_QUALITY_MIN_SCORE</code>, size/count caps</li>
-            <li>Geo: <code>AIWAF_GEO_BLOCK_ENABLED</code>, country allow/block sets, <code>AIWAF_GEO_MMDB_PATH</code></li>
-            <li>Logging/training: middleware logging toggles + train thresholds + keyword learning flags</li>
-            <li>Model: <code>AIWAF_MODEL_STORAGE</code>, <code>AIWAF_MODEL_PATH</code>, fallback/cache settings</li>
-            <li>WASM: <code>AIWAF_WASM_VALIDATION</code>, header/recent toggles</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>5. Auto Middleware & Path Manifest Setup</h2>
-        <p>AIWAF-JS can automatically tune your middleware protections based on your application's routing structure. By generating a Path Manifest, AIWAF categorizes your endpoints (e.g., API vs HTML Form) and automatically disables unnecessary middlewares (like Honeypots for APIs) and enforces strict rate limits where appropriate.</p>
-        <pre><code># Generate the path manifest automatically
-npm run aiwaf -- generate-manifest</code></pre>
-        <p>At startup, AIWAF reads the manifest from <code>.aiwaf/paths.json</code> to auto-configure the execution chain.</p>
-        <p>If you prefer fine-grained manual control over your middleware stack rather than relying on auto-generation, proceed to the framework-specific "All Middlewares" manual setup sections below.</p>
-    </section>
-
-    
-
-    <section class="section">
-        <h2>6. Adonis Setup (All Middlewares)</h2>
-        <h3>AdonisJS</h3>
-<pre><code>() => aiwaf.adonis({ AIWAF_HEADER_VALIDATION: true })</code></pre>
-
-    </section>
-
-    <section class="section">
-        <h2>8-13. Storage, Training, CLI, Optional Features</h2>
-        <h3>Storage And Persistence</h3>
-        <ul>
-            <li>Default SQLite DB at <code>./aiwaf.sqlite</code>, lazy table creation.</li>
-            <li>Managed tables: blocked/exemptions/geo/request logs/dynamic keywords/model artifacts.</li>
-            <li>CSV fallback under <code>logs/storage/</code> if DB calls fail.</li>
-            <li>Model storage: <code>file</code>, <code>db</code>, or <code>cache</code>.</li>
-        </ul>
-        <h3>Training Setup</h3>
-        <pre><code>npm run train
-
-NODE_LOG_PATH=/var/log/nginx/access.log
-NODE_LOG_GLOB='/var/log/nginx/access.log.*'
-AIWAF_MIN_TRAIN_LOGS=50
-AIWAF_MIN_AI_LOGS=10000
-AIWAF_FORCE_AI_TRAINING=false
-AIWAF_ENABLE_KEYWORD_LEARNING=true</code></pre>
-        <p>Training source priority: access logs, middleware JSONL, middleware CSV, DB request logs.</p>
-        <h3>CLI Operations</h3>
-        <pre><code>npm run aiwaf -- &lt;command&gt;
-# or
-node bin/aiwaf.js &lt;command&gt;</code></pre>
-        <ul>
-            <li>List: blacklist/exemptions/geo/request logs/dynamic keywords/model info</li>
-            <li>Add/remove exemptions, geo block/unblock</li>
-            <li>Clear blacklist/request logs/dynamic keywords</li>
-            <li><code>train</code> and <code>diagnose &lt;ip&gt;</code></li>
-        </ul>
-        <h3>Optional WASM</h3>
-        <pre><code>npm install aiwaf-wasm
-AIWAF_WASM_VALIDATION=true
-AIWAF_WASM_HEADER_VALIDATION=true
-AIWAF_WASM_VALIDATE_RECENT=false</code></pre>
-        <h3>Optional GeoIP</h3>
-        <pre><code>npm install maxmind
-AIWAF_GEO_BLOCK_ENABLED=true
-AIWAF_GEO_MMDB_PATH=/absolute/path/to/ipinfo_lite.mmdb
-AIWAF_GEO_BLOCK_COUNTRIES=CN,RU
-# or allowlist mode
-AIWAF_GEO_ALLOW_COUNTRIES=US,CA</code></pre>
-        <h3>Optional Redis</h3>
-        <pre><code>REDIS_URL=redis://localhost:6379
-# or
-AIWAF_REDIS_URL=redis://localhost:6379</code></pre>
-    </section>
-
-    <section class="section">
-        <h2>14-17. Production Checklist, Validation, Troubleshooting, Contributor Setup</h2>
-        <h3>Production Baseline Checklist</h3>
-        <ul class="checklist">
-            <li>[ ] Middleware enabled and app startup verified.</li>
-            <li>[ ] Body parser ordering confirmed where required.</li>
-            <li>[ ] Exempt paths configured for health/static/known-safe callbacks.</li>
-            <li>[ ] Rate and header policies tuned with real traffic profile.</li>
-            <li>[ ] Middleware logging persisted.</li>
-            <li>[ ] Training scheduled and validated.</li>
-            <li>[ ] Intentional block event verified in staging.</li>
-            <li>[ ] CLI operations validated (<code>list</code>, <code>diagnose</code>, <code>train</code>).</li>
-        </ul>
-        <h3>Validation Playbook</h3>
-        <ol>
-            <li>Smoke: <code>/health</code> and static routes pass; suspicious probe path blocks.</li>
-            <li>Rate limits: burst non-exempt endpoint and observe <code>429</code>/<code>403</code> behavior.</li>
-            <li>Header checks: low-quality headers trigger expected validation behavior.</li>
-            <li>Training: verify source detection and <code>npm run train</code> output.</li>
-        </ol>
-        <h3>Troubleshooting Highlights</h3>
-        <ul>
-            <li><code>sqlite3</code> build failure: install platform-native build tools and reinstall deps.</li>
-            <li>DB errors: ensure write permissions for DB/working directory.</li>
-            <li>No training data: verify log paths/globs and enable middleware logging fallback.</li>
-            <li>Model load issues: train and verify model storage path/backend permissions.</li>
-            <li>False positives: tune exemptions/allowed keywords and thresholds gradually.</li>
-            <li>Geo issues: verify <code>maxmind</code>, MMDB path, ISO country codes, and proxy IP resolution.</li>
-        </ul>
-        <h3>Contributor Setup</h3>
-        <pre><code>npm install
-npm test
-npm run train
-npm run aiwaf -- help</code></pre>
-        <p>Read next: <code>README.md</code>, <code>INSTALLATION.md</code>.</p>
-    </section>
+export default class AiwafMiddleware {
+  async handle(ctx, next) {
+    return protect(ctx, next);
+  }
+}</code></pre>
+<p>Place body parsing before checks that need parsed fields. Follow the middleware registration API for your Adonis version.</p>
+<h2>Generate route policies</h2>
+<p>Generate a manifest after the application's routes are registered. Express applications can call <code>aiwaf.generateExpressManifest(app, '.aiwaf/paths.json')</code>. Other adapters expose <code>aiwaf.generateFrameworkManifest(framework, app, outputPath, options)</code> with framework-specific route extraction.</p>
+<p>For a route list stored in <code>routes.json</code>, use the installed CLI:</p>
+<pre><code class="language-bash">npx aiwaf manifest --framework adonis --routes routes.json --output .aiwaf/paths.json</code></pre>
+<p>Review the resulting manifest and repeat generation when routes change. Manifest generation complements <code>AIWAF_MIDDLEWARES: ['auto']</code> and explicit <code>AIWAF_PATH_RULES</code> overrides.</p>
+<h2>Configuration</h2>
+<div class="table-wrap"><table><thead><tr><th>Area</th><th>Important options</th></tr></thead><tbody>
+<tr><td>Middleware</td><td><code>AIWAF_MIDDLEWARES</code>, <code>AIWAF_DISABLE_MIDDLEWARES</code>, <code>AIWAF_PATH_RULES</code></td></tr>
+<tr><td>Rate limiting</td><td><code>WINDOW_SEC</code>, <code>MAX_REQ</code>, <code>FLOOD_REQ</code>, <code>cache</code></td></tr>
+<tr><td>Headers</td><td><code>AIWAF_HEADER_VALIDATION</code>, <code>AIWAF_REQUIRED_HEADERS</code>, <code>AIWAF_HEADER_QUALITY_MIN_SCORE</code></td></tr>
+<tr><td>Methods</td><td><code>AIWAF_METHOD_POLICY_ENABLED</code>, <code>AIWAF_ALLOWED_METHODS</code></td></tr>
+<tr><td>Keywords</td><td><code>staticKeywords</code>, <code>AIWAF_ENABLE_KEYWORD_LEARNING</code>, <code>AIWAF_DYNAMIC_TOP_N</code></td></tr>
+<tr><td>Honeypot</td><td><code>HONEYPOT_FIELD</code>, timing settings</td></tr>
+<tr><td>GeoIP</td><td><code>AIWAF_GEO_BLOCK_ENABLED</code>, <code>AIWAF_GEO_BLOCK_COUNTRIES</code>, <code>AIWAF_GEO_ALLOW_COUNTRIES</code></td></tr>
+<tr><td>Models</td><td><code>AIWAF_MODEL_STORAGE</code>, <code>AIWAF_MODEL_PATH</code>, <code>AIWAF_MODEL_CACHE_KEY</code></td></tr>
+<tr><td>Logging</td><td><code>AIWAF_MIDDLEWARE_LOGGING</code>, <code>AIWAF_MIDDLEWARE_LOG_PATH</code>, DB/CSV options</td></tr>
+<tr><td>WASM</td><td><code>AIWAF_WASM_VALIDATION</code>, <code>AIWAF_WASM_VALIDATE_RECENT</code></td></tr>
+</tbody></table></div>
+<p>AIWAF loads <code>aiwaf-wasm</code> when available and falls back to the JavaScript implementation when WASM initialization or conversion is not worthwhile. Small, object-heavy operations can be faster in JavaScript because crossing the JS/WASM boundary and serializing objects has a fixed cost. WASM is most useful for sufficiently large feature batches and model scoring workloads.</p>
+<h2>Operate the installed package</h2>
+<pre><code class="language-bash">npx aiwaf --help
+npx aiwaf status
+npx aiwaf list blacklist
+npx aiwaf model info</code></pre>
+<p>For offline training from a source checkout:</p>
+<pre><code class="language-bash">cd aiwaf/js
+AIWAF_ACCESS_LOG=/path/to/access.log npm run train</code></pre>
+<p>PowerShell users can set <code>$env:AIWAF_ACCESS_LOG = '/path/to/access.log'</code> before <code>npm run train</code>. Application installs do not inherit the package's npm scripts; use the installed CLI or the source checkout as appropriate.</p>
+<h2>Verify and deploy</h2>
+<p>Test normal routes, narrowly scoped exemptions, configured header policy, and rate-limit behavior in staging. Persist logs and model artifacts and schedule training after traffic volume thresholds are met. In-memory enforcement is process-local; use Redis or another shared cache when rate limits must span workers.</p>
+<ul>
+<li><a href="/docs/javascript/operations">Node.js operations</a></li>
+<li><a href="/docs/javascript/architecture">Architecture and route policies</a></li>
+</ul>
 </main>
 </div></div>
 </body>

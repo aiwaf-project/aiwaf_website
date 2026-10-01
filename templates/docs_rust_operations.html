@@ -45,7 +45,9 @@
         code { font-family: 'Fira Code', monospace; color: #f6c177; }
         pre { background: rgba(0,0,0,.5); border: 1px solid rgba(78,205,196,.3); border-radius: 10px; padding: .85rem; overflow-x: auto; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
 <header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
@@ -62,50 +64,40 @@
         <div style="margin-top: 0.7rem;">
             <a href="https://pypi.org/project/aiwaf-rust/" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">PyPI: aiwaf-rust</a><br>
             <a href="https://www.npmjs.com/package/aiwaf-wasm" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">npm: aiwaf-wasm</a><br>
-            <a href="https://github.com/aiwaf-project/aiwaf-rust" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub: aiwaf-rust</a>
+            <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub: AIWAF Monorepo</a>
         </div>
     </div>
 </aside>
 <main class="content">
-    <div class="badge">Build And Ops</div>
-    <h1 class="page-title">Packaging, Troubleshooting, Validation</h1>
-
-    <section class="section">
-        <h2>9. Build, Package, And Publish Notes</h2>
-        <h3>Python wheels/sdist</h3>
-        <ul>
-            <li>Build backend is <code>maturin</code> (<code>pyproject.toml</code>).</li>
-            <li>Module name is <code>aiwaf_rust</code>.</li>
-            <li>Uses PyO3 <code>abi3-py38</code> compatibility mode for broad wheel support.</li>
-        </ul>
-        <h3>WASM npm package</h3>
-        <ul>
-            <li>Crate: <code>crates/aiwaf_wasm</code></li>
-            <li>Build output: <code>crates/aiwaf_wasm/pkg</code></li>
-            <li>Packaging helpers: <code>scripts/patch_wasm_pkg.py</code>, <code>scripts/normalize_wheel.py</code></li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>10. Troubleshooting</h2>
-        <ul>
-            <li><code>ImportError</code> after <code>maturin develop</code>: ensure active venv matches build interpreter.</li>
-            <li>PyO3 build mismatch: verify Python 3.8+ and local <code>maturin</code> install.</li>
-            <li>WASM runtime errors: ensure <code>await init()</code> runs before calling exports.</li>
-            <li>Header false positives: verify header key normalization and required-header config.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>11. Validation Checklist</h2>
-        <ul>
-            <li>Python import works: <code>import aiwaf_rust</code>.</li>
-            <li>Python tests pass: <code>pytest tests/test_python_api.py -q</code>.</li>
-            <li>WASM builds: <code>wasm-pack build --release --target bundler</code>.</li>
-            <li>WASM tests pass: <code>wasm-pack test --node</code>.</li>
-            <li>Isolation forest roundtrip validated in both bindings: <code>fit -> to_json -> from_json -> predict</code>.</li>
-        </ul>
-    </section>
+<h1 class="page-title">Rust Build and Packaging</h1>
+{% include '_docs_source.html' %}
+<h2>Native Python build</h2>
+<p>Run these commands in a virtual environment from the monorepo root. Stage the canonical README and LICENSE before changing directory:</p>
+<pre><code class="language-bash">cp README.md rust/README.md
+cp LICENSE rust/LICENSE
+python -m pip install maturin
+cd rust
+maturin develop
+cd ..
+pytest -q rust/tests/test_python_api.py</code></pre>
+<p>PowerShell users can use <code>Copy-Item README.md rust/README.md</code> and <code>Copy-Item LICENSE rust/LICENSE</code> for staging. These generated package-local assets are ignored by Git.</p>
+<h2>Rust core and WASM</h2>
+<pre><code class="language-bash">cargo test --manifest-path rust/Cargo.toml --locked -p aiwaf_core
+cd rust/crates/aiwaf_wasm
+wasm-pack test --node
+wasm-pack build --release --target bundler
+cd ../..
+python scripts/patch_wasm_pkg.py
+cp ../LICENSE crates/aiwaf_wasm/pkg/LICENSE</code></pre>
+<p>PowerShell can replace the final <code>cp</code> with <code>Copy-Item</code>. Browser applications require a bundler that understands WebAssembly assets; initialize the WASM module before calling its exports.</p>
+<h2>Release manifests</h2>
+<ul>
+<li>PyPI: <code>rust/pyproject.toml</code> and <code>rust/Cargo.toml</code>, <code>rust-v0.2.1</code>, <code>rust-publish.yml</code>.</li>
+<li>npm: <code>rust/crates/aiwaf_wasm/Cargo.toml</code>, <code>wasm-v0.2.1</code>, <code>wasm-publish.yml</code>.</li>
+<li>PyO3 uses ABI3 wheels for Python 3.8 and newer, exporting <code>aiwaf_rust</code>.</li>
+</ul>
+<h2>Verification</h2>
+<p>Confirm <code>import aiwaf_rust</code> works in the interpreter used by the application. Validate model round trips through <code>fit</code>, <code>to_json</code>, <code>from_json</code>, and <code>predict</code>. Python selects available Rust capabilities automatically and falls back when unavailable. WASM performance depends on batch size and conversion cost.</p>
 </main>
 </div></div>
 </body>

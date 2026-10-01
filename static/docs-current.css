@@ -1,0 +1,12 @@
+.source-note { margin: 1.5rem 0; padding: 1rem 1.25rem; border-left: 3px solid #4ecdc4; background: rgba(78,205,196,.08); border-radius: 8px; line-height: 1.7; overflow-wrap: anywhere; }
+.source-note a, .content a { color: #4ecdc4; }
+.content { min-width: 0; }
+.content h2 { color: #ff6b6b; margin: 2rem 0 1rem; }
+.content h3 { color: #4ecdc4; margin: 1.5rem 0 .75rem; }
+.content p, .content ul, .content ol { margin-bottom: 1rem; }
+.content ul, .content ol { padding-left: 1.5rem; }
+.content pre { white-space: pre; overflow-x: auto; background: rgba(0,0,0,.35); padding: 1.25rem; border-radius: 10px; margin: 1rem 0; }
+.table-wrap { overflow-x: auto; margin: 1rem 0; }
+.content table { width: 100%; border-collapse: collapse; }
+.content th, .content td { text-align: left; padding: .75rem; border-bottom: 1px solid rgba(255,255,255,.15); }
+.legacy-note { border-left-color: #ff6b6b; }

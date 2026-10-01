@@ -45,7 +45,9 @@
         li { margin-bottom: .35rem; }
         code { font-family: 'Fira Code', monospace; color: #f6c177; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
 <header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
@@ -67,61 +69,41 @@
     </ul>
 </aside>
 <main class="content">
-    <div class="badge">Adapter Deep Dive</div>
-    <h1 class="page-title">Execution Model By Framework</h1>
+<h1 class="page-title">Python Framework Adapters</h1>
+{% include '_docs_source.html' %}
+<h2>Django</h2>
+<p>Add <code>aiwaf.django</code> to <code>INSTALLED_APPS</code>. Use <code>aiwaf.django.middleware.all</code> for the unified stack or explicitly order individual middleware classes. Django supports ORM-backed or CSV runtime stores and file, database, or cache model storage. Apply migrations when using ORM stores.</p>
+<h2>Flask</h2>
+<p><code>from aiwaf.flask import AIWAF</code> exposes the application integration. Request and response hooks coordinate checks, decorators, logging, and model scoring. Initialize AIWAF once; select <code>middlewares=["auto"]</code>, <code>["all"]</code>, or a list of canonical middleware names.</p>
+<h2>FastAPI</h2>
+<p><code>from aiwaf.fast import AIWAF</code> exposes the Starlette-based orchestrator. Pass structured constructor options for storage, header validation, rate limiting, and logging. FastAPI uses the shared runtime storage and route-policy helpers. Version 1.0.8 normalizes headers before Rust validation and respects the adapter's disabled Rust path.</p>
+<h2>Route helpers</h2>
+<p>Django, Flask, and FastAPI expose equivalent route helpers:</p>
+<pre><code class="language-python">from aiwaf.flask import (
+    aiwaf_exempt,
+    aiwaf_exempt_from,
+    aiwaf_only,
+    aiwaf_require_protection,
+)
 
-    <section class="section">
-        <h2>Django (<code>aiwaf.django</code>)</h2>
-        <h3>Entry and Request Pipeline</h3>
-        <ul>
-            <li>Primary entry exposes middleware classes from <code>aiwaf/django/middleware.py</code>.</li>
-            <li>Pipeline evaluates exemptions/path rules first, then applies block logic, anomaly checks, and logging.</li>
-            <li>Trainer reads logs and <code>RequestLog</code> records to retrain model and dynamic keywords.</li>
-        </ul>
-        <h3>Storage and Model Options</h3>
-        <ul>
-            <li><code>models</code> mode (ORM-backed stores) or <code>csv</code> mode.</li>
-            <li>Model artifact storage via <code>file</code>, <code>db</code>, or <code>cache</code>.</li>
-        </ul>
-    </section>
+@app.get(&quot;/health&quot;)
+@aiwaf_exempt
+def health():
+    return {&quot;ok&quot;: True}
 
-    <section class="section">
-        <h2>Flask (<code>aiwaf.flask</code>)</h2>
-        <h3>Execution Style</h3>
-        <ul>
-            <li>Hooks into <code>before_request</code> and <code>after_request</code> for middleware behavior.</li>
-            <li>Route-level gating via decorators like <code>aiwaf_exempt</code>, <code>aiwaf_exempt_from</code>, <code>aiwaf_only</code>.</li>
-            <li>Storage supports DB, CSV, and memory fallback modes.</li>
-        </ul>
-        <h3>Operational Parity</h3>
-        <ul>
-            <li>Flask CLI exposes training/list/reset/maintenance surface used by FastAPI shim as well.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>FastAPI (<code>aiwaf.fast</code>)</h2>
-        <h3>Runtime Orchestrator</h3>
-        <ul>
-            <li><code>AIWAF</code> alias points to <code>core/runtime_fastapi.py</code> orchestrator.</li>
-            <li>Initializes config, storage backend, middleware order, and lifespan behavior.</li>
-        </ul>
-        <h3>Middleware and Routing Controls</h3>
-        <ul>
-            <li>Uses Starlette <code>BaseHTTPMiddleware</code> classes for protection layers.</li>
-            <li>Decorator/path-rule gating from shared runtime decorators determines which middleware applies per route.</li>
-            <li>Uses shared runtime storage and blacklist managers directly.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>Cross-Adapter Consistency Notes</h2>
-        <ul>
-            <li>All adapters share common detection/training/storage primitives from <code>aiwaf/core</code>.</li>
-            <li>Behavior may vary slightly by framework integration depth and storage mode semantics.</li>
-            <li>Exemption and path-rule systems are central for reducing false positives in all frameworks.</li>
-        </ul>
-    </section>
+@app.post(&quot;/webhook&quot;)
+@aiwaf_only(&quot;header_validation&quot;)
+def webhook():
+    return {&quot;accepted&quot;: True}</code></pre>
+<p>Canonical middleware names include <code>header_validation</code>, <code>rate_limit</code>, <code>ip_keyword_block</code>, <code>honeypot</code>, <code>geo_block</code>, <code>uuid_tamper</code>, <code>ai_anomaly</code>, and <code>logging</code>.</p>
+<h2>Middleware selection</h2>
+<p><code>auto</code> starts from the canonical middleware set and omits checks that are not useful for detected application signals. Route manifests complement live metadata. Generate the manifest from the actual application environment after its routes have been registered.</p>
+<h2>Setup guides</h2>
+<ul>
+<li><a href="/docs/python/setup/django">Django</a></li>
+<li><a href="/docs/python/setup/flask">Flask</a></li>
+<li><a href="/docs/python/setup/fastapi">FastAPI</a></li>
+</ul>
 </main>
 </div></div>
 </body>

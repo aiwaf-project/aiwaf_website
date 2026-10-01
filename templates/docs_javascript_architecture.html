@@ -45,7 +45,9 @@
         li { margin-bottom: .35rem; }
         code { font-family: 'Fira Code', monospace; color: #f6c177; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
 <header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
@@ -71,211 +73,63 @@
     </ul>
 </aside>
 <main class="content">
-    <div class="badge">Core Design</div>
-    <h1 class="page-title">Architecture And Runtime Flow</h1>
-
-    <section class="section">
-        <h2>High-Level Architecture</h2>
-        <ul>
-            <li>Unified core pipeline in <code>lib/wafMiddleware.js</code>.</li>
-            <li>Defense-domain modules in <code>lib/</code> (rate, headers, geo, anomaly, keyword, UUID, honeypot).</li>
-            <li>Storage managers prefer SQLite and fail open to CSV when DB is unavailable.</li>
-            <li>Training pipeline learns from logs and runtime data stores.</li>
-            <li>Non-Express adapters normalize into Express-like <code>req/res/next</code> contract.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>Runtime Entry And Framework Adapters</h2>
-        <h3>Package Entry (<code>index.js</code>)</h3>
-        <ul>
-            <li>Default export: Express-compatible middleware.</li>
-            <li>Named targets: Fastify, Hapi, Koa, Nest, Next.js, Adonis.</li>
-            <li>Sails alias points to Express middleware path.</li>
-        </ul>
-        <h3>Adapter Behavior</h3>
-        <ul>
-            <li>Fastify: <code>onRequest</code> hook with wrapped <code>status/json/send</code> response helpers.</li>
-            <li>Hapi: <code>server.ext('onRequest')</code> and takeover response mapping on deny.</li>
-            <li>Koa: wraps <code>ctx</code> with Express-like methods, forwards only if not handled.</li>
-            <li>Nest: middleware class delegates to core middleware in <code>use(req,res,next)</code>.</li>
-            <li>Next.js: wrapper runs AIWAF first, blocks short-circuit, else calls original handler.</li>
-            <li>Adonis: maps context request/response into Express-like contract.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>Core Request Pipeline (<code>lib/wafMiddleware.js</code>)</h2>
-        <h3>Initialization Phase</h3>
-        <ul>
-            <li>Settings normalized through <code>normalizeSettings(rawOpts)</code>.</li>
-            <li>Defense modules initialized: rate limiter, keyword detectors, anomaly, header validation, geo, exemptions, logger, feature utils.</li>
-            <li>Optional startup clear via <code>AIWAF_CLEAR_STATE_ON_START</code>.</li>
-        </ul>
-        <h3>Per-Request Flow</h3>
-        <ol>
-            <li>Resolve metadata (<code>ip/path/method</code>) and logger hooks.</li>
-            <li>Optional method policy block (<code>AIWAF_METHOD_POLICY_ENABLED</code>).</li>
-            <li>Exemption short-circuit (bypasses remaining checks if IP or path is exempt).</li>
-            <li>Blocked IP check (early reject for known bad IPs).</li>
-            <li>Header validation (enforces structural constraints and presence of required headers).</li>
-            <li><strong>WASM Validation Checks</strong> (if <code>AIWAF_WASM_VALIDATION</code> is enabled):
-                <ul>
-                    <li><strong>Headers:</strong> Evaluates header combinations against high-performance WASM rules.</li>
-                    <li><strong>URL:</strong> Inspects full URL topology and request context via WASM.</li>
-                    <li><strong>Content:</strong> Validates raw or JSON parsed request bodies (<code>req.body</code>).</li>
-                    <li><strong>Recent Behavior:</strong> Aggregates up to 200 recent requests for temporal WASM evaluation (<code>AIWAF_WASM_VALIDATE_RECENT</code>).</li>
-                </ul>
-            </li>
-            <li>Geo policy check (compares <code>req</code> IP against block/allow lists).</li>
-            <li>Honeypot/timing checks (evaluates rapid form submissions against expected human interaction times).</li>
-            <li>Rate limit record + block decision (checks both burst/flood patterns and steady-rate thresholds).</li>
-            <li>Static and dynamic keyword checks (inspects path against known malicious strings and dynamically learned signatures).</li>
-            <li>UUID tamper checks (detects probing or malformed UUID injections).</li>
-            <li><strong>Unknown-Route Anomaly Decision:</strong> Only runs if the path does not match a known framework route (e.g., Express router). Evaluates a 6-feature vector against a trained Isolation Forest model. If anomalous, cross-references recent behavior (last 5000 requests over 5 minutes) measuring 404 scanning, burst rates, and keyword hits before issuing a block.</li>
-            <li>Response-finish keyword learning for suspicious 404 patterns (lazy learning step after response finishes).</li>
-            <li><code>next()</code> when not blocked.</li>
-        </ol>
-        <h3>Block Response Model</h3>
-        <p>Responds with <code>403</code>, <code>405</code>, or <code>429</code>. Automatically falls back to JSON responses if the client sends <code>Accept: application/json</code>, is an XHR request, or if forced via <code>AIWAF_FORCE_JSON_ERRORS</code>.</p>
-    </section>
-
-    <section class="section">
-        <h2>Core Modules Map (<code>lib/</code>)</h2>
-        <ul>
-            <li><code>blacklistManager.js</code>, <code>exemptionStore.js</code>, <code>exemptions.js</code></li>
-            <li><code>rateLimiter.js</code>, <code>keywordDetector.js</code>, <code>dynamicKeyword.js</code>, <code>dynamicKeywordStore.js</code></li>
-            <li><code>honeypotDetector.js</code>, <code>uuidDetector.js</code>, <code>headerValidation.js</code></li>
-            <li><code>geoBlocker.js</code>, <code>geoStore.js</code></li>
-            <li><code>anomalyDetector.js</code>, <code>isolationForest.js</code>, <code>featureUtils.js</code></li>
-            <li><code>middlewareLogger.js</code>, <code>requestLogStore.js</code>, <code>modelStore.js</code></li>
-            <li><code>settingsCompat.js</code>, <code>redisClient.js</code>, <code>wasmAdapter.js</code>, <code>csvStore.js</code></li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>Detailed Middleware Execution Chain</h2>
-        <p>The core <code>lib/wafMiddleware.js</code> executes the following defense layers sequentially. Order is strictly enforced to ensure fast-path exits (like exemptions) prevent unnecessary processing of heavier tasks (like ML scoring):</p>
-        <ol>
-            <li><strong>Initialization & Hooks:</strong> Resolves request metadata (IP, path, method) and attaches the logger hook to the response <code>finish</code> event.</li>
-            <li><strong>Method Policy Block:</strong> Drops requests with unexpected verbs early if <code>AIWAF_METHOD_POLICY_ENABLED</code> is active.</li>
-            <li><strong>Exemption Short-Circuit:</strong> Evaluates IP and Path exemptions. Bypasses remaining checks if a match is found.</li>
-            <li><strong>Blocked IP Check:</strong> Rejects known bad IPs stored in the `blacklistManager`.</li>
-            <li><strong>Header Validation:</strong> Enforces structural constraints, verifies required headers, and drops bot-pattern signatures.</li>
-            <li><strong>WASM Validation Checks:</strong> (Optional) Evaluates high-performance WASM rules across Headers, full URL topology, Body content, and temporal behavior over the last 200 requests.</li>
-            <li><strong>Geo Policy Check:</strong> Evaluates the source IP against <code>MMDB</code> allow/block rules.</li>
-            <li><strong>Honeypot & Timing Checks:</strong> Defends against automated form abuse by comparing submission times against <code>AIWAF_MIN_FORM_TIME</code> and checking for expected user-agent delays.</li>
-            <li><strong>Rate Limit Check:</strong> Enforces burst and steady-state <code>AIWAF_RATE_MAX</code> windows via the <code>rateLimiter</code> backend.</li>
-            <li><strong>Keyword Checks (Static & Dynamic):</strong> Inspects the path against hardcoded signatures (e.g., <code>.php</code>, <code>wp-admin</code>) and dynamically learned strings from the <code>dynamicKeywordStore</code>.</li>
-            <li><strong>UUID Tamper Check:</strong> Evaluates the path for malformed UUID injections or UUID-specific 404 probing.</li>
-            <li><strong>Unknown-Route Anomaly Check:</strong> Only runs for unknown routes. Evaluates a 6-feature vector against the Isolation Forest model and cross-references recent temporal burst/404 scanning behaviors before blocking.</li>
-            <li><strong>Post-Response Learning:</strong> Triggers the dynamic keyword learning hook lazily after the response is sent to minimize latency.</li>
-        </ol>
-    </section>
-
-    <section class="section">
-        <h2>AST Static Analysis (<code>lib/sourceAst.js</code>)</h2>
-        <p>The AST layer extracts a deterministic route manifest during startup to selectively enforce rules without requiring runtime regex matching. It relies on bounded static source analysis when framework metadata is missing.</p>
-        <ul>
-            <li><strong>Parsing:</strong> Uses <code>@babel/parser</code> to parse route handlers via <code>Function.prototype.toString.call(handler)</code>. It handles JSX, TypeScript, and modern JS syntax.</li>
-            <li><strong>Traversal:</strong> Custom recursive traversal visits all nodes to build confidence scores (<code>apiScore</code>, <code>formScore</code>, <code>authScore</code>).</li>
-            <li><strong>Method Inference:</strong> Inspects <code>StringLiteral</code> and <code>BinaryExpression</code> nodes against <code>req.method</code> to infer supported HTTP verbs.</li>
-            <li><strong>API vs Form Scoring:</strong>
-                <ul>
-                    <li>Increases <code>apiScore</code> when it encounters <code>res.json()</code>, <code>res.send()</code> with Object Literals, or checks for <code>req.body</code>.</li>
-                    <li>Increases <code>formScore</code> when it finds <code>res.render()</code>, <code>res.redirect()</code>, or checks for <code>req.form</code>/<code>req.file</code>.</li>
-                </ul>
-            </li>
-            <li><strong>Auth Detection:</strong> Detects <code>logout</code>, <code>authenticate</code>, <code>register</code>, and token logic (e.g., <code>jwt</code>, <code>bcrypt</code>) from <code>CallExpression</code> and <code>Identifier</code> nodes to classify the endpoint as an authentication boundary.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>Path Generation and Auto Middleware (<code>lib/pathManifest.js</code>)</h2>
-        <p>The AST data is ingested into the Path Manifest builder, which intelligently categorizes routes and automatically auto-toggles specific middlewares.</p>
-        <ul>
-            <li><strong>Route Classification (<code>classifyRoute</code>):</strong> Routes are binned into categories like <code>api</code>, <code>form</code>, <code>admin</code>, <code>upload</code>, <code>static</code>, or <code>auth</code> based on AST signals and Framework router introspection (Express/Fastify/Next).</li>
-            <li><strong>Auto Middleware Planning:</strong> The <code>protections</code> array is tailored to the route category. For instance:
-                <ul>
-                    <li><strong>API Endpoints:</strong> HTML honeypots are disabled, JSON payload checks are enforced, and rate limits are raised to 120 req/min.</li>
-                    <li><strong>Static Assets:</strong> CPU-heavy checks like ML anomaly scoring, honeypots, and header validations are automatically disabled on paths matching <code>/static/</code> or <code>.png</code>.</li>
-                </ul>
-            </li>
-            <li><strong>Rule Compilation (<code>compileManifestToPathRules</code>):</strong> These categorized protections are natively compiled into <code>DISABLE</code> arrays and <code>RATE_LIMIT</code> override configurations that the <code>wafMiddleware.js</code> directly consumes on every request.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>Deep Dive: Core Functions and Methods</h2>
-        <p>A reference of the core internal functions powering the Node.js AIWAF engine.</p>
-        <div class="table-wrap">
-            <table>
-                <thead>
-                    <tr><th>Module / Class</th><th>Function / Method</th><th>Description</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td><code>wafMiddleware.js</code><br><strong>(Main Export)</strong></td><td><code>aiwaf(options)</code></td><td>Factory function that initializes the WAF middleware closure and returns the <code>evaluateRequest(req, res, next)</code> request handler.</td></tr>
-                    <tr><td><code>pathManifest.js</code><br><strong>(Manifest Generator)</strong></td><td><code>compileManifestToPathRules(manifest)</code></td><td>Converts the high-level AST abstractions into standard, runtime-optimized rules (e.g., explicitly disabling honeypots on paths classified as API).</td></tr>
-                    <tr><td><code>sourceAst.js</code><br><strong>(AST Parser)</strong></td><td><code>parseFileAST(filePath)</code></td><td>Utilizes <code>@babel/parser</code> to read the physical source code of Express/Fastify route controllers to infer HTTP methods and endpoints.</td></tr>
-                    <tr><td><code>rateLimiter.js</code><br><strong>RateLimiter</strong></td><td><code>checkLimit(ip, path)</code></td><td>Calculates standard sliding-window limits and extremely aggressive burst limits, interacting with Redis or in-memory LRU maps.</td></tr>
-                    <tr><td><code>isolationForest.js</code><br><strong>AnomalyDetector</strong></td><td><code>scoreVector(features)</code></td><td>Executes the machine learning prediction against the in-memory JSON artifact holding the 200 trees, outputting an anomaly float score.</td></tr>
-                    <tr><td><code>headerValidation.js</code><br><strong>HeaderPolicy</strong></td><td><code>calculateQualityScore(req)</code></td><td>Scores the incoming HTTP headers. Points are subtracted for missing standard browser headers or the presence of suspicious automation tool fingerprints.</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <section class="section">
-        <h2>Storage And Persistence Strategy</h2>
-        <ul>
-            <li>SQLite via Knex in <code>utils/db.js</code> (<code>:memory:</code> in tests; <code>./aiwaf.sqlite</code> otherwise).</li>
-            <li>Lazily-created tables include blocked/exemptions/geo/request logs/dynamic keywords/model artifacts.</li>
-            <li>On DB failure, stores switch to CSV fallback under <code>logs/storage/</code>.</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>Training And Learning Pipeline (<code>train.js</code>)</h2>
-        <h3>Source Priority</h3>
-        <p>The training pipeline sequentially attempts to read requests from multiple sources, stopping at the first available populated source:</p>
-        <ol>
-            <li>Access logs (<code>AIWAF_ACCESS_LOG</code>/<code>NODE_LOG_PATH</code> + glob/rotated gzip files). Defaults to <code>/var/log/nginx/access.log</code>.</li>
-            <li>Middleware JSONL logs (<code>AIWAF_MIDDLEWARE_LOG_PATH</code>).</li>
-            <li>Middleware CSV logs (<code>AIWAF_MIDDLEWARE_LOG_CSV_PATH</code>).</li>
-            <li>DB request logs (via <code>requestLogStore.recent(20000)</code>).</li>
-        </ol>
-        
-        <h3>Pre-Training Abuse Checks</h3>
-        <ul>
-            <li><strong>Exemptions:</strong> Clears known exempt IPs from the blacklist prior to evaluation.</li>
-            <li><strong>404 Probing:</strong> Blocks IPs that generate at least 6 non-login 404 requests (e.g., dirbusting) if the non-login 404s exceed the login 404s.</li>
-        </ul>
-
-        <h3>Controls And AI Training</h3>
-        <ul>
-            <li>Threshold gates: <code>AIWAF_MIN_TRAIN_LOGS</code> (default: 50), <code>AIWAF_MIN_AI_LOGS</code> (default: 10000), <code>AIWAF_FORCE_AI_TRAINING</code>.</li>
-            <li><strong>Feature Vector (6 dimensions):</strong> Extracted per request for the Isolation Forest:
-                <ol>
-                    <li>Path length (<code>pathLen</code>).</li>
-                    <li>Keyword hits against static signatures (<code>kwHits</code>).</li>
-                    <li>Status bucket index (<code>statusIdx</code> mapping to 200, 403, 404, 500).</li>
-                    <li>Response time (<code>respTime</code>).</li>
-                    <li>Burst count (<code>burst</code>): requests from the same IP within a 10-second rolling window.</li>
-                    <li>Per-IP 404 count (<code>total404</code>).</li>
-                </ol>
-            </li>
-            <li><strong>Anomaly Evaluation:</strong> Fits the <code>IsolationForest</code> (100 trees, sample size 256). Identifies anomalous IPs (score > 0.5) and checks their behavior context. Blocks the IP only if it exceeds specific thresholds: average keyword hits &ge; 2, 404s &ge; 10, burst &ge; 15, or total requests &ge; 100. Saves the model to <code>model.json</code> with version metadata.</li>
-        </ul>
-        
-        <h3>Keyword Learning</h3>
-        <ul>
-            <li>Control: <code>AIWAF_ENABLE_KEYWORD_LEARNING</code> (default: true).</li>
-            <li>Extracts path tokens > 3 characters from 4xx/5xx requests that match a malicious context.</li>
-            <li><strong>Malicious Context Indicators:</strong> Includes path traversals (<code>../</code>), sensitive files (<code>.env</code>, <code>wp-admin</code>, <code>passwd</code>), command injection (<code>shell</code>, <code>eval</code>, <code>cmd</code>), XSS (<code>%3c%73%63%72%69%70%74</code>, <code>&lt;script</code>), or excessive 404 path length/depth.</li>
-            <li>Excludes known static keywords and <code>legitimate</code> tokens (e.g., <code>api</code>, <code>auth</code>, <code>login</code>, plus any from 2xx/3xx requests in the logs).</li>
-            <li>Adds the top occurrences (capped by <code>AIWAF_DYNAMIC_TOP_N</code>, default 10) to the <code>dynamicKeywordStore</code>.</li>
-        </ul>
-    </section>
+<h1 class="page-title">Node.js Architecture and Route Policies</h1>
+{% include '_docs_source.html' %}
+<h2>Package and adapter boundaries</h2>
+<p><code>js/index.js</code> exports the Express middleware and adapters for Fastify, Hapi, Koa, NestJS, Next.js API routes, AdonisJS, and Sails. Adapters normalize framework requests and responses into the shared middleware contract implemented by <code>js/lib/wafMiddleware.js</code>.</p>
+<h2>Policy controls</h2>
+<p>The pipeline coordinates method and header validation, IP/path exemptions, blacklist state, geo rules, honeypot timing, rate/flood limits, static and learned keywords, UUID checks, and anomaly detection. Middleware selection and route rules decide which checks apply to each request. Logging and post-response learning observe completed responses.</p>
+<h2>Route discovery</h2>
+<p><code>js/lib/sourceAst.js</code> uses bounded handler-source analysis to infer API, form, and authentication signals. <code>js/lib/pathManifest.js</code> combines those signals with framework route metadata and compiles manifests into middleware disablement and rate-limit overrides. Register routes before generating the manifest; review inferred policies for the application.</p>
+<pre><code class="language-javascript">app.use(aiwaf({
+  AIWAF_PATH_RULES: [
+    { PREFIX: &#x27;/health/&#x27;, DISABLE: [&#x27;header_validation&#x27;, &#x27;rate_limit&#x27;] },
+    { PREFIX: &#x27;/api/public/&#x27;, RATE_LIMIT: { WINDOW: 60, MAX: 300 } }
+  ]
+}));</code></pre>
+<p>Applications can also use <code>aiwaf.exempt</code>, <code>aiwaf.exemptFrom</code>, <code>aiwaf.only</code>, and <code>aiwaf.requireProtection</code> to build route policies.</p>
+<p>Generate an Express route manifest after routes are registered:</p>
+<pre><code class="language-javascript">aiwaf.generateExpressManifest(app, &#x27;.aiwaf/paths.json&#x27;);</code></pre>
+<p>Or generate one from a route list with the CLI:</p>
+<pre><code class="language-bash">cd js
+npm run aiwaf -- manifest --framework express --routes routes.json --output .aiwaf/paths.json</code></pre>
+<h2>State and models</h2>
+<p>Runtime stores support SQLite and CSV fallbacks for persistent operational data. Model storage can use file, database, or cache options. Rate-limiting state needs a shared cache for consistent enforcement across Node processes. Node uses a language-native Isolation Forest; shared feature names do not guarantee interchangeable model state across all runtimes.</p>
+<h2>WASM boundary</h2>
+<div class="table-wrap"><table><thead><tr><th>Area</th><th>Important options</th></tr></thead><tbody>
+<tr><td>Middleware</td><td><code>AIWAF_MIDDLEWARES</code>, <code>AIWAF_DISABLE_MIDDLEWARES</code>, <code>AIWAF_PATH_RULES</code></td></tr>
+<tr><td>Rate limiting</td><td><code>WINDOW_SEC</code>, <code>MAX_REQ</code>, <code>FLOOD_REQ</code>, <code>cache</code></td></tr>
+<tr><td>Headers</td><td><code>AIWAF_HEADER_VALIDATION</code>, <code>AIWAF_REQUIRED_HEADERS</code>, <code>AIWAF_HEADER_QUALITY_MIN_SCORE</code></td></tr>
+<tr><td>Methods</td><td><code>AIWAF_METHOD_POLICY_ENABLED</code>, <code>AIWAF_ALLOWED_METHODS</code></td></tr>
+<tr><td>Keywords</td><td><code>staticKeywords</code>, <code>AIWAF_ENABLE_KEYWORD_LEARNING</code>, <code>AIWAF_DYNAMIC_TOP_N</code></td></tr>
+<tr><td>Honeypot</td><td><code>HONEYPOT_FIELD</code>, timing settings</td></tr>
+<tr><td>GeoIP</td><td><code>AIWAF_GEO_BLOCK_ENABLED</code>, <code>AIWAF_GEO_BLOCK_COUNTRIES</code>, <code>AIWAF_GEO_ALLOW_COUNTRIES</code></td></tr>
+<tr><td>Models</td><td><code>AIWAF_MODEL_STORAGE</code>, <code>AIWAF_MODEL_PATH</code>, <code>AIWAF_MODEL_CACHE_KEY</code></td></tr>
+<tr><td>Logging</td><td><code>AIWAF_MIDDLEWARE_LOGGING</code>, <code>AIWAF_MIDDLEWARE_LOG_PATH</code>, DB/CSV options</td></tr>
+<tr><td>WASM</td><td><code>AIWAF_WASM_VALIDATION</code>, <code>AIWAF_WASM_VALIDATE_RECENT</code></td></tr>
+</tbody></table></div>
+<p>AIWAF loads <code>aiwaf-wasm</code> when available and falls back to the JavaScript implementation when WASM initialization or conversion is not worthwhile. Small, object-heavy operations can be faster in JavaScript because crossing the JS/WASM boundary and serializing objects has a fixed cost. WASM is most useful for sufficiently large feature batches and model scoring workloads.</p>
+<h2>Training feature order</h2>
+<p>New training paths use these six features in this order:</p>
+<ol>
+<li><code>path_len</code></li>
+<li><code>kw_hits</code></li>
+<li><code>resp_time</code></li>
+<li><code>status_idx</code></li>
+<li><code>burst_count</code></li>
+<li><code>total_404</code></li>
+</ol>
+<p><code>resp_time</code> is expressed in seconds in feature vectors. Artifact summary fields explicitly named with <code>_ms</code> remain milliseconds.</p>
+<p>The training lifecycle is:</p>
+<ol>
+<li>Parse configured access logs or middleware-generated request logs.</li>
+<li>Normalize request paths, status, timing, and per-IP state.</li>
+<li>Extract the six features and suspicious route segments.</li>
+<li>Train or update the Isolation Forest after configured volume thresholds are met.</li>
+<li>Refresh learned keywords while excluding known legitimate and exempt routes.</li>
+<li>Persist portable JSON forest state and runtime metadata; legacy language-specific artifacts remain read-only compatibility inputs.</li>
+</ol>
+<p>Do not train directly on unreviewed sensitive request bodies or authentication headers. Treat models, logs, exported state, and MMDB files as deployment artifacts with controlled access.</p>
 </main>
 </div></div>
 </body>

@@ -45,7 +45,9 @@
         .doc-card a:hover { text-decoration: underline; }
         .page-title { font-size: 3rem; font-weight: 900; margin-bottom: 2rem; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
     <header class="header">
@@ -67,7 +69,7 @@
                 <ul class="sidebar-nav">
                     <li><a href="/docs/python">Python</a></li>
                     <li><a href="/docs/javascript">JavaScript</a></li>
-                    <li><a href="/docs/php">PHP</a></li>
+                    <li><a href="/docs/php">PHP (Legacy)</a></li>
                     <li><a href="/docs/java">Java</a></li>
                     <li><a href="/docs/rust">Rust Accelerator</a></li>
                 </ul>
@@ -75,7 +77,18 @@
 
             <main class="content">
                 <h1 class="page-title">Documentation</h1>
-                
+{% include '_docs_source.html' %}
+<h2>Current package matrix</h2>
+<p>Each package is versioned and released independently.</p>
+<div class="table-wrap"><table><thead><tr><th>Runtime</th><th>Package</th><th>Repository version</th><th>Primary use</th></tr></thead><tbody>
+<tr><td>Python</td><td><a href="https://pypi.org/project/aiwaf/"><code>aiwaf</code></a></td><td><code>1.0.8</code></td><td>Django, Flask, and FastAPI protection</td></tr>
+<tr><td>Node.js</td><td><a href="https://www.npmjs.com/package/aiwaf"><code>aiwaf</code></a></td><td><code>1.0.2</code></td><td>Express and Node framework middleware</td></tr>
+<tr><td>Rust/Python</td><td><a href="https://pypi.org/project/aiwaf-rust/"><code>aiwaf-rust</code></a></td><td><code>0.2.1</code></td><td>Native Python acceleration and JSON model inference</td></tr>
+<tr><td>WebAssembly</td><td><a href="https://www.npmjs.com/package/aiwaf-wasm"><code>aiwaf-wasm</code></a></td><td><code>0.2.1</code></td><td>Rust detection and model primitives for JavaScript</td></tr>
+<tr><td>Java</td><td><code>io.github.aiwaf-project:aiwaf-java</code></td><td><code>1.3.0</code></td><td>Spring MVC and Jakarta Servlet protection</td></tr>
+</tbody></table></div>
+<p>Supported framework integrations include Django, Flask, FastAPI, Express, Fastify, Hapi, Koa, NestJS, Next.js API routes, AdonisJS, Sails.js, Spring MVC, and Jakarta Servlet.</p>
+
                 <div class="doc-card">
                     <h3>Python</h3>
                     <p>Reference for AIWAF architecture, storage, middleware, training lifecycle, CLI surface, tests, and release pipeline for Python.</p>
@@ -83,29 +96,29 @@
                     <p style="margin-top: 0.75rem; color:#b0b0b0;">
                         <a href="https://pypi.org/project/aiwaf/" target="_blank" rel="noopener noreferrer">PyPI Package</a>
                         <span style="color:#777; margin:0 8px;">|</span>
-                        <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+                        <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer">AIWAF Monorepo</a>
                     </p>
                 </div>
 
                 <div class="doc-card">
                     <h3>JavaScript</h3>
-                    <p>Reference for AIWAF-JS Node.js middleware architecture, framework integrations, end-to-end setup guide, storage/training lifecycle, CLI operations, and packaging.</p>
+                    <p>Reference for AIWAF Node.js middleware architecture, framework integrations, end-to-end setup guide, storage/training lifecycle, CLI operations, and packaging.</p>
                     <a href="/docs/javascript">Open JavaScript Deep-Dive Docs →</a>
                     <p style="margin-top: 0.75rem; color:#b0b0b0;">
-                        <a href="https://www.npmjs.com/package/aiwaf-js" target="_blank" rel="noopener noreferrer">npm Package</a>
+                        <a href="https://www.npmjs.com/package/aiwaf" target="_blank" rel="noopener noreferrer">npm Package</a>
                         <span style="color:#777; margin:0 8px;">|</span>
-                        <a href="https://github.com/aiwaf-project/aiwaf-js" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+                        <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer">AIWAF Monorepo</a>
                     </p>
                 </div>
 
                 <div class="doc-card">
-                    <h3>PHP</h3>
-                    <p>Reference and setup guide for AIWAF-PHP across plain PHP, Laravel, Symfony, and WordPress-style integrations, including architecture internals, training, and runtime backend options.</p>
-                    <a href="/docs/php">Open PHP Deep-Dive Docs →</a>
+                    <h3>PHP (Legacy Reference)</h3>
+                    <p>Historical PHP integration pages. PHP is absent from the current monorepo and is not part of its current package or release matrix.</p>
+                    <a href="/docs/php">Open Legacy PHP Reference →</a>
                     <p style="margin-top: 0.75rem; color:#b0b0b0;">
                         <a href="https://packagist.org/packages/aayushgauba/aiwaf" target="_blank" rel="noopener noreferrer">Packagist Package</a>
                         <span style="color:#777; margin:0 8px;">|</span>
-                        <a href="https://github.com/aiwaf-project/aiwaf-php" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+                        <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer">AIWAF Monorepo</a>
                     </p>
                 </div>
 
@@ -116,7 +129,7 @@
                     <p style="margin-top: 0.75rem; color:#b0b0b0;">
                         <a href="https://central.sonatype.com/artifact/io.github.aiwaf-project/aiwaf-java/overview" target="_blank" rel="noopener noreferrer">Maven Artifact</a>
                         <span style="color:#777; margin:0 8px;">|</span>
-                        <a href="https://github.com/aiwaf-project/aiwaf-java" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+                        <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer">AIWAF Monorepo</a>
                     </p>
                 </div>
 
@@ -129,7 +142,7 @@
                         <span style="color:#777; margin:0 8px;">|</span>
                         <a href="https://www.npmjs.com/package/aiwaf-wasm" target="_blank" rel="noopener noreferrer">npm Package</a>
                         <span style="color:#777; margin:0 8px;">|</span>
-                        <a href="https://github.com/aiwaf-project/aiwaf-rust" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+                        <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer">AIWAF Monorepo</a>
                     </p>
                 </div>
 

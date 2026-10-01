@@ -45,7 +45,9 @@
         .faq-answer { color: #b0b0b0; line-height: 1.6; }
         .code-block { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(78, 205, 196, 0.3); border-radius: 15px; padding: 1.5rem; margin: 1rem 0; font-family: 'Fira Code', monospace; font-size: 0.9rem; overflow-x: auto; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
     <header class="header">
@@ -72,67 +74,27 @@
             </aside>
 
             <main class="content">
-                <h1 class="page-title">FAQ</h1>
-                
-                <p>Frequently asked questions about AIWAF installation, configuration, and troubleshooting.</p>
-
-                <div class="faq-item">
-                    <div class="faq-question">How do I install AIWAF?</div>
-                    <div class="faq-answer">
-                        AIWAF can be installed using our automated installation script. Simply run:
-                        <div class="code-block">curl -fsSL https://get.aiwaf.com/install.sh | bash</div>
-                        This will download and install all necessary components automatically.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">What are the system requirements?</div>
-                    <div class="faq-answer">
-                        AIWAF requires:
-                        <ul style="margin: 1rem 0; padding-left: 2rem;">
-                            <li>Linux-based OS (Ubuntu 20.04+ or CentOS 8+)</li>
-                            <li>Minimum 8GB RAM (16GB recommended)</li>
-                            <li>4+ CPU cores with AVX2 support</li>
-                            <li>500GB available disk space</li>
-                            <li>Network connectivity for updates</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">How do I configure AIWAF for my application?</div>
-                    <div class="faq-answer">
-                        Configuration is done through the YAML file at <code style="background: rgba(78, 205, 196, 0.2); padding: 2px 6px; border-radius: 4px;">/etc/aiwaf/config.yml</code>. 
-                        Start with the default settings and customize the upstream servers, protection rules, and sensitivity levels as needed for your environment.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">Can I run AIWAF in Docker?</div>
-                    <div class="faq-answer">
-                        Yes! AIWAF provides official Docker images. You can deploy using Docker Compose or Kubernetes. 
-                        Check our Getting Started guide for detailed container deployment instructions.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">How do I troubleshoot connection issues?</div>
-                    <div class="faq-answer">
-                        First, check the service status and logs:
-                        <div class="code-block">sudo systemctl status aiwaf
-sudo journalctl -u aiwaf -f</div>
-                        Ensure your firewall allows traffic on the required ports (80, 443, 8080) and that your upstream servers are accessible.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">How often are threat intelligence updates delivered?</div>
-                    <div class="faq-answer">
-                        AIWAF receives threat intelligence updates in real-time. The AI models are updated continuously, 
-                        and signature-based rules are updated multiple times per day to ensure protection against the latest threats.
-                    </div>
-                </div>
-            </main>
+<h1 class="page-title">Frequently Asked Questions</h1>
+{% include '_docs_source.html' %}
+<h2>Where is the source code?</h2>
+<p>Python, Node.js, Rust/WASM, and Java are in <a href="https://github.com/aiwaf-project/aiwaf">the AIWAF monorepo</a>. The root README is authoritative, and each package has its own version and release tag.</p>
+<h2>What do I install for Node.js?</h2>
+<p>Use <code>npm install aiwaf</code> and <code>require('aiwaf')</code>. See the <a href="/docs/javascript/setup">Node.js setup guide</a>.</p>
+<h2>Is PHP included?</h2>
+<p>The current monorepo has no PHP implementation or PHP release workflow. Existing PHP pages are retained as legacy reference and are not current setup guidance.</p>
+<h2>Is Rust required for Python?</h2>
+<p>No. Install <code>aiwaf[rust]</code> for native acceleration. Installed capabilities are selected automatically, with Python fallback when unavailable. Version 1.0.8 requires <code>aiwaf-rust&gt;=0.2.1</code> for this extra.</p>
+<h2>Can I reuse old pickle or joblib models?</h2>
+<p>Current Python model persistence uses JSON. Regenerate executable object artifacts through the current trainer. Java supports Python Rust-model JSON state and restricted legacy signed Java artifacts. JavaScript model implementations remain language-native; do not assume every runtime can exchange models.</p>
+<h2>Does an in-memory backend share protection across workers?</h2>
+<p>In-memory state is process-local. Configure shared storage where consistent multi-worker enforcement is required. Java 1.3.0 supports standalone Redis with atomic enforcement, failure policies, bounded waits, and schema compatibility checks.</p>
+<h2>What are the hardware requirements?</h2>
+<p>AIWAF does not prescribe the previously listed RAM, AVX2, or disk requirements. Use a runtime compatible with the package dependencies and size the deployment for traffic, logging, training, and model workloads. Java targets Java 17; Python metadata declares 3.8 or newer, with newer requirements possible from selected dependencies.</p>
+<h2>How does training update protection?</h2>
+<p>Offline training parses configured logs, extracts six features, trains after volume thresholds are met, and refreshes learned keywords while excluding legitimate routes. Schedule training in your deployment; the repo does not promise a real-time external threat-intelligence feed.</p>
+<h2>How do I investigate false positives?</h2>
+<p>Review request logs, trusted-proxy handling, header requirements, rate limits, and path policies. Use narrowly scoped route exemptions and representative staging requests. Check framework CLI status and verify the application object imported for route discovery.</p>
+</main>
         </div>
     </div>
 

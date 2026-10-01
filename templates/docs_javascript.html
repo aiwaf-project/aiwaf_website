@@ -55,7 +55,9 @@
         li { margin-bottom: .4rem; }
         code { font-family: 'Fira Code', monospace; color: #f6c177; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
 <header class="header">
@@ -92,68 +94,85 @@
                 <li><a href="/docs/javascript/operations">Operations</a></li>
             </ul>
             <div style="margin-top: 2rem; padding: 1rem; background: rgba(78,205,196,.1); border-radius: 10px;">
-                <small>Node.js middleware and plugin runtime deep dive for <code>aiwaf-js</code>.</small>
+                <small>Node.js middleware and plugin runtime deep dive for <code>aiwaf</code>.</small>
                 <div style="margin-top: 0.7rem;">
-                    <a href="https://www.npmjs.com/package/aiwaf-js" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">npm Package</a><br>
-                    <a href="https://github.com/aiwaf-project/aiwaf-js" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub Repository</a>
+                    <a href="https://www.npmjs.com/package/aiwaf" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">npm Package</a><br>
+                    <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub Repository</a>
                 </div>
             </div>
         </aside>
 
         <main class="content">
-            <div class="badge">JavaScript Deep Dive</div>
-            <h1 class="page-title">AIWAF-JS Full Project Reference</h1>
-            <p>Single exhaustive orientation document for engineers working in <code>aiwaf-js</code>.</p>
+<h1 class="page-title">AIWAF for Node.js</h1>
+{% include '_docs_source.html' %}
+<p>The CommonJS npm package is <code>aiwaf</code>, version <code>1.0.2</code> in <code>js/package.json</code>. Install with <code>npm install aiwaf</code> and import with <code>require('aiwaf')</code>. All adapters share the monorepo and root README.</p>
+<h2>Express quick start</h2>
+<pre><code class="language-javascript">const express = require(&#x27;express&#x27;);
+const aiwaf = require(&#x27;aiwaf&#x27;);
 
-            <div class="meta-grid">
-                <div class="meta-card"><div class="meta-key">Package</div><div class="meta-val"><code>aiwaf-js</code></div></div>
-                <div class="meta-card"><div class="meta-key">Version</div><div class="meta-val"><code>0.1.0</code></div></div>
-                <div class="meta-card"><div class="meta-key">Runtime</div><div class="meta-val">Node.js (LTS recommended)</div></div>
-                <div class="meta-card"><div class="meta-key">CLI</div><div class="meta-val"><code>aiwaf</code> via <code>bin/aiwaf.js</code></div></div>
-            </div>
+const app = express();
+app.use(express.json());
 
-            <h2 class="section-title">Purpose And Scope</h2>
-            <ul>
-                <li>System purpose and Node.js architecture.</li>
-                <li>Execution flows for Express + adapters (Fastify, Hapi, Koa, Nest, Next.js, Adonis, Sails alias).</li>
-                <li>Core modules and shared abstractions in <code>lib/</code>.</li>
-                <li>Storage, learning, and model lifecycle.</li>
-                <li>Security controls, exemptions, route-aware behavior, CLI, tests, and packaging internals.</li>
-            </ul>
+app.use(aiwaf({
+  AIWAF_MIDDLEWARES: [&#x27;auto&#x27;],
+  staticKeywords: [&#x27;.php&#x27;, &#x27;.env&#x27;, &#x27;.git&#x27;],
+  WINDOW_SEC: 10,
+  MAX_REQ: 20,
+  FLOOD_REQ: 40,
+  AIWAF_HEADER_VALIDATION: true,
+  AIWAF_METHOD_POLICY_ENABLED: true,
+  AIWAF_ALLOWED_METHODS: [&#x27;GET&#x27;, &#x27;POST&#x27;, &#x27;HEAD&#x27;, &#x27;OPTIONS&#x27;]
+}));
 
-            <h2 class="section-title">Project Snapshot</h2>
-            <ul>
-                <li>Default entrypoint: <code>index.js</code></li>
-                <li>CLI entrypoint: <code>bin/aiwaf.js</code></li>
-                <li>Runtime integration model: middleware/plugin handlers for Node frameworks</li>
-                <li>Optional paths: <code>maxmind</code> GeoIP, <code>redis</code> client, <code>aiwaf-wasm</code> bridge</li>
-            </ul>
-
-            <h2 class="section-title">Top-Level Repository Structure</h2>
-            <div class="feature-grid">
-                <div class="feature-card"><h4><code>index.js</code></h4><p>Exports framework integration surface.</p></div>
-                <div class="feature-card"><h4><code>lib/</code></h4><p>Core modules + adapter implementations.</p></div>
-                <div class="feature-card"><h4><code>train.js</code></h4><p>Offline training and learning pipeline.</p></div>
-                <div class="feature-card"><h4><code>bin/aiwaf.js</code></h4><p>Operational CLI command surface.</p></div>
-                <div class="feature-card"><h4><code>resources/model.json</code></h4><p>Default file-backed model artifact.</p></div>
-                <div class="feature-card"><h4><code>utils/db.js</code></h4><p>SQLite Knex connection management.</p></div>
-            </div>
-
-            <h2 class="section-title">Runtime Artifacts</h2>
-            <ul>
-                <li><code>aiwaf.sqlite</code> (default SQLite DB)</li>
-                <li><code>logs/aiwaf-requests.jsonl</code></li>
-                <li><code>logs/aiwaf-requests.csv</code></li>
-                <li><code>logs/storage/*.csv</code> (fallback stores)</li>
-            </ul>
-
-            <div class="doc-card">
-                <h3 style="color:#ff6b6b; margin-bottom:.5rem;">Read The Deep Dive By Topic</h3>
-                <p><a href="/docs/javascript/setup">Setup Guide</a> covers end-to-end install, framework integration, production config, validation, and troubleshooting.</p>
-                <p><a href="/docs/javascript/architecture">Architecture</a> covers middleware pipeline, framework adapters, modules, storage, and training lifecycle.</p>
-                <p><a href="/docs/javascript/operations">Operations</a> covers CLI, configuration model, testing, packaging, and operational notes.</p>
-            </div>
-        </main>
+app.get(&#x27;/&#x27;, (req, res) =&gt; res.json({ protected: true }));
+app.listen(3000);</code></pre>
+<p>Attach AIWAF after the body parser when honeypot rules inspect parsed form or JSON fields.</p>
+<h2>Framework entry points</h2>
+<div class="table-wrap"><table><thead><tr><th>Framework</th><th>Entry point</th></tr></thead><tbody>
+<tr><td>Express</td><td><code>aiwaf(options)</code></td></tr>
+<tr><td>Fastify</td><td><code>fastify.register(aiwaf.fastify, options)</code></td></tr>
+<tr><td>Hapi</td><td><code>server.register({ plugin: aiwaf.hapi, options })</code></td></tr>
+<tr><td>Koa</td><td><code>app.use(aiwaf.koa(options))</code></td></tr>
+<tr><td>NestJS/Express</td><td><code>aiwaf.nest(options)</code> or the Express middleware</td></tr>
+<tr><td>NestJS/Fastify</td><td><code>app.register(aiwaf.fastify, options)</code></td></tr>
+<tr><td>Next.js API routes</td><td><code>aiwaf.next(handler, options)</code></td></tr>
+<tr><td>AdonisJS</td><td><code>aiwaf.adonis(options)</code></td></tr>
+<tr><td>Sails.js</td><td><code>aiwaf.sails(options)</code></td></tr>
+</tbody></table></div>
+<h2>Route policies</h2>
+<pre><code class="language-javascript">app.use(aiwaf({
+  AIWAF_PATH_RULES: [
+    { PREFIX: &#x27;/health/&#x27;, DISABLE: [&#x27;header_validation&#x27;, &#x27;rate_limit&#x27;] },
+    { PREFIX: &#x27;/api/public/&#x27;, RATE_LIMIT: { WINDOW: 60, MAX: 300 } }
+  ]
+}));</code></pre>
+<p>Applications can also use <code>aiwaf.exempt</code>, <code>aiwaf.exemptFrom</code>, <code>aiwaf.only</code>, and <code>aiwaf.requireProtection</code> to build route policies.</p>
+<p>Generate an Express route manifest after routes are registered:</p>
+<pre><code class="language-javascript">aiwaf.generateExpressManifest(app, &#x27;.aiwaf/paths.json&#x27;);</code></pre>
+<p>Or generate one from a route list with the CLI:</p>
+<pre><code class="language-bash">cd js
+npm run aiwaf -- manifest --framework express --routes routes.json --output .aiwaf/paths.json</code></pre>
+<h2>Configuration and acceleration</h2>
+<div class="table-wrap"><table><thead><tr><th>Area</th><th>Important options</th></tr></thead><tbody>
+<tr><td>Middleware</td><td><code>AIWAF_MIDDLEWARES</code>, <code>AIWAF_DISABLE_MIDDLEWARES</code>, <code>AIWAF_PATH_RULES</code></td></tr>
+<tr><td>Rate limiting</td><td><code>WINDOW_SEC</code>, <code>MAX_REQ</code>, <code>FLOOD_REQ</code>, <code>cache</code></td></tr>
+<tr><td>Headers</td><td><code>AIWAF_HEADER_VALIDATION</code>, <code>AIWAF_REQUIRED_HEADERS</code>, <code>AIWAF_HEADER_QUALITY_MIN_SCORE</code></td></tr>
+<tr><td>Methods</td><td><code>AIWAF_METHOD_POLICY_ENABLED</code>, <code>AIWAF_ALLOWED_METHODS</code></td></tr>
+<tr><td>Keywords</td><td><code>staticKeywords</code>, <code>AIWAF_ENABLE_KEYWORD_LEARNING</code>, <code>AIWAF_DYNAMIC_TOP_N</code></td></tr>
+<tr><td>Honeypot</td><td><code>HONEYPOT_FIELD</code>, timing settings</td></tr>
+<tr><td>GeoIP</td><td><code>AIWAF_GEO_BLOCK_ENABLED</code>, <code>AIWAF_GEO_BLOCK_COUNTRIES</code>, <code>AIWAF_GEO_ALLOW_COUNTRIES</code></td></tr>
+<tr><td>Models</td><td><code>AIWAF_MODEL_STORAGE</code>, <code>AIWAF_MODEL_PATH</code>, <code>AIWAF_MODEL_CACHE_KEY</code></td></tr>
+<tr><td>Logging</td><td><code>AIWAF_MIDDLEWARE_LOGGING</code>, <code>AIWAF_MIDDLEWARE_LOG_PATH</code>, DB/CSV options</td></tr>
+<tr><td>WASM</td><td><code>AIWAF_WASM_VALIDATION</code>, <code>AIWAF_WASM_VALIDATE_RECENT</code></td></tr>
+</tbody></table></div>
+<p>AIWAF loads <code>aiwaf-wasm</code> when available and falls back to the JavaScript implementation when WASM initialization or conversion is not worthwhile. Small, object-heavy operations can be faster in JavaScript because crossing the JS/WASM boundary and serializing objects has a fixed cost. WASM is most useful for sufficiently large feature batches and model scoring workloads.</p>
+<h2>Continue</h2>
+<ul>
+<li><a href="/docs/javascript/setup">Framework setup</a></li>
+<li><a href="/docs/javascript/architecture">Architecture</a></li>
+<li><a href="/docs/javascript/operations">Operations</a></li>
+</ul>
+</main>
     </div>
 </div>
 </body>

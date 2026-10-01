@@ -47,7 +47,9 @@
         pre { background: rgba(0,0,0,.5); border: 1px solid rgba(78,205,196,.3); border-radius: 10px; padding: .85rem; overflow-x: auto; }
         .checklist li { list-style: none; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
 <header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
@@ -71,6 +73,8 @@
 <main class="content">
     <div class="badge">Comprehensive Setup</div>
     <h1 class="page-title">AIWAF-PHP Comprehensive Setup Guide</h1>
+{% include '_docs_source.html' %}
+<aside class="source-note legacy-note"><strong>Legacy PHP reference.</strong> The current monorepo does not contain a PHP package or PHP release workflow. These historical examples have not been validated against the current repo. Use the current Python, Node.js, Java, or Rust/WASM guides for new integrations.</aside>
 
     <section class="section">
         <h2>1. What This Guide Is</h2>
@@ -141,13 +145,13 @@ php cli/detect_and_train.php --generate-manifest</code></pre>
         <p>If you prefer fine-grained manual control over your middleware stack rather than relying on auto-generation, proceed to the framework-specific "All Middlewares" manual setup sections below.</p>
     </section>
 
-    
+
 
     <section class="section">
         <h2>6. Framework Setup (All Middlewares)</h2>
         <h3> WordPress</h3>
         <p>Use integration assets in <code>examples/wordpress/</code>, including MU-plugin bootstrap and WP-CLI training command.</p>
-        
+
     </section>
 
     <section class="section">

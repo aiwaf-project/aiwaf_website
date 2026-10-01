@@ -55,7 +55,9 @@
         li { margin-bottom: .4rem; }
         code { font-family: 'Fira Code', monospace; color: #f6c177; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
 <header class="header">
@@ -97,53 +99,58 @@
         </aside>
 
         <main class="content">
-            <div class="badge">Python Deep Dive</div>
-            <h1 class="page-title">AIWAF Full Project Reference</h1>
-            <p>Single exhaustive orientation for engineers working in the AIWAF repository.</p>
-
-            <div class="meta-grid">
-                <div class="meta-card"><div class="meta-key">Package</div><div class="meta-val"><code>aiwaf</code></div></div>
-                <div class="meta-card"><div class="meta-key">Version</div><div class="meta-val"><code>0.1.9.7.2</code></div></div>
-                <div class="meta-card"><div class="meta-key">Python Requirement</div><div class="meta-val"><code>>=3.8</code></div></div>
-                <div class="meta-card"><div class="meta-key">Entry Points</div><div class="meta-val"><code>aiwaf</code>, <code>aiwaf-detect</code>, <code>aiwaf-fast</code></div></div>
-            </div>
-
-            <h2 class="section-title">Purpose And Scope</h2>
-            <ul>
-                <li>System purpose and architecture.</li>
-                <li>Execution flows for Django, Flask, and FastAPI adapters.</li>
-                <li>Core modules and shared abstractions.</li>
-                <li>Storage, learning, and model lifecycle.</li>
-                <li>Security controls, exemptions, and path rules.</li>
-                <li>CLI and management command surface.</li>
-                <li>Test topology and operational artifacts.</li>
-                <li>Build/release pipeline and packaging internals.</li>
-            </ul>
-
-            <h2 class="section-title">Top-Level Structure</h2>
-            <div class="feature-grid">
-                <div class="feature-card"><h4><code>aiwaf/</code></h4><p>Library source and shared core.</p></div>
-                <div class="feature-card"><h4><code>tests/</code></h4><p>Framework-specific and shared test suites.</p></div>
-                <div class="feature-card"><h4><code>examples/</code></h4><p>Config examples and sandbox replay/comparison harness.</p></div>
-                <div class="feature-card"><h4><code>scripts/</code></h4><p>Focused benchmark and stress tooling.</p></div>
-            </div>
-
-            <h2 class="section-title">Core Dependencies</h2>
-            <ul>
-                <li><code>numpy</code>, <code>pandas</code>, <code>scikit-learn</code>, <code>joblib</code> for AI/training.</li>
-                <li><code>geoip2</code> for geolocation logic.</li>
-                <li><code>requests</code> and <code>python-whois</code> for integration tooling.</li>
-                <li>Optional Rust acceleration package: <code>aiwaf-rust</code>.</li>
-            </ul>
-
-            <div class="doc-card">
-                <h3 style="color:#ff6b6b; margin-bottom:.5rem;">Read The Deep Dive By Topic</h3>
-                <p><a href="/docs/python/setup">Setup Guide</a> gives end-to-end installation, config, validation, and troubleshooting for Django/Flask/FastAPI.</p>
-                <p><a href="/docs/python/architecture">Architecture</a> covers core layers, storage, training lifecycle, and security subsystems.</p>
-                <p><a href="/docs/python/adapters">Adapters</a> details Django, Flask, and FastAPI implementation flows.</p>
-                <p><a href="/docs/python/operations">Operations</a> covers CLI, tests, release pipeline, strengths/tradeoffs, and module inventory.</p>
-            </div>
-        </main>
+<h1 class="page-title">AIWAF Python</h1>
+{% include '_docs_source.html' %}
+<p>Python package version <code>1.0.8</code> lives in <code>py/aiwaf/</code>. Install a framework extra for Django, Flask, or FastAPI. The package metadata declares Python 3.8 or newer; the selected framework and scientific dependencies may require a newer interpreter.</p>
+<h2>Packages in the monorepo</h2>
+<p>Each package is versioned and released independently.</p>
+<div class="table-wrap"><table><thead><tr><th>Runtime</th><th>Package</th><th>Repository version</th><th>Primary use</th></tr></thead><tbody>
+<tr><td>Python</td><td><a href="https://pypi.org/project/aiwaf/"><code>aiwaf</code></a></td><td><code>1.0.8</code></td><td>Django, Flask, and FastAPI protection</td></tr>
+<tr><td>Node.js</td><td><a href="https://www.npmjs.com/package/aiwaf"><code>aiwaf</code></a></td><td><code>1.0.2</code></td><td>Express and Node framework middleware</td></tr>
+<tr><td>Rust/Python</td><td><a href="https://pypi.org/project/aiwaf-rust/"><code>aiwaf-rust</code></a></td><td><code>0.2.1</code></td><td>Native Python acceleration and JSON model inference</td></tr>
+<tr><td>WebAssembly</td><td><a href="https://www.npmjs.com/package/aiwaf-wasm"><code>aiwaf-wasm</code></a></td><td><code>0.2.1</code></td><td>Rust detection and model primitives for JavaScript</td></tr>
+<tr><td>Java</td><td><code>io.github.aiwaf-project:aiwaf-java</code></td><td><code>1.3.0</code></td><td>Spring MVC and Jakarta Servlet protection</td></tr>
+</tbody></table></div>
+<p>Supported framework integrations include Django, Flask, FastAPI, Express, Fastify, Hapi, Koa, NestJS, Next.js API routes, AdonisJS, Sails.js, Spring MVC, and Jakarta Servlet.</p>
+<h2>Repository layout</h2>
+<pre><code class="language-text">.
+├── py/aiwaf/                       Python package and adapters
+├── js/                             Node.js package and adapters
+├── rust/                           Rust core and Python bindings
+│   └── crates/aiwaf_wasm/          WebAssembly bindings
+├── java/                           Java 17 package
+├── tests/                          Python integration and parity tests
+├── benchmarks/                     Python middleware benchmarks
+├── examples/                       Focused Python examples
+├── .github/workflows/              Tests, security checks, and releases
+├── README.md                       Canonical project documentation
+└── LICENSE                         Canonical MIT license</code></pre>
+<h2>Request controls</h2>
+<ul>
+<li>IP blacklist, exemption, reputation, expiry, and progressive-block handling</li>
+<li>Sliding-window rate limiting and flood detection</li>
+<li>Header, method, request-size, content-type, and parameter validation</li>
+<li>Static and learned malicious keyword detection</li>
+<li>Honeypot field and form-timing checks</li>
+<li>UUID probing and tamper detection</li>
+<li>GeoIP allow/block policies using the bundled MMDB data</li>
+<li>Route manifests, path-specific overrides, and decorator/annotation exemptions</li>
+<li>Memory, file, CSV, SQLite, database, and cache-backed runtime state, depending on the runtime</li>
+<li>Structured request logging and offline training</li>
+<li>Six-feature anomaly models with Rust, JavaScript, and Java implementations</li>
+<li>Optional Rust acceleration for Python and optional WebAssembly acceleration for Node.js</li>
+</ul>
+<p>The runtimes share policy intent and training feature names, but their framework adapters and model implementations remain language-native. Model artifacts are not generally interchangeable across languages.</p>
+<h2>Continue</h2>
+<ul>
+<li><a href="/docs/python/setup/django">Django setup</a></li>
+<li><a href="/docs/python/setup/flask">Flask setup</a></li>
+<li><a href="/docs/python/setup/fastapi">FastAPI setup</a></li>
+<li><a href="/docs/python/architecture">Architecture and training</a></li>
+<li><a href="/docs/python/adapters">Framework adapters</a></li>
+<li><a href="/docs/python/operations">Operations and migration</a></li>
+</ul>
+</main>
     </div>
 </div>
 </body>

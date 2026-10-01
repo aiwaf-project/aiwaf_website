@@ -54,7 +54,9 @@
         li { margin-bottom: .4rem; }
         code { font-family: 'Fira Code', monospace; color: #f6c177; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
 <header class="header">
@@ -88,65 +90,39 @@
                 <small>Official Java package and source links.</small>
                 <div style="margin-top: 0.7rem;">
                     <a href="https://mvnrepository.com/artifact/io.github.aiwaf-project/aiwaf-java" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">Maven Artifact</a><br>
-                    <a href="https://github.com/aiwaf-project/aiwaf-java" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub Repository</a>
+                    <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub Repository</a>
                 </div>
             </div>
         </aside>
 
         <main class="content">
-            <div class="badge">Java Deep Dive</div>
-            <h1 class="page-title">AIWAF-Java Full Project Reference</h1>
-            <p>Implementation-focused reference for <code>aiwaf-java</code> modules, request contracts, model lifecycle, telemetry, and adapter behavior.</p>
-
-            <div class="meta-grid">
-                <div class="meta-card"><div class="meta-key">Artifact</div><div class="meta-val"><code>io.github.aiwaf-project:aiwaf-java:0.2.0</code></div></div>
-                <div class="meta-card"><div class="meta-key">Java Target</div><div class="meta-val">Java <code>17</code></div></div>
-                <div class="meta-card"><div class="meta-key">Packaging</div><div class="meta-val"><code>jar</code></div></div>
-                <div class="meta-card"><div class="meta-key">Primary Integrations</div><div class="meta-val">Servlet + Spring MVC</div></div>
-            </div>
-
-            <h2 class="section-title">Scope</h2>
-            <ul>
-                <li>Module boundaries and core runtime contracts.</li>
-                <li>Deterministic request pipeline and state ownership.</li>
-                <li>Configuration semantics and Python-style config compatibility.</li>
-                <li>Model artifact IO, migration, and lazy loading behavior.</li>
-                <li>Runtime telemetry counters/histogram semantics.</li>
-                <li>Integration adapters, CLI surfaces, and test topology.</li>
-            </ul>
-
-            <h2 class="section-title">Core Runtime Contracts</h2>
-            <div class="feature-grid">
-                <div class="feature-card"><h4>AiwafRequest</h4><p>Normalized request contract consumed by engine pipeline.</p></div>
-                <div class="feature-card"><h4>AiwafDecision</h4><p>Immutable allow/deny result with status code and reason.</p></div>
-                <div class="feature-card"><h4>AiwafConfig</h4><p>Runtime policy model for middleware, AI, storage, and observability.</p></div>
-                <div class="feature-card"><h4>AiwafEngine</h4><p>Deterministic orchestration with per-stage deny short-circuit behavior.</p></div>
-            </div>
-
-            <h2 class="section-title">Repository Layout</h2>
-            <ul>
-                <li><code>src/main/java/com/aiwaf/core</code></li>
-                <li><code>src/main/java/com/aiwaf/runtime</code></li>
-                <li><code>src/main/java/com/aiwaf/spring</code></li>
-                <li><code>src/main/java/com/aiwaf/servlet</code></li>
-                <li><code>src/main/java/com/aiwaf/cli</code></li>
-                <li><code>src/main/resources/geolock/ipinfo_lite.mmdb</code></li>
-                <li><code>src/test/java/com/aiwaf/*</code>, <code>examples/sandbox/*</code></li>
-            </ul>
-
-            <h2 class="section-title">Engine State Ownership</h2>
-            <ul>
-                <li>In-memory transient state: rate-limit buckets, honeypot GET timestamps, recent per-IP behavior windows.</li>
-                <li>Persistent/semi-persistent shared state: delegated to <code>RuntimeStorage</code> stores.</li>
-            </ul>
-
-            <div class="doc-card">
-                <h3 style="color:#ff6b6b; margin-bottom:.5rem;">Start Here</h3>
-                <p><a href="/docs/java/setup">Setup Guide</a> covers build/install, exact pipeline behavior, configuration fields, AI model lifecycle, sandbox validation, and troubleshooting.</p>
-                <p><a href="/docs/java/architecture">Architecture</a> details the full engine sequence, config compatibility core, artifact migration, runtime stores, adapters, and tests.</p>
-                <p><a href="/docs/java/operations">Operations</a> covers CLI surfaces, observability access, environment tuning, and production rollout guidance.</p>
-            </div>
-        </main>
+<h1 class="page-title">AIWAF Java</h1>
+{% include '_docs_source.html' %}
+<p>Java source version <code>1.3.0</code> is declared in <code>java/pom.xml</code>. It targets Java 17, Spring Framework 7.0, and Jakarta Servlet 6.1, and runs natively without Rust. Use the Maven dependency below once this version is published to Maven Central; source builds are available from the monorepo.</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;io.github.aiwaf-project&lt;/groupId&gt;
+  &lt;artifactId&gt;aiwaf-java&lt;/artifactId&gt;
+  &lt;version&gt;1.3.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<h2>Current runtime capabilities</h2>
+<ul>
+<li>Spring Boot servlet auto-configuration and live route/annotation discovery.</li>
+<li>Request controls before the controller and anomaly scoring with actual response status and timing.</li>
+<li>Native MMDB lookups, trusted-proxy country headers, and weighted UUID probing signals.</li>
+<li>Scoped per-engine storage with shared atomic enforcement through standalone Redis.</li>
+<li>Python-compatible six-feature JSON forest state; restricted legacy Java artifact loading.</li>
+<li>Versioned Redis state namespaces, bounded waits, failure policies, and pool diagnostics.</li>
+</ul>
+<h2>Repository layout</h2>
+<p>Java code lives under <code>java/src/main/java/com/aiwaf/</code>, with <code>core</code>, <code>runtime</code>, <code>spring</code>, <code>servlet</code>, and <code>cli</code> packages. Tests are in <code>java/src/test/java/com/aiwaf/</code>. The root README and LICENSE are authoritative.</p>
+<h2>Continue</h2>
+<ul>
+<li><a href="/docs/java/setup/spring">Spring MVC and Boot setup</a></li>
+<li><a href="/docs/java/setup/servlet">Jakarta Servlet setup</a></li>
+<li><a href="/docs/java/architecture">Architecture and models</a></li>
+<li><a href="/docs/java/operations">Redis operations and releases</a></li>
+</ul>
+</main>
     </div>
 </div>
 </body>

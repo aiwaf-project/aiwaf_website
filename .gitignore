@@ -168,3 +168,53 @@ venv/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/flask
+
+# Local agent/runtime artifacts
+.codex
+logs/
+
+# Generated AIWAF route manifests, request logs, and runtime state
+/.aiwaf/
+/aiwaf_logs/
+/aiwaf_data/
+
+# Temporary package validation and release staging checkouts
+/.ci-*-validation/
+/.publish-*-stage/
+
+# Node dependencies and package-manager diagnostics
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Local environment overrides; keep the example and test configuration
+.env.*
+!.env.example
+!.env.test
+
+# Local databases and their SQLite sidecar files
+/*.db
+/*.db-journal
+/*.db-wal
+/*.db-shm
+/*.sqlite
+/*.sqlite3
+/*.sqlite-journal
+/*.sqlite-wal
+/*.sqlite-shm
+/*.sqlite3-journal
+/*.sqlite3-wal
+/*.sqlite3-shm
+
+# Additional Python tooling caches and native extension builds
+.ruff_cache/
+*.pyd
+
+# OS metadata and editor temporary files
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo

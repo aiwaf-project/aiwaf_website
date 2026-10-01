@@ -48,7 +48,9 @@
         .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: .8rem; }
         .checklist li { list-style: none; padding-left: 0; }
         @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
-    </style>
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
 <header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
@@ -70,209 +72,90 @@
     </ul>
 </aside>
 <main class="content">
-    <div class="badge">Comprehensive Setup</div>
-    <h1 class="page-title">AIWAF End-To-End Setup Guide</h1>
-
-    <section class="section">
-        <h2>1. What This Guide Is</h2>
-        <p>End-to-end setup manual for running AIWAF in real projects across Django, Flask, and FastAPI.</p>
-        <ul>
-            <li>Environment prerequisites</li>
-            <li>Installation paths and configuration baselines</li>
-            <li>Storage/model backend options</li>
-            <li>Training, Rust enablement, validation, troubleshooting</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>2. Prerequisites</h2>
-        <h3>Runtime</h3>
-        <ul>
-            <li>Python <code>3.8+</code>, <code>pip</code></li>
-            <li>Running app in Django, Flask, or FastAPI</li>
-        </ul>
-        <h3>Recommended For Production</h3>
-        <ul>
-            <li>Access logs from Nginx/Apache/Gunicorn/Uvicorn</li>
-            <li>Persistent filesystem path for AIWAF data/logs</li>
-            <li>Scheduled training (daily minimum for internet-facing apps)</li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>3. Installation Options</h2>
-        <pre><code>pip install aiwaf
-pip install "aiwaf[django]"
-pip install "aiwaf[flask]"
-pip install "aiwaf[fastapi]"
-pip install "aiwaf[rust]"  # optional</code></pre>
-        <p>Rust mode is optional. AIWAF falls back to Python logic automatically.</p>
-    </section>
-
-    <section class="section">
-        <h2>4. Shared Configuration Concepts</h2>
-        <p>AIWAF uses flat <code>AIWAF_*</code> keys.</p>
-        <div class="two-col">
-            <ul>
-                <li><code>AIWAF_ACCESS_LOG</code></li>
-                <li><code>AIWAF_DISABLE_AI</code></li>
-                <li><code>AIWAF_MIN_AI_LOGS</code></li>
-                <li><code>AIWAF_MIN_TRAIN_LOGS</code></li>
-                <li><code>AIWAF_FORCE_AI_TRAINING</code></li>
-                <li><code>AIWAF_USE_RUST</code></li>
-            </ul>
-            <ul>
-                <li><code>AIWAF_RATE_WINDOW</code>, <code>AIWAF_RATE_MAX</code>, <code>AIWAF_RATE_FLOOD</code></li>
-                <li><code>AIWAF_REQUIRED_HEADERS</code>, <code>AIWAF_HEADER_QUALITY_MIN_SCORE</code></li>
-                <li><code>AIWAF_EXEMPT_PATHS</code>, <code>AIWAF_EXEMPT_KEYWORDS</code>, <code>AIWAF_ALLOWED_PATH_KEYWORDS</code></li>
-                <li><code>AIWAF_GEO_BLOCK_ENABLED</code>, <code>AIWAF_GEO_BLOCK_COUNTRIES</code>, <code>AIWAF_GEO_ALLOW_COUNTRIES</code></li>
-            </ul>
-        </div>
-        <h3>Django Model Artifact Storage</h3>
-        <ul>
-            <li><code>AIWAF_MODEL_STORAGE = "file" | "db" | "cache"</code></li>
-            <li><code>AIWAF_MODEL_PATH</code></li>
-            <li><code>AIWAF_MODEL_STORAGE_FALLBACK</code></li>
-        </ul>
-    </section>
-
-    <section class="section">
-        <h2>5. Auto Middleware & Path Manifest Setup</h2>
-        <p>AIWAF can automatically tune your middleware protections based on your application's routing structure. By generating a Path Manifest, AIWAF categorizes your endpoints (e.g., API vs HTML Form) and automatically disables unnecessary middlewares (like Honeypots for APIs) and enforces strict rate limits where appropriate.</p>
-        <p>At startup, AIWAF reads the manifest from <code>.aiwaf/paths.json</code> (or via the <code>path_rules</code> configuration) to auto-configure the execution chain.</p>
-        <p>If you prefer fine-grained manual control over your middleware stack rather than relying on auto-generation, proceed to the framework-specific "All Middlewares" manual setup sections below.</p>
-    </section>
-
-    
-
-    <section class="section">
-        <h2>7. Flask Setup (All Middlewares)</h2>
-        <h3>Install</h3>
-        <pre><code>pip install "aiwaf[flask]"
-pip install Flask-SQLAlchemy  # optional DB mode</code></pre>
-        <h3>Basic Wiring</h3>
-        <pre><code>from flask import Flask
-import aiwaf.flask as aiwaf
+<h1 class="page-title">Flask Setup</h1>
+{% include '_docs_source.html' %}
+<h2>Install</h2>
+<pre><code class="language-bash">pip install &quot;aiwaf[flask]&quot;
+pip install &quot;aiwaf[rust]&quot;  # optional native acceleration</code></pre>
+<p>Install into the environment used to run your application. Choose an interpreter compatible with the framework and dependencies.</p>
+<h2>Integrate with the application</h2>
+<pre><code class="language-python">from flask import Flask
+from aiwaf.flask import AIWAF
 
 app = Flask(__name__)
-app.config["AIWAF_ACCESS_LOG"] = "aiwaf_logs/access.log"
-app.config["AIWAF_USE_CSV"] = True
-app.config["AIWAF_DATA_DIR"] = "aiwaf_data"
-app.config["AIWAF_RATE_WINDOW"] = 10
-app.config["AIWAF_RATE_MAX"] = 20
-app.config["AIWAF_RATE_FLOOD"] = 40
-app.config["AIWAF_HEADER_QUALITY_MIN_SCORE"] = 3
-
-aiwaf.register_aiwaf_middlewares(app)</code></pre>
-        <h3>Selective Middleware</h3>
-        <pre><code>aiwaf.register_aiwaf_middlewares(
+AIWAF(
     app,
-    middlewares=["ip_keyword_block", "rate_limit", "header_validation", "logging"],
-)</code></pre>
-        <h3>Decorators + Training</h3>
-        <pre><code>from aiwaf.flask import aiwaf_exempt, aiwaf_exempt_from
+    middlewares=[&quot;auto&quot;],
+)
 
-@app.get("/health")
+@app.get(&quot;/&quot;)
+def home():
+    return {&quot;protected&quot;: True}</code></pre>
+<p><code>middlewares=["all"]</code> enables the canonical middleware set. <code>auto</code> starts from the same set and omits checks that are not useful for the detected application signals.</p>
+<h2>Generate the route manifest</h2>
+<p>Run from the application checkout after all routes are registered:</p>
+<pre><code class="language-bash">aiwaf init --framework flask --app app:app</code></pre>
+<p>The default output is <code>.aiwaf/paths.json</code>. Flask and FastAPI require <code>module:object</code> in <code>--app</code>; Flask factories such as <code>app:create_app</code> are supported. Repeat discovery when registered routes change.</p>
+<h2>Route exemptions</h2>
+<p>Django, Flask, and FastAPI expose equivalent route helpers:</p>
+<pre><code class="language-python">from aiwaf.flask import (
+    aiwaf_exempt,
+    aiwaf_exempt_from,
+    aiwaf_only,
+    aiwaf_require_protection,
+)
+
+@app.get(&quot;/health&quot;)
 @aiwaf_exempt
 def health():
-    return {"ok": True}
+    return {&quot;ok&quot;: True}
 
-@app.post("/webhook")
-@aiwaf_exempt_from("rate_limit", "ai_anomaly")
+@app.post(&quot;/webhook&quot;)
+@aiwaf_only(&quot;header_validation&quot;)
 def webhook():
-    return {"received": True}
+    return {&quot;accepted&quot;: True}</code></pre>
+<p>Canonical middleware names include <code>header_validation</code>, <code>rate_limit</code>, <code>ip_keyword_block</code>, <code>honeypot</code>, <code>geo_block</code>, <code>uuid_tamper</code>, <code>ai_anomaly</code>, and <code>logging</code>.</p>
+<h2>Configuration and model storage</h2>
+<p>Python adapters use flat <code>AIWAF_*</code> settings or their equivalent constructor options.</p>
+<div class="table-wrap"><table><thead><tr><th>Area</th><th>Important settings</th></tr></thead><tbody>
+<tr><td>Training</td><td><code>AIWAF_ACCESS_LOG</code>, <code>AIWAF_MIN_TRAIN_LOGS</code>, <code>AIWAF_MIN_AI_LOGS</code>, <code>AIWAF_FORCE_AI_TRAINING</code></td></tr>
+<tr><td>Rate limiting</td><td><code>AIWAF_RATE_WINDOW</code>, <code>AIWAF_RATE_MAX</code>, <code>AIWAF_RATE_FLOOD</code></td></tr>
+<tr><td>Headers</td><td><code>AIWAF_REQUIRED_HEADERS</code>, <code>AIWAF_HEADER_QUALITY_MIN_SCORE</code></td></tr>
+<tr><td>Honeypot</td><td><code>AIWAF_MIN_FORM_TIME</code>, <code>AIWAF_MAX_PAGE_TIME</code></td></tr>
+<tr><td>UUID checks</td><td><code>AIWAF_UUID_SCORE_ENABLED</code>, <code>AIWAF_UUID_SCORE_BLOCK_THRESHOLD</code></td></tr>
+<tr><td>GeoIP</td><td><code>AIWAF_GEO_BLOCK_ENABLED</code>, <code>AIWAF_GEO_BLOCK_COUNTRIES</code>, <code>AIWAF_GEO_ALLOW_COUNTRIES</code></td></tr>
+<tr><td>Exemptions</td><td><code>AIWAF_EXEMPT_PATHS</code>, <code>AIWAF_EXEMPT_KEYWORDS</code>, <code>AIWAF_ALLOWED_PATH_KEYWORDS</code></td></tr>
+<tr><td>Models</td><td><code>AIWAF_MODEL_PATH</code>, <code>AIWAF_MODEL_STORAGE</code>, <code>AIWAF_MODEL_STORAGE_FALLBACK</code></td></tr>
+</tbody></table></div>
+<p>When <code>aiwaf_rust</code> is importable, supported acceleration paths are selected automatically. Python remains the fallback when a native capability is unavailable. Persisted runtime models use JSON state; AIWAF does not load pickle, joblib, or other executable Python-object formats.</p>
+<h2>Verify and operate</h2>
+<pre><code class="language-bash"># Unified CLI
+aiwaf --help
+aiwaf blacklist migrate
+aiwaf status
 
-# CLI
-aiwaf flask train</code></pre>
-    </section>
+# Django management commands
+python manage.py detect_and_train
+python manage.py regenerate_model
+python manage.py aiwaf_reset --keywords --confirm
+python manage.py aiwaf_logging --status
+python manage.py geo_block_country list
 
-    
-
-    <section class="section">
-        <h2>9-11. Storage, Training, Rust</h2>
-        <h3>Runtime Storage Backends</h3>
-        <ul>
-            <li><code>memory</code>: local non-persistent tests</li>
-            <li><code>file</code>: simple persistent single-node runtime</li>
-            <li><code>csv</code>: human-readable, lock-aware utilities</li>
-            <li><code>db</code>: SQLite-backed persistent key-value runtime</li>
-        </ul>
-        <h3>Multi-Instance Note</h3>
-        <p>For horizontal scaling, use shared/centralized state or a custom storage integration so block/exemption decisions stay consistent.</p>
-        <h3>Rust Enablement</h3>
-        <pre><code>pip install "aiwaf[rust]"
-# then set
-AIWAF_USE_RUST = True</code></pre>
-    </section>
-
-    <section class="section">
-        <h2>12-13. Production Checklist And Validation</h2>
-        <ul class="checklist">
-            <li>[ ] Framework extra installed.</li>
-            <li>[ ] Access logs configured and readable/writable.</li>
-            <li>[ ] Middleware order reviewed.</li>
-            <li>[ ] Exempt paths configured for health/static/webhooks.</li>
-            <li>[ ] Rate and header policies tuned.</li>
-            <li>[ ] Training scheduled.</li>
-            <li>[ ] Geo-blocking intentionally configured (or disabled).</li>
-            <li>[ ] Observability and log rotation in place.</li>
-            <li>[ ] Verified block and exemption behavior in staging.</li>
-        </ul>
-        <h3>Validation Playbook</h3>
-        <ol>
-            <li>Smoke: normal/static/health requests should pass.</li>
-            <li>Rate burst: observe pass then <code>429</code>, optionally <code>403</code> flood block.</li>
-            <li>Header check: low-header curl should trigger header policy behavior.</li>
-            <li>Keyword/anomaly check: malicious-style probe should be logged/blocked in staging.</li>
-        </ol>
-    </section>
-
-    <section class="section">
-        <h2>14-17. Troubleshooting, Contributor Setup, Minimal Snippets</h2>
-        <h3>Troubleshooting Highlights</h3>
-        <ul>
-            <li>Django model app errors: ensure <code>"aiwaf.django"</code> in <code>INSTALLED_APPS</code>, rerun migrations.</li>
-            <li>No training: verify access-log path, parseable format, and thresholds.</li>
-            <li>False positives: tune exemptions/header score/path rules/allowed keywords.</li>
-            <li>Missing persistence: validate backend mode and writable dirs.</li>
-            <li>Rust inactive: check <code>pip show aiwaf-rust</code> and <code>AIWAF_USE_RUST=True</code>.</li>
-        </ul>
-        <h3>Contributor Local Setup</h3>
-        <pre><code>python -m venv .venv
-source .venv/bin/activate
-pip install -U pip
-pip install -e .
-pip install -e ".[django,flask,fastapi,rust]"
-pytest -q
-pytest -q -m django
-pytest -q -m flask
-pytest -q -m fast</code></pre>
-        <h3>Quick Minimal Config Snippets</h3>
-        <pre><code># Django
-INSTALLED_APPS += ["aiwaf.django"]
-MIDDLEWARE += [
-    "aiwaf.django.middleware.HeaderValidationMiddleware",
-    "aiwaf.django.middleware.IPAndKeywordBlockMiddleware",
-]
-AIWAF_ACCESS_LOG = "/var/log/nginx/access.log"
-
-# Flask
-app.config["AIWAF_USE_CSV"] = True
-import aiwaf.flask as aiwaf
-aiwaf.register_aiwaf_middlewares(app, middlewares=["ip_keyword_block", "rate_limit"])
-
-# FastAPI
-from aiwaf.fast import AIWAF
-aiwaf = AIWAF(app)</code></pre>
-        <h3>Related Docs</h3>
-        <ul>
-            <li><code>README.md</code></li>
-            <li><code>INSTALLATION.md</code></li>
-            <li><code>AIWAF_SETTINGS_GUIDE.py</code></li>
-            
-            <li><code>aiwaf/core/KEYWORD_FALLBACK_DETAILED.md</code></li>
-        </ul>
-    </section>
+# Explicit adapter dispatch
+aiwaf django aiwaf_list --all
+aiwaf flask --help
+aiwaf fast --help</code></pre>
+<h2>Production configuration</h2>
+<ul>
+<li>Configure the application to trust forwarding headers only from known proxy CIDRs.</li>
+<li>Configure the outermost proxy to overwrite client-supplied forwarding headers.</li>
+<li>Use Redis, a database, or another shared backend when multiple workers must share rate-limit, blacklist, or exemption state.</li>
+<li>Keep health checks, static assets, and trusted webhook routes explicitly scoped instead of disabling protection globally.</li>
+<li>Start anomaly detection in observe-only or conservative mode and tune it with representative normal traffic.</li>
+<li>Rotate logs and exclude secrets, authorization headers, cookies, and personal data.</li>
+<li>Sign model/configuration artifacts where the runtime supports HMAC verification.</li>
+<li>Run AIWAF alongside normal secure-development controls and an edge/reverse-proxy layer.</li>
+</ul>
 </main>
 </div></div>
 </body>
