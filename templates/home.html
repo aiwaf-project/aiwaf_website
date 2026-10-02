@@ -41,10 +41,8 @@
         .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem 0; }
         .feature-card { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 2rem; transition: all 0.3s ease; cursor: pointer; }
         .feature-card:hover { transform: translateY(-5px); border-color: rgba(78, 205, 196, 0.5); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); }
-        .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; color: #4ecdc4; }
         .feature-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: #ff6b6b; }
         .info-box { background: rgba(78, 205, 196, 0.1); border: 1px solid rgba(78, 205, 196, 0.3); border-radius: 10px; padding: 1.5rem; margin: 2rem 0; }
-        .info-box::before { content: 'ℹ️ '; font-size: 1.2rem; }
         @media (max-width: 768px) { .nav { display: none; } .hero-title { font-size: 2.5rem; } .hero-subtitle { font-size: 1.2rem; } }
         .floating-element { position: absolute; opacity: 0.1; animation: float 6s ease-in-out infinite; }
         .floating-element:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
@@ -76,6 +74,7 @@
             <h1 class="hero-title">AI Web Application Firewall</h1>
             <p class="hero-subtitle">Application middleware with request controls, route policies, and optional anomaly detection</p>
             <a href="/docs" class="cta-button">Get Started</a>
+            <a href="/docs/architecture" class="cta-button">Understand the Architecture</a>
         </div>
     </section>
 
@@ -88,17 +87,14 @@
 
             <div class="feature-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">🛡️</div>
                     <h3 class="feature-title">AI-Powered Detection</h3>
                     <p>Optional Isolation Forest models score request behavior using a shared six-feature training schema.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
                     <h3 class="feature-title">Real-time Protection</h3>
                     <p>Rate limits, header validation, IP reputation, keyword checks, and route policies run in your application middleware.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🔄</div>
                     <h3 class="feature-title">Adaptive Learning</h3>
                     <p>Offline training uses configured request logs to update anomaly models and learned keywords after traffic thresholds are met.</p>
                 </div>

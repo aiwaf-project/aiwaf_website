@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#7b2cbf,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.09); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">Rust Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="/docs/rust">Overview</a></li>
+        <li><a href="/docs/rust/architecture" class="active">Architecture</a></li>
+        <li><a href="/docs/rust/bindings">Bindings API</a></li>
+        <li><a href="/docs/rust/operations">Build & Operations</a></li>
+    </ul>
+    <div style="margin-top: 2rem; padding: 1rem; background: rgba(78,205,196,.1); border-radius: 10px;">
+        <small>Rust accelerator package links.</small>
+        <div style="margin-top: 0.7rem;">
+            <a href="https://pypi.org/project/aiwaf-rust/" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">PyPI: aiwaf-rust</a><br>
+            <a href="https://www.npmjs.com/package/aiwaf-wasm" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">npm: aiwaf-wasm</a><br>
+            <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub: AIWAF Monorepo</a>
+        </div>
+    </div>
+</aside>
+<main class="content">
+<h1 class="page-title">Rust and WASM Architecture</h1>
+<p class="architecture-lead">Rust implements shared computation primitives. PyO3 and wasm-bindgen expose them to host applications, while the Python or JavaScript host retains responsibility for HTTP policy, storage, logging, and response handling.</p>
+{% include '_docs_source.html' %}
+<nav class="architecture-toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#one-core-two-binding-boundaries">One core, two binding boundaries</a></li><li><a href="#matching-without-rebuilding-work-per-request">Matching without rebuilding work per request</a></li><li><a href="#record-conversion-and-stateful-feature-extraction">Record conversion and stateful feature extraction</a></li><li><a href="#inside-the-forest">Inside the forest</a></li><li><a href="#json-is-the-artifact-boundary">JSON is the artifact boundary</a></li><li><a href="#acceleration-has-a-conversion-cost">Acceleration has a conversion cost</a></li><li><a href="#worked-example-accelerated-header-validation">Worked example: accelerated header validation</a></li><li><a href="#trace-the-implementation">Trace the implementation</a></li></ul></nav>
+<p class="architecture-link"><a href="/docs/architecture">How AIWAF works: system architecture</a></p>
+<section class="section" id="one-core-two-binding-boundaries"><h2>One core, two binding boundaries</h2>
+<ol class="architecture-flow" aria-label="Native computation boundary"><li><strong>Host runtime</strong><span>Select the operation and provide normalized input.</span></li><li><strong>Binding conversion</strong><span>PyO3 or wasm-bindgen converts host values into Rust data.</span></li><li><strong>Shared Rust core</strong><span>Match, validate, extract features, analyze behavior, or score a forest.</span></li><li><strong>Host decision</strong><span>Convert the result back and apply framework policy.</span></li></ol><div class="table-wrap"><table><thead><tr><th>Source area</th><th>Responsibility</th></tr></thead><tbody><tr><td><code>rust/crates/aiwaf_core/src/lib.rs</code></td><td>Shared keyword and route matching, request records, feature windows, behavior analysis, and Isolation Forest state.</td></tr><tr><td><code>rust/src/lib.rs</code></td><td>PyO3 objects and conversion routines exposed as <code>aiwaf_rust</code>.</td></tr><tr><td><code>rust/crates/aiwaf_wasm/src/lib.rs</code></td><td>wasm-bindgen exports and JavaScript conversion exposed as <code>aiwaf-wasm</code>.</td></tr></tbody></table></div>
+</section>
+<section class="section" id="matching-without-rebuilding-work-per-request"><h2>Matching without rebuilding work per request</h2>
+<p><code>KeywordMatcher</code> escapes configured keywords into literal patterns and builds a regex set. <code>first_match</code> preserves configured keyword order. The host can reuse the matcher rather than rebuilding pattern machinery on each request.</p><p><code>RouteMatcher</code> indexes normalized prefixes. Matching starts with the deepest candidate and walks parent path boundaries until it finds a stored prefix. Duplicate normalized prefixes retain their first configured index. The host still normalizes paths and interprets the matching rule's policy.</p>
+</section>
+<section class="section" id="record-conversion-and-stateful-feature-extraction"><h2>Record conversion and stateful feature extraction</h2>
+<p>Bindings convert request records into typed structures before the core computes features. Batched and incremental extraction share the computation layer; incremental calls carry explicit state so recent client activity is available across batches.</p><p>That extraction state is distinct from a framework's blacklist or distributed rate-limit store. Sending a batch to Rust does not automatically replicate application state across workers. The host chooses where records and extraction state live.</p><div class="table-wrap"><table><thead><tr><th>Feature</th><th>What it describes</th><th>Why it helps</th></tr></thead><tbody><tr><td><code>path_len</code></td><td>Length of the request path.</td><td>Unusually long probing paths.</td></tr><tr><td><code>kw_hits</code></td><td>Matches against malicious keywords.</td><td>Known probing patterns within a path.</td></tr><tr><td><code>resp_time</code></td><td>Response duration in seconds.</td><td>Behavior that differs from the normal timing distribution.</td></tr><tr><td><code>status_idx</code></td><td>An encoded response-status category.</td><td>Response outcomes without treating status codes as continuous measurements.</td></tr><tr><td><code>burst_count</code></td><td>Requests associated with the client in the burst window.</td><td>Rapid repeated activity.</td></tr><tr><td><code>total_404</code></td><td>Not-found responses in the relevant per-client history.</td><td>Repeated discovery of nonexistent routes.</td></tr></tbody></table></div><p>The feature order is part of the model contract. A trainer and scorer must agree on the order, status mapping, time units, and window semantics. Summary fields ending in <code>_ms</code> use milliseconds; the feature vector uses seconds. Sharing feature names alone does not make every model artifact interchangeable.</p>
+</section>
+<section class="section" id="inside-the-forest"><h2>Inside the forest</h2>
+<p>Training samples rows and grows isolation trees with random feature selections and split points. Tree traversal measures the number of splits required to isolate a point; short average isolation paths indicate more unusual samples.</p><p><code>anomaly_score</code> uses the direction where higher means more anomalous. <code>score_samples</code> uses the opposite, scikit-learn-aligned direction. <code>decision_function</code> subtracts the configured offset, and <code>predict</code> returns inlier or outlier labels. The host must use the matching threshold convention.</p><p>Ordinary fitting replaces the forest unless warm-start append is selected. Retraining supports the append lifecycle. Random seeds and sampling settings affect the trained state, so score comparisons should use compatible artifacts and settings.</p>
+</section>
+<section class="section" id="json-is-the-artifact-boundary"><h2>JSON is the artifact boundary</h2>
+<p>The forest exports state through <code>to_json</code> and restores it through <code>from_json</code>. Tree structure, settings, and scoring state travel as data. The host decides whether to store that state in a file, database, or cache and checks feature and artifact compatibility when loading.</p><p>Python's Rust-model artifact can be exchanged with the supported Java JSON model path. JavaScript-native forests and older artifacts are not automatically the same format just because they use six feature names.</p>
+</section>
+<section class="section" id="acceleration-has-a-conversion-cost"><h2>Acceleration has a conversion cost</h2>
+<p>Python calls cross the native-extension boundary; JavaScript calls cross the WASM boundary. Converting object-heavy inputs consumes time before the Rust computation starts. Reusing matchers and processing sufficiently large feature batches can amortize that cost.</p><p>The Python bridge selects installed capabilities and retains fallback behavior. The Node adapter can choose JavaScript when WASM initialization or conversion is unsuitable. A native function returning a suspicious reason still requires the host to turn that result into a policy decision.</p>
+</section>
+<section class="section" id="worked-example-accelerated-header-validation"><h2>Worked example: accelerated header validation</h2>
+<p>The Python adapter receives framework headers and normalizes HTTP or WSGI key names. The bridge passes the resulting dictionary and validation options through PyO3. Rust evaluates the configured header rules and returns a reason or a clean result. The Python middleware then decides whether to return a response, record an offense, or continue to the handler.</p><p>The Rust core never sends the Flask or FastAPI response itself. This boundary explains why framework configuration and exemptions continue to matter when native acceleration is enabled.</p><ul><li><a href="/docs/architecture">System overview</a></li><li><a href="/docs/rust/bindings">Binding API and scoring semantics</a></li><li><a href="/docs/rust/operations">Build and packaging</a></li></ul>
+</section>
+<section class="section" id="trace-the-implementation"><h2>Trace the implementation</h2>
+<p>Follow these files in the monorepo to connect the architecture to the code:</p><ul><li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/rust/crates/aiwaf_core/src/lib.rs" target="_blank" rel="noopener noreferrer"><code>rust/crates/aiwaf_core/src/lib.rs</code></a></li><li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/rust/src/lib.rs" target="_blank" rel="noopener noreferrer"><code>rust/src/lib.rs</code></a></li><li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/rust/crates/aiwaf_wasm/src/lib.rs" target="_blank" rel="noopener noreferrer"><code>rust/crates/aiwaf_wasm/src/lib.rs</code></a></li><li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/py/aiwaf/core/rust_backend.py" target="_blank" rel="noopener noreferrer"><code>py/aiwaf/core/rust_backend.py</code></a></li><li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/js/lib/wasmAdapter.js" target="_blank" rel="noopener noreferrer"><code>js/lib/wasmAdapter.js</code></a></li></ul>
+</section>
+</main>
+</div></div>
+</body>
+</html>

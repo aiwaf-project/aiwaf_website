@@ -73,99 +73,41 @@
     </ul>
 </aside>
 <main class="content">
-<h1 class="page-title">Python Architecture and Training</h1>
+<h1 class="page-title">Python Architecture and Request Lifecycle</h1>
+<p class="architecture-lead">Django, Flask, and FastAPI expose separate adapters over the shared Python core. The adapter owns framework execution; the core supplies route policies, state abstractions, detection helpers, and training primitives.</p>
 {% include '_docs_source.html' %}
-<h2>Shared core and adapters</h2>
-<p>The framework-independent core is in <code>py/aiwaf/core/</code>. Django, Flask, and FastAPI adapters reuse request validation, exemptions, storage, reputation tracking, feature extraction, and model helpers.</p>
-<ul>
-<li><code>runtime_storage.py</code> provides memory, file, CSV, and SQLite key-value backends.</li>
-<li><code>runtime_blacklist.py</code> and <code>blacklist.py</code> handle weighted offenses, reputation metadata, block expiry, and progressive temporary blocks.</li>
-<li><code>path_manifest.py</code> generates and compiles route policies; <code>api_detection.py</code> supplies source-level route signals.</li>
-<li><code>rust_backend.py</code> selects installed native capabilities automatically and falls back to Python when a capability is unavailable.</li>
-<li><code>model_artifacts.py</code>, <code>training.py</code>, <code>training_features.py</code>, and <code>training_logic.py</code> coordinate training and JSON artifacts.</li>
-</ul>
-<h2>Configuration</h2>
-<p>Python adapters use flat <code>AIWAF_*</code> settings or their equivalent constructor options.</p>
-<div class="table-wrap"><table><thead><tr><th>Area</th><th>Important settings</th></tr></thead><tbody>
-<tr><td>Training</td><td><code>AIWAF_ACCESS_LOG</code>, <code>AIWAF_MIN_TRAIN_LOGS</code>, <code>AIWAF_MIN_AI_LOGS</code>, <code>AIWAF_FORCE_AI_TRAINING</code></td></tr>
-<tr><td>Rate limiting</td><td><code>AIWAF_RATE_WINDOW</code>, <code>AIWAF_RATE_MAX</code>, <code>AIWAF_RATE_FLOOD</code></td></tr>
-<tr><td>Headers</td><td><code>AIWAF_REQUIRED_HEADERS</code>, <code>AIWAF_HEADER_QUALITY_MIN_SCORE</code></td></tr>
-<tr><td>Honeypot</td><td><code>AIWAF_MIN_FORM_TIME</code>, <code>AIWAF_MAX_PAGE_TIME</code></td></tr>
-<tr><td>UUID checks</td><td><code>AIWAF_UUID_SCORE_ENABLED</code>, <code>AIWAF_UUID_SCORE_BLOCK_THRESHOLD</code></td></tr>
-<tr><td>GeoIP</td><td><code>AIWAF_GEO_BLOCK_ENABLED</code>, <code>AIWAF_GEO_BLOCK_COUNTRIES</code>, <code>AIWAF_GEO_ALLOW_COUNTRIES</code></td></tr>
-<tr><td>Exemptions</td><td><code>AIWAF_EXEMPT_PATHS</code>, <code>AIWAF_EXEMPT_KEYWORDS</code>, <code>AIWAF_ALLOWED_PATH_KEYWORDS</code></td></tr>
-<tr><td>Models</td><td><code>AIWAF_MODEL_PATH</code>, <code>AIWAF_MODEL_STORAGE</code>, <code>AIWAF_MODEL_STORAGE_FALLBACK</code></td></tr>
-</tbody></table></div>
-<p>When <code>aiwaf_rust</code> is importable, supported acceleration paths are selected automatically. Python remains the fallback when a native capability is unavailable. Persisted runtime models use JSON state; AIWAF does not load pickle, joblib, or other executable Python-object formats.</p>
-<h2>Route discovery and policy</h2>
-<p><code>aiwaf init</code> imports the live application and records all registered routes in <code>.aiwaf/paths.json</code>. The <code>--app</code> value must be <code>module:object</code>, not only a module name.</p>
-<pre><code class="language-bash"># Flask application object
-aiwaf init --framework flask --app app:app
-
-# Flask application factory
-aiwaf init --framework flask --app app:create_app
-
-# FastAPI
-aiwaf init --framework fastapi --app app:app
-
-# Django
-aiwaf init --framework django --settings project.settings
-
-# Custom output
-aiwaf init --framework flask --app app:app --output .aiwaf/paths.json</code></pre>
-<p>Run the command in the same environment and checkout used to start the application. If it discovers only <code>/</code> and Flask's static route, verify the imported file and live route table:</p>
-<pre><code class="language-bash">python -c &quot;import app; print(app.__file__); print(*sorted(r.rule for r in app.app.url_map.iter_rules()), sep=&#x27;\n&#x27;)&quot;</code></pre>
-<h3>Python route exemptions</h3>
-<p>Django, Flask, and FastAPI expose equivalent route helpers:</p>
-<pre><code class="language-python">from aiwaf.flask import (
-    aiwaf_exempt,
-    aiwaf_exempt_from,
-    aiwaf_only,
-    aiwaf_require_protection,
-)
-
-@app.get(&quot;/health&quot;)
-@aiwaf_exempt
-def health():
-    return {&quot;ok&quot;: True}
-
-@app.post(&quot;/webhook&quot;)
-@aiwaf_only(&quot;header_validation&quot;)
-def webhook():
-    return {&quot;accepted&quot;: True}</code></pre>
-<p>Canonical middleware names include <code>header_validation</code>, <code>rate_limit</code>, <code>ip_keyword_block</code>, <code>honeypot</code>, <code>geo_block</code>, <code>uuid_tamper</code>, <code>ai_anomaly</code>, and <code>logging</code>.</p>
-<h2>Shared feature schema</h2>
-<p>New training paths use these six features in this order:</p>
-<ol>
-<li><code>path_len</code></li>
-<li><code>kw_hits</code></li>
-<li><code>resp_time</code></li>
-<li><code>status_idx</code></li>
-<li><code>burst_count</code></li>
-<li><code>total_404</code></li>
-</ol>
-<p><code>resp_time</code> is expressed in seconds in feature vectors. Artifact summary fields explicitly named with <code>_ms</code> remain milliseconds.</p>
-<p>The training lifecycle is:</p>
-<ol>
-<li>Parse configured access logs or middleware-generated request logs.</li>
-<li>Normalize request paths, status, timing, and per-IP state.</li>
-<li>Extract the six features and suspicious route segments.</li>
-<li>Train or update the Isolation Forest after configured volume thresholds are met.</li>
-<li>Refresh learned keywords while excluding known legitimate and exempt routes.</li>
-<li>Persist portable JSON forest state and runtime metadata; legacy language-specific artifacts remain read-only compatibility inputs.</li>
-</ol>
-<p>Do not train directly on unreviewed sensitive request bodies or authentication headers. Treat models, logs, exported state, and MMDB files as deployment artifacts with controlled access.</p>
-<h2>Deployment</h2>
-<ul>
-<li>Configure the application to trust forwarding headers only from known proxy CIDRs.</li>
-<li>Configure the outermost proxy to overwrite client-supplied forwarding headers.</li>
-<li>Use Redis, a database, or another shared backend when multiple workers must share rate-limit, blacklist, or exemption state.</li>
-<li>Keep health checks, static assets, and trusted webhook routes explicitly scoped instead of disabling protection globally.</li>
-<li>Start anomaly detection in observe-only or conservative mode and tune it with representative normal traffic.</li>
-<li>Rotate logs and exclude secrets, authorization headers, cookies, and personal data.</li>
-<li>Sign model/configuration artifacts where the runtime supports HMAC verification.</li>
-<li>Run AIWAF alongside normal secure-development controls and an edge/reverse-proxy layer.</li>
-</ul>
+<nav class="architecture-toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#module-boundaries">Module boundaries</a></li><li><a href="#initialization-and-policy-planning">Initialization and policy planning</a></li><li><a href="#how-each-adapter-executes">How each adapter executes</a></li><li><a href="#following-one-request">Following one request</a></li><li><a href="#live-routes-manifests-and-decorators">Live routes, manifests, and decorators</a></li><li><a href="#storage-and-reputation">Storage and reputation</a></li><li><a href="#training-and-scoring">Training and scoring</a></li><li><a href="#the-rust-acceleration-boundary">The Rust acceleration boundary</a></li><li><a href="#worked-example-an-api-request-and-a-scanner">Worked example: an API request and a scanner</a></li><li><a href="#trace-the-implementation">Trace the implementation</a></li></ul></nav>
+<p class="architecture-link"><a href="/docs/architecture">How AIWAF works: system architecture</a></p>
+<section class="section" id="module-boundaries"><h2>Module boundaries</h2>
+<div class="table-wrap"><table><thead><tr><th>Source area</th><th>Responsibility</th></tr></thead><tbody><tr><td><code>py/aiwaf/core/</code></td><td>Shared exemptions, middleware planning, route discovery, storage, reputation, training, and native capability bridges.</td></tr><tr><td><code>py/aiwaf/django/</code></td><td>Django middleware, ORM models, decorators, settings compatibility, and management commands.</td></tr><tr><td><code>py/aiwaf/flask/</code></td><td>Flask application initialization, request/response hooks, stores, and CLI integration.</td></tr><tr><td><code>py/aiwaf/fast/</code></td><td>FastAPI-facing exports and middleware; the shared orchestrator lives in <code>core/runtime_fastapi.py</code>.</td></tr></tbody></table></div>
+</section>
+<section class="section" id="initialization-and-policy-planning"><h2>Initialization and policy planning</h2>
+<p>Initialization normalizes settings, selects storage, and resolves the requested middleware set. <code>middleware_plan.py</code> expands canonical selections and applies disabled checks. Route discovery supplies hints such as UUID routes and application intent, while <code>path_manifest.py</code> loads generated path policies.</p><p>The resulting middleware plan determines which framework hooks are registered. A route plan then decides whether each registered protection applies to a particular request. Global enablement and per-route applicability are different questions.</p>
+</section>
+<section class="section" id="how-each-adapter-executes"><h2>How each adapter executes</h2>
+<div class="table-wrap"><table><thead><tr><th>Adapter</th><th>Request boundary</th><th>Response boundary</th></tr></thead><tbody><tr><td>Django</td><td>The configured <code>MIDDLEWARE</code> order determines nested request execution. The unified alias expands the AIWAF stack; individual classes permit explicit ordering.</td><td>The framework unwinds response handling through middleware. Logging and checks that use outcomes need to observe that response.</td></tr><tr><td>Flask</td><td><code>flask_integration.py</code> registers selected middleware objects and their Flask request hooks. A returned response stops normal handler dispatch.</td><td>Response hooks observe the handler result for logging and relevant behavior checks.</td></tr><tr><td>FastAPI</td><td><code>runtime_fastapi.py</code> registers Starlette middleware in reverse order because the last registered wrapper executes first.</td><td>Response control returns through the wrapper chain; the orchestrator coordinates configuration and lifecycle integration.</td></tr></tbody></table></div><p>FastAPI's orchestrator documents the effective available chain as Geo, IP/keyword, Rate, AI, Honeypot, UUID, Header, and Logging. Disabled or inapplicable layers are skipped. Do not infer execution order from the order of <code>add_middleware</code> calls alone.</p>
+</section>
+<section class="section" id="following-one-request"><h2>Following one request</h2>
+<ol class="architecture-flow" aria-label="Python request processing"><li><strong>Resolve context</strong><span>Read request metadata and the resolved endpoint where available.</span></li><li><strong>Apply route policy</strong><span>Check path rules and endpoint exemption or protection metadata for each layer.</span></li><li><strong>Enforce selected checks</strong><span>Consult block state, counters, validation rules, and the available anomaly model.</span></li><li><strong>Observe outcome</strong><span>Allow the handler or return a denial, then record the response through applicable hooks.</span></li></ol><p>The exact shortcut behavior belongs to each middleware. An exempt path, an exempt client, a geo-only exemption, and a decorator disabling one check are distinct policies. Use the layer-specific decision to explain a bypass rather than assuming that every exemption disables the complete stack.</p>
+</section>
+<section class="section" id="live-routes-manifests-and-decorators"><h2>Live routes, manifests, and decorators</h2>
+<p>The CLI imports the actual application object or Django URL configuration and enumerates registered routes. Where handler source is available, static analysis adds method, API, form, and authentication signals. The generated <code>.aiwaf/paths.json</code> is a policy input, not a replacement router.</p><p>Manifest compilation creates path rules for middleware enablement and rate overrides. Explicit decorators carry endpoint intent: <code>aiwaf_exempt</code>, <code>aiwaf_exempt_from</code>, <code>aiwaf_only</code>, and <code>aiwaf_require_protection</code>. They complement global configuration. Regenerate a manifest when live registrations change so the policy does not describe an older application.</p>
+</section>
+<section class="section" id="storage-and-reputation"><h2>Storage and reputation</h2>
+<p>The shared runtime storage layer provides memory, JSON-file, CSV, and SQLite key-value implementations and typed stores for blocks, exemptions, keywords, and geo policy. Django and Flask also provide framework-specific database and CSV paths. A storage choice is adapter-specific; model storage is configured separately.</p><p>Reputation-based blacklisting stores weighted offenses, temporary-block escalation, expiration, and metadata. A later request reads that state rather than recomputing an entire traffic history. Legacy blacklist migration converts older schemas into the richer representation.</p><p>Memory is local to a process. Persisting an operational store does not automatically make every rate bucket or recent-request buffer distributed. FastAPI can supply a Redis-backed rate cache; review the storage semantics of the other enabled checks separately.</p>
+</section>
+<section class="section" id="training-and-scoring"><h2>Training and scoring</h2>
+<div class="table-wrap"><table><thead><tr><th>Feature</th><th>What it describes</th><th>Why it helps</th></tr></thead><tbody><tr><td><code>path_len</code></td><td>Length of the request path.</td><td>Unusually long probing paths.</td></tr><tr><td><code>kw_hits</code></td><td>Matches against malicious keywords.</td><td>Known probing patterns within a path.</td></tr><tr><td><code>resp_time</code></td><td>Response duration in seconds.</td><td>Behavior that differs from the normal timing distribution.</td></tr><tr><td><code>status_idx</code></td><td>An encoded response-status category.</td><td>Response outcomes without treating status codes as continuous measurements.</td></tr><tr><td><code>burst_count</code></td><td>Requests associated with the client in the burst window.</td><td>Rapid repeated activity.</td></tr><tr><td><code>total_404</code></td><td>Not-found responses in the relevant per-client history.</td><td>Repeated discovery of nonexistent routes.</td></tr></tbody></table></div><p>The feature order is part of the model contract. A trainer and scorer must agree on the order, status mapping, time units, and window semantics. Summary fields ending in <code>_ms</code> use milliseconds; the feature vector uses seconds. Sharing feature names alone does not make every model artifact interchangeable.</p><ol class="architecture-flow" aria-label="Offline learning loop"><li><strong>Request logs</strong><span>Completed responses supply paths, client identity, status, and timing.</span></li><li><strong>Feature extraction</strong><span>Records are normalized and combined with per-client activity windows.</span></li><li><strong>Train and review</strong><span>Volume thresholds gate model training; route exemptions filter learned keywords.</span></li><li><strong>Publish artifacts</strong><span>The runtime loads persisted model state and updated learned keywords.</span></li></ol><p>The training job is separate from ordinary application request handling. Reading logs and rebuilding a forest does not need to happen for every request. Runtime keyword learning, where enabled, is a separate mechanism that can use completed-response signals.</p><p>The trainer parses logs, extracts behavior, filters legitimate route tokens from keyword learning, and trains only when configured volume thresholds permit. Request-time scoring reads an available model; lack of a usable model does not remove deterministic header, rate, keyword, or geo controls.</p><p>Model artifacts carry forest state and metadata in JSON. Current Python persistence does not load pickle or joblib objects. That serialization boundary is separate from the choice of file, database, or cache for storing the artifact.</p>
+</section>
+<section class="section" id="the-rust-acceleration-boundary"><h2>The Rust acceleration boundary</h2>
+<p><code>rust_backend.py</code> discovers installed <code>aiwaf_rust</code> capabilities. A supported native operation can accelerate matching, header validation, feature extraction, or forest operations while the Python adapter continues to own the request and response.</p><p>The bridge normalizes HTTP and WSGI header names before calling native validation. If the extension or a capability is unavailable, the relevant Python fallback remains available. Native acceleration changes where a computation runs; it does not replace framework policy or storage.</p>
+</section>
+<section class="section" id="worked-example-an-api-request-and-a-scanner"><h2>Worked example: an API request and a scanner</h2>
+<p>A JSON API handler can carry route metadata that omits HTML form timing. Header and rate checks still apply when selected. Allowed requests reach the handler, and the logger records its actual result.</p><p>A scanner requesting many missing paths creates a different record: suspicious keyword hits, repeated 404s, and burst activity. Keyword or rate checks may reject it immediately. Sufficient logs later give the trainer behavior data for the anomaly path. Each decision should be explainable by its enabled layer and recorded reason.</p><p><a href="/docs/architecture">System overview</a> connects these components. The <a href="/docs/python/setup">setup guides</a> show wiring, and <a href="/docs/python/operations">operations</a> covers migration and training commands.</p>
+</section>
+<section class="section" id="trace-the-implementation"><h2>Trace the implementation</h2>
+<p>Follow these files in the monorepo to connect the architecture to the code:</p><ul><li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/py/aiwaf/core/middleware_plan.py" target="_blank" rel="noopener noreferrer"><code>py/aiwaf/core/middleware_plan.py</code></a></li><li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/py/aiwaf/core/path_manifest.py" target="_blank" rel="noopener noreferrer"><code>py/aiwaf/core/path_manifest.py</code></a></li><li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/py/aiwaf/core/runtime_fastapi.py" target="_blank" rel="noopener noreferrer"><code>py/aiwaf/core/runtime_fastapi.py</code></a></li><li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/py/aiwaf/flask/flask_integration.py" target="_blank" rel="noopener noreferrer"><code>py/aiwaf/flask/flask_integration.py</code></a></li><li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/py/aiwaf/django/middleware.py" target="_blank" rel="noopener noreferrer"><code>py/aiwaf/django/middleware.py</code></a></li><li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/py/aiwaf/core/runtime_blacklist.py" target="_blank" rel="noopener noreferrer"><code>py/aiwaf/core/runtime_blacklist.py</code></a></li><li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/py/aiwaf/core/rust_backend.py" target="_blank" rel="noopener noreferrer"><code>py/aiwaf/core/rust_backend.py</code></a></li></ul>
+</section>
 </main>
 </div></div>
 </body>

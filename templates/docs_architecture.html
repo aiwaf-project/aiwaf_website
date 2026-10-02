@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#3a506b,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: .6rem; }
+        th, td { border: 1px solid rgba(255,255,255,.1); padding: .6rem; text-align: left; vertical-align: top; }
+        th { background: rgba(78,205,196,.12); }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+<h3 class="sidebar-title">Architecture</h3>
+<ul class="sidebar-nav">
+<li><a href="/docs/architecture" class="active">System overview</a></li>
+<li><a href="/docs/python/architecture">Python internals</a></li>
+<li><a href="/docs/javascript/architecture">Node.js internals</a></li>
+<li><a href="/docs/java/architecture">Java internals</a></li>
+<li><a href="/docs/rust/architecture">Rust and WASM internals</a></li>
+<li><a href="/docs">All documentation</a></li>
+</ul></aside>
+<main class="content">
+<h1 class="page-title">How AIWAF Works</h1>
+<p class="architecture-lead">AIWAF sits inside the application request lifecycle. Framework adapters turn live HTTP requests into policy inputs, deterministic controls make immediate decisions, and optional anomaly models add evidence from recent behavior.</p>
+{% include '_docs_source.html' %}
+<nav class="architecture-toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#two-connected-execution-paths">Two connected execution paths</a></li><li><a href="#responsibilities-of-each-layer">Responsibilities of each layer</a></li><li><a href="#how-route-policies-become-decisions">How route policies become decisions</a></li><li><a href="#a-block-is-a-decision-a-blocklist-is-state">A block is a decision; a blocklist is state</a></li><li><a href="#state-ownership-explains-multi-worker-behavior">State ownership explains multi-worker behavior</a></li><li><a href="#how-anomaly-detection-contributes">How anomaly detection contributes</a></li><li><a href="#the-learning-loop">The learning loop</a></li><li><a href="#what-happens-after-the-handler">What happens after the handler</a></li><li><a href="#read-the-runtime-internals">Read the runtime internals</a></li></ul></nav>
+<section class="section" id="two-connected-execution-paths"><h2>Two connected execution paths</h2>
+<p>The system has a request path for enforcing the current policy and a learning path for improving future decisions. Configuration, route metadata, runtime stores, and model artifacts connect them.</p><ol class="architecture-flow" aria-label="Conceptual request lifecycle"><li><strong>Framework adapter</strong><span>Extract method, path, headers, client address, and available handler metadata.</span></li><li><strong>Policy and checks</strong><span>Select applicable protections, read state, and return an early denial when a check fails.</span></li><li><strong>Application handler</strong><span>Allowed requests reach the normal application code.</span></li><li><strong>Response observations</strong><span>Record status, duration, and behavior; response-aware adapters may make another decision.</span></li></ol><p>This is a conceptual flow, not a universal middleware ordering. Python wrappers, Node middleware, and Java filters attach to different framework hooks. The runtime-specific pages below explain the actual execution boundaries.</p>
+</section>
+<section class="section" id="responsibilities-of-each-layer"><h2>Responsibilities of each layer</h2>
+<div class="table-wrap"><table><thead><tr><th>Layer</th><th>Responsibility</th><th>Example</th></tr></thead><tbody><tr><td>Adapter</td><td>Read framework request/response data and intercept execution.</td><td>Django middleware, Express middleware, Spring filter.</td></tr><tr><td>Policy planner</td><td>Combine enabled middleware with route metadata and path rules.</td><td>A webhook may run header checks without form timing.</td></tr><tr><td>Deterministic checks</td><td>Enforce concrete limits and matching rules.</td><td>A rate window over its configured maximum returns a denial.</td></tr><tr><td>Behavior model</td><td>Score a feature vector using a trained forest.</td><td>Repeated unknown-route probes can add anomaly evidence.</td></tr><tr><td>Runtime state</td><td>Remember recent activity, exemptions, blocks, and learned keywords.</td><td>A later request observes an active IP block.</td></tr><tr><td>Learning pipeline</td><td>Build future models and keyword state from recorded traffic.</td><td>A scheduled job trains from access logs.</td></tr></tbody></table></div>
+</section>
+<section class="section" id="how-route-policies-become-decisions"><h2>How route policies become decisions</h2>
+<p>A manifest records discovered routes, methods, and inferred handler intent. Source analysis can supply signals such as JSON responses, form handling, or authentication calls when framework metadata is incomplete. The manifest compiler translates those signals into middleware disablement and rate-limit overrides.</p><p>The runtime combines those generated rules with explicitly configured path policies and decorator or annotation metadata. A protection runs only when it is enabled and applicable under that runtime's policy rules. An <code>auto</code> selection starts from the canonical set and omits checks unsupported by detected application signals; it is not itself an anomaly detector.</p><p>For example, an API endpoint may omit HTML form timing while keeping headers and rate limits. A login form needs different checks. Keep inferred policies reviewable: a route name or return type is evidence about intent, not proof of authorization.</p>
+</section>
+<section class="section" id="a-block-is-a-decision-a-blocklist-is-state"><h2>A block is a decision; a blocklist is state</h2>
+<p>A failing header, method, or rate check can reject the current request. Some checks also record an offense or create a temporary IP block. Those are separate effects: returning a denial does not imply that every later request is permanently blocked.</p><p>Reputation handling records weighted offenses and can escalate temporary block durations. Later requests consult block expiry and exemption rules. Which checks mutate reputation and which response statuses they return are runtime-specific.</p>
+</section>
+<section class="section" id="state-ownership-explains-multi-worker-behavior"><h2>State ownership explains multi-worker behavior</h2>
+<div class="table-wrap"><table><thead><tr><th>State category</th><th>Typical contents</th><th>Architectural consequence</th></tr></thead><tbody><tr><td>Recent enforcement state</td><td>Rate buckets, form timestamps, UUID scores, recent request history.</td><td>Independent worker memory creates independent windows and counts.</td></tr><tr><td>Operational stores</td><td>Blacklists, exemptions, geo policy, learned keywords.</td><td>Persistence across restarts is different from consistent access across processes.</td></tr><tr><td>Model artifacts</td><td>Forest state, feature schema, training metadata.</td><td>Loading the same artifact does not share rate-limit or blacklist state.</td></tr></tbody></table></div><p>A local file can persist data while leaving other request counters process-local. Choose sharing separately for every state category. Java's Redis backend shares enforcement state atomically; Node rate limiting accepts a shared cache; Python sharing depends on the adapter and its configured stores.</p>
+</section>
+<section class="section" id="how-anomaly-detection-contributes"><h2>How anomaly detection contributes</h2>
+<p>An Isolation Forest repeatedly partitions feature samples using random feature choices and split points. Samples isolated in fewer splits tend to receive more anomalous scores. The forest learns a distribution of request behavior; it does not identify a vulnerability or understand the application's authorization rules.</p><p>The host runtime decides whether a score is enough to block. Model availability, training volume, thresholds, route eligibility, and recent-behavior confirmation can all affect that decision. For example, Node's unknown-route path requires both a sufficiently trained model and scanning-related behavior before issuing an anomaly block.</p><div class="table-wrap"><table><thead><tr><th>Feature</th><th>What it describes</th><th>Why it helps</th></tr></thead><tbody><tr><td><code>path_len</code></td><td>Length of the request path.</td><td>Unusually long probing paths.</td></tr><tr><td><code>kw_hits</code></td><td>Matches against malicious keywords.</td><td>Known probing patterns within a path.</td></tr><tr><td><code>resp_time</code></td><td>Response duration in seconds.</td><td>Behavior that differs from the normal timing distribution.</td></tr><tr><td><code>status_idx</code></td><td>An encoded response-status category.</td><td>Response outcomes without treating status codes as continuous measurements.</td></tr><tr><td><code>burst_count</code></td><td>Requests associated with the client in the burst window.</td><td>Rapid repeated activity.</td></tr><tr><td><code>total_404</code></td><td>Not-found responses in the relevant per-client history.</td><td>Repeated discovery of nonexistent routes.</td></tr></tbody></table></div><p>The feature order is part of the model contract. A trainer and scorer must agree on the order, status mapping, time units, and window semantics. Summary fields ending in <code>_ms</code> use milliseconds; the feature vector uses seconds. Sharing feature names alone does not make every model artifact interchangeable.</p>
+</section>
+<section class="section" id="the-learning-loop"><h2>The learning loop</h2>
+<ol class="architecture-flow" aria-label="Offline learning loop"><li><strong>Request logs</strong><span>Completed responses supply paths, client identity, status, and timing.</span></li><li><strong>Feature extraction</strong><span>Records are normalized and combined with per-client activity windows.</span></li><li><strong>Train and review</strong><span>Volume thresholds gate model training; route exemptions filter learned keywords.</span></li><li><strong>Publish artifacts</strong><span>The runtime loads persisted model state and updated learned keywords.</span></li></ol><p>The training job is separate from ordinary application request handling. Reading logs and rebuilding a forest does not need to happen for every request. Runtime keyword learning, where enabled, is a separate mechanism that can use completed-response signals.</p><p>Current Python model persistence uses JSON rather than executable Python-object serialization. Java can exchange the Python Rust-model forest state for the supported schema. JavaScript-native artifacts and legacy formats require their own compatibility checks.</p>
+</section>
+<section class="section" id="what-happens-after-the-handler"><h2>What happens after the handler</h2>
+<p>Response observations make real status and duration available. This matters for distinguishing a normal request from repeated 404 probing. A response-aware integration may evaluate behavior after the handler returns, but a response already committed or streamed to the client cannot be replaced.</p><p>Java's Spring filter explicitly distinguishes an uncommitted synchronous response from committed or asynchronous output. Other adapters use their framework's hooks for logging and learning. Avoid assuming that post-response scoring can prevent every byte from leaving the application.</p>
+</section>
+<section class="section" id="read-the-runtime-internals"><h2>Read the runtime internals</h2>
+<ul><li><a href="/docs/python/architecture">Python: shared core, framework hooks, policy and training</a></li><li><a href="/docs/javascript/architecture">Node.js: middleware order, denial paths and finish hooks</a></li><li><a href="/docs/java/architecture">Java: engine decisions, Spring discovery and distributed state</a></li><li><a href="/docs/rust/architecture">Rust/WASM: host bindings, matchers and forest implementation</a></li></ul>
+</section>
+</main>
+</div></div>
+</body>
+</html>

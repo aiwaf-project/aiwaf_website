@@ -48,6 +48,7 @@ def inject_seo_defaults():
     title_map = {
         "/": "AIWAF Documentation | Python, Node.js, Java, and Rust/WASM Security Guides",
         "/docs": "AIWAF Documentation Hub | Comprehensive Deep Dives for All Languages",
+        "/docs/architecture": "How AIWAF Works | System Architecture and Request Lifecycle",
         "/docs/python": "AIWAF Python Deep Dive | Architecture and Operations",
         "/docs/python/setup/django": "AIWAF Django Setup Guide | End-to-End Installation",
         "/docs/python/setup/flask": "AIWAF Flask Setup Guide | End-to-End Installation",
@@ -78,12 +79,14 @@ def inject_seo_defaults():
         "/docs/java/architecture": "AIWAF-Java Architecture | Request Pipeline and Core Modules",
         "/docs/java/operations": "AIWAF-Java Operations | CLI, Config, Testing, Packaging",
         "/docs/rust": "aiwaf-rust Guide | PyO3 and WASM Accelerator Overview",
+        "/docs/rust/architecture": "AIWAF Rust and WASM Architecture | Bindings, Features, and Forests",
         "/docs/rust/bindings": "aiwaf-rust Bindings API | Python and WASM Functions",
         "/docs/rust/operations": "aiwaf-rust Build and Operations | Packaging and Validation",
     }
     description_map = {
         "/": "Official AIWAF documentation for Python, Node.js, Java, and Rust/WASM integrations, setup guides, architecture, and operational best practices.",
         "/docs": "Browse AIWAF deep-dive documentation for all implementations, including setup, architecture, and operations.",
+        "/docs/architecture": "Understand AIWAF request processing, route policies, runtime state, response-aware decisions, and the offline learning loop across Python, Node.js, Java, and Rust/WASM.",
         "/docs/python": "Comprehensive Python reference for AIWAF covering architecture, adapters, storage, training lifecycle, and runtime behavior.",
         "/docs/python/setup": "End-to-end setup guide for AIWAF in Python with production-ready configuration and troubleshooting.",
         "/docs/python/setup/django": "End-to-end setup guide for AIWAF in Django with production-ready configuration and troubleshooting.",
@@ -119,6 +122,7 @@ def inject_seo_defaults():
         "/docs/java/architecture": "Deep architecture reference for aiwaf-java including AiwafEngine flow, module responsibilities, path-rule behavior, and runtime layering.",
         "/docs/java/operations": "Operational guide for aiwaf-java covering CLI commands, AiwafConfig controls, test workflows, and production hardening notes.",
         "/docs/rust": "End-to-end aiwaf-rust guide for Rust core, PyO3 Python module, and WASM package workflows.",
+        "/docs/rust/architecture": "Explain AIWAF Rust core and host bindings, reusable matchers, stateful feature extraction, Isolation Forest scoring, JSON artifacts, and acceleration boundaries.",
         "/docs/rust/bindings": "Function-level aiwaf-rust API reference for PyO3 and wasm-bindgen exports, including IsolationForest semantics.",
         "/docs/rust/operations": "Build, package, troubleshoot, and validate aiwaf-rust Python and WASM artifacts.",
     }
@@ -174,6 +178,7 @@ def sitemap():
     routes = [
         "/",
         "/docs",
+        "/docs/architecture",
         "/docs/python",
         "/docs/python/setup",
         "/docs/python/setup/django",
@@ -209,6 +214,7 @@ def sitemap():
         "/docs/java/architecture",
         "/docs/java/operations",
         "/docs/rust",
+        "/docs/rust/architecture",
         "/docs/rust/bindings",
         "/docs/rust/operations",
     ]
@@ -422,7 +428,7 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     
-    print(f"🚀 Starting AIWAF Documentation on port {port}")
+    print(f"Starting AIWAF Documentation on port {port}")
     print(f"Debug mode: {debug_mode}")
     
     # Run the app

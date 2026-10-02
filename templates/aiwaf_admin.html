@@ -24,7 +24,7 @@
     <div class="container mt-4">
         <div class="row">
             <div class="col-12">
-                <h1 class="mb-4">🛡️ AIWAF Protection Admin</h1>
+                <h1 class="mb-4"> AIWAF Protection Admin</h1>
                 
                 <!-- Status Card -->
                 <div class="card mb-4">
@@ -140,7 +140,7 @@
                     if (data.protection_enabled) {
                         statusInfo.innerHTML = `
                             <div class="alert alert-success">
-                                <strong>✅ AIWAF Protection Active</strong><br>
+                                <strong> AIWAF Protection Active</strong><br>
                                 Storage: ${data.storage_type}<br>
                                 Rate Limit: ${data.configuration.rate_max} requests per ${data.configuration.rate_window} seconds<br>
                                 Auto-block: ${data.configuration.rate_flood} requests<br>
@@ -148,11 +148,11 @@
                             </div>
                         `;
                     } else {
-                        statusInfo.innerHTML = '<div class="alert alert-warning">⚠️ AIWAF Protection Not Available</div>';
+                        statusInfo.innerHTML = '<div class="alert alert-warning"> AIWAF Protection Not Available</div>';
                     }
                 })
                 .catch(error => {
-                    document.getElementById('status-info').innerHTML = '<div class="alert alert-danger">❌ Error loading status</div>';
+                    document.getElementById('status-info').innerHTML = '<div class="alert alert-danger"> Error loading status</div>';
                 });
         }
 

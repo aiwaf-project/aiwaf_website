@@ -67,6 +67,7 @@
             <aside class="sidebar">
                 <h3 class="sidebar-title">Frameworks</h3>
                 <ul class="sidebar-nav">
+                    <li><a href="/docs/architecture">System Architecture</a></li>
                     <li><a href="/docs/python">Python</a></li>
                     <li><a href="/docs/javascript">JavaScript</a></li>
                     <li><a href="/docs/php">PHP (Legacy)</a></li>
@@ -78,6 +79,13 @@
             <main class="content">
                 <h1 class="page-title">Documentation</h1>
 {% include '_docs_source.html' %}
+<p class="architecture-link"><a href="/docs/architecture">How AIWAF works: system architecture</a></p>
+<div class="doc-card architecture-card">
+<h2>Understand the architecture</h2>
+<p>Follow a request through adapters, route policies, deterministic checks, state, and response observations. Then see how logs feed the next model.</p>
+<a href="/docs/architecture">Read the system overview</a>
+<p><a href="/docs/python/architecture">Python internals</a> | <a href="/docs/javascript/architecture">Node.js internals</a> | <a href="/docs/java/architecture">Java internals</a> | <a href="/docs/rust/architecture">Rust/WASM internals</a></p>
+</div>
 <h2>Current package matrix</h2>
 <p>Each package is versioned and released independently.</p>
 <div class="table-wrap"><table><thead><tr><th>Runtime</th><th>Package</th><th>Repository version</th><th>Primary use</th></tr></thead><tbody>
@@ -92,7 +100,7 @@
                 <div class="doc-card">
                     <h3>Python</h3>
                     <p>Reference for AIWAF architecture, storage, middleware, training lifecycle, CLI surface, tests, and release pipeline for Python.</p>
-                    <a href="/docs/python">Open Python Deep-Dive Docs →</a>
+                    <a href="/docs/python">Open Python Deep-Dive Docs</a>
                     <p style="margin-top: 0.75rem; color:#b0b0b0;">
                         <a href="https://pypi.org/project/aiwaf/" target="_blank" rel="noopener noreferrer">PyPI Package</a>
                         <span style="color:#777; margin:0 8px;">|</span>
@@ -103,7 +111,7 @@
                 <div class="doc-card">
                     <h3>JavaScript</h3>
                     <p>Reference for AIWAF Node.js middleware architecture, framework integrations, end-to-end setup guide, storage/training lifecycle, CLI operations, and packaging.</p>
-                    <a href="/docs/javascript">Open JavaScript Deep-Dive Docs →</a>
+                    <a href="/docs/javascript">Open JavaScript Deep-Dive Docs</a>
                     <p style="margin-top: 0.75rem; color:#b0b0b0;">
                         <a href="https://www.npmjs.com/package/aiwaf" target="_blank" rel="noopener noreferrer">npm Package</a>
                         <span style="color:#777; margin:0 8px;">|</span>
@@ -114,7 +122,7 @@
                 <div class="doc-card">
                     <h3>PHP (Legacy Reference)</h3>
                     <p>Historical PHP integration pages. PHP is absent from the current monorepo and is not part of its current package or release matrix.</p>
-                    <a href="/docs/php">Open Legacy PHP Reference →</a>
+                    <a href="/docs/php">Open Legacy PHP Reference</a>
                     <p style="margin-top: 0.75rem; color:#b0b0b0;">
                         <a href="https://packagist.org/packages/aayushgauba/aiwaf" target="_blank" rel="noopener noreferrer">Packagist Package</a>
                         <span style="color:#777; margin:0 8px;">|</span>
@@ -125,7 +133,7 @@
                 <div class="doc-card">
                     <h3>Java</h3>
                     <p>Reference and setup guide for AIWAF-Java with framework-agnostic engine usage, Spring/Servlet integrations, runtime storage backends, and CLI/admin operations.</p>
-                    <a href="/docs/java">Open Java Deep-Dive Docs →</a>
+                    <a href="/docs/java">Open Java Deep-Dive Docs</a>
                     <p style="margin-top: 0.75rem; color:#b0b0b0;">
                         <a href="https://central.sonatype.com/artifact/io.github.aiwaf-project/aiwaf-java/overview" target="_blank" rel="noopener noreferrer">Maven Artifact</a>
                         <span style="color:#777; margin:0 8px;">|</span>
@@ -136,7 +144,7 @@
                 <div class="doc-card">
                     <h3>Rust Accelerator</h3>
                     <p>Deep-dive docs for <code>aiwaf-rust</code> covering PyO3 bindings, WASM exports, Isolation Forest semantics, integration patterns, and build/test workflows.</p>
-                    <a href="/docs/rust">Open Rust Accelerator Docs →</a>
+                    <a href="/docs/rust">Open Rust Accelerator Docs</a>
                     <p style="margin-top: 0.75rem; color:#b0b0b0;">
                         <a href="https://pypi.org/project/aiwaf-rust/" target="_blank" rel="noopener noreferrer">PyPI Package</a>
                         <span style="color:#777; margin:0 8px;">|</span>

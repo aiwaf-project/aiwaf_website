@@ -7,30 +7,30 @@ import os
 try:
     from dotenv import load_dotenv
     load_dotenv()
-    print("✅ Environment variables loaded")
+    print("Environment variables loaded")
 except ImportError:
-    print("⚠️ python-dotenv not available, using system environment variables")
+    print("python-dotenv not available, using system environment variables")
 
 try:
     from flask import Flask, render_template, jsonify, request, redirect
-    print("✅ Flask imported successfully")
+    print("Flask imported successfully")
 except ImportError:
-    print("❌ Flask not available. Please install: pip install Flask")
+    print("Flask not available. Please install: pip install Flask")
     exit(1)
 
 try:
     from flask_sqlalchemy import SQLAlchemy
-    print("✅ Flask-SQLAlchemy imported successfully")
+    print("Flask-SQLAlchemy imported successfully")
 except ImportError:
-    print("❌ Flask-SQLAlchemy not available. Please install: pip install Flask-SQLAlchemy")
+    print("Flask-SQLAlchemy not available. Please install: pip install Flask-SQLAlchemy")
     exit(1)
 
 try:
     import pymysql
     pymysql.install_as_MySQLdb()
-    print("✅ PyMySQL imported successfully")
+    print("PyMySQL imported successfully")
 except ImportError:
-    print("❌ PyMySQL not available. Please install: pip install PyMySQL")
+    print("PyMySQL not available. Please install: pip install PyMySQL")
     exit(1)
 
 # Create Flask app
@@ -132,12 +132,12 @@ if __name__ == '__main__':
     with app.app_context():
         try:
             db.create_all()
-            print("✅ Database tables created successfully")
+            print("Database tables created successfully")
         except Exception as e:
-            print(f"❌ Database initialization error: {e}")
+            print(f"Database initialization error: {e}")
             print("This is expected if connecting to external database without SSH tunnel")
 
     port = int(os.environ.get('PORT', 5000))
-    print(f"🚀 Starting Flask app on port {port}...")
-    print(f"🌐 Access your app at: http://localhost:{port}")
+    print(f"Starting Flask app on port {port}...")
+    print(f"Access your app at: http://localhost:{port}")
     app.run(host='0.0.0.0', port=port, debug=False)

@@ -10,3 +10,18 @@
 .content table { width: 100%; border-collapse: collapse; }
 .content th, .content td { text-align: left; padding: .75rem; border-bottom: 1px solid rgba(255,255,255,.15); }
 .legacy-note { border-left-color: #ff6b6b; }
+.architecture-lead { font-size: 1.1rem; color: #c8d4d7; line-height: 1.8; }
+.architecture-link { margin: 1rem 0 1.5rem; }
+.architecture-toc { padding: 1.25rem; margin: 1.5rem 0 2rem; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; }
+.architecture-toc strong { color: #c8d4d7; }
+.architecture-toc ul { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin: .75rem 0 0; padding-left: 1.25rem; }
+.architecture-toc li { font-size: .9rem; }
+.architecture-flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 1rem; padding: 0 !important; margin: 1.5rem 0 !important; list-style: none; counter-reset: architecture-step; }
+.architecture-flow li { counter-increment: architecture-step; padding: 1.25rem; border: 1px solid rgba(78,205,196,.3); border-radius: 12px; background: rgba(78,205,196,.06); }
+.architecture-flow li::before { content: counter(architecture-step); display: block; color: #4ecdc4; font-family: monospace; margin-bottom: .65rem; }
+.architecture-flow strong { display: block; color: #e0e0e0; margin-bottom: .65rem; }
+.architecture-flow span { display: block; color: #b0bfc4; font-size: .9rem; line-height: 1.7; }
+.architecture-card { margin: 2rem 0; }
+.content section { scroll-margin-top: 100px; }
+.content td code, .content li code { overflow-wrap: anywhere; }
+@media (max-width: 600px) { .architecture-flow { grid-template-columns: 1fr; } .content { padding: 1.25rem; } .page-title { font-size: 2rem; overflow-wrap: anywhere; } }
