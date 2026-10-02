@@ -2,6 +2,7 @@
 Simple Flask app runner that can work with or without SSH tunnel
 """
 import os
+from documentation import documentation
 
 # Try to import required modules, use fallbacks if not available
 try:
@@ -12,7 +13,7 @@ except ImportError:
     print("python-dotenv not available, using system environment variables")
 
 try:
-    from flask import Flask, render_template, jsonify, request, redirect
+    from flask import Flask, render_template, jsonify
     print("Flask imported successfully")
 except ImportError:
     print("Flask not available. Please install: pip install Flask")
@@ -111,21 +112,7 @@ def health():
 def docs():
     return render_template('docs.html')
 
-@app.route('/docs/<framework>')
-def framework_docs(framework):
-    return render_template(f'docs_{framework}.html')
-
-@app.route('/docs/<framework>/<page>')
-def doc_page(framework, page):
-    return render_template(f'docs_{framework}_{page}.html')
-
-@app.route('/<language>/setup/<subframework>', strict_slashes=False)
-@app.route('/docs/<language>/setup/<subframework>', strict_slashes=False)
-def doc_setup_subframework(language, subframework):
-    """Serve setup guides and redirect short URLs to their documentation URL."""
-    if not request.path.startswith('/docs/'):
-        return redirect(f'/docs/{language}/setup/{subframework}', code=302)
-    return render_template(f'docs_{language}_setup_{subframework}.html')
+app.register_blueprint(documentation)
 
 if __name__ == '__main__':
     print("Initializing database...")

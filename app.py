@@ -1,8 +1,9 @@
-from flask import Flask, render_template, jsonify, request, redirect, Response
+from flask import Flask, render_template, jsonify, request, Response
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
 from datetime import datetime
+from documentation import documentation
 
 # Load environment variables
 load_dotenv()
@@ -238,47 +239,7 @@ def sitemap():
     )
     return Response(xml, mimetype="application/xml")
 
-@app.route('/docs/<framework>')
-def framework_docs(framework):
-    """Framework-specific documentation overview"""
-    if framework in {'django', 'flask', 'fastapi', 'fast'}:
-        return redirect('/docs/python', code=302)
-    return render_template(f'docs_{framework}.html')
-
-@app.route('/docs/<framework>/<page>')
-def doc_page(framework, page):
-    """Specific documentation pages"""
-    # Legacy framework redirects
-    if framework in {'django', 'flask', 'fastapi', 'fast'}:
-        if page in {'installation', 'middleware', 'commands', 'setup'}:
-            fw = 'fastapi' if framework == 'fast' else framework
-            return redirect(f'/docs/python/setup/{fw}', code=302)
-        if page in {'architecture', 'reference'}:
-            return redirect('/docs/python/architecture', code=302)
-        if page in {'operations', 'cli', 'testing'}:
-            return redirect('/docs/python/operations', code=302)
-        return redirect('/docs/python/adapters', code=302)
-        
-    # Setup page redirects to primary framework
-    if page == 'setup':
-        if framework == 'python':
-            return redirect('/docs/python/setup/django', code=302)
-        elif framework == 'javascript':
-            return redirect('/docs/javascript/setup/express', code=302)
-        elif framework == 'php':
-            return redirect('/docs/php/setup/plain', code=302)
-        elif framework == 'java':
-            return redirect('/docs/java/setup/servlet', code=302)
-            
-    return render_template(f'docs_{framework}_{page}.html')
-
-@app.route('/<language>/setup/<subframework>', strict_slashes=False)
-@app.route('/docs/<language>/setup/<subframework>', strict_slashes=False)
-def doc_setup_subframework(language, subframework):
-    """Sub-framework specific setup pages"""
-    if not request.path.startswith('/docs/'):
-        return redirect(f'/docs/{language}/setup/{subframework}', code=302)
-    return render_template(f'docs_{language}_setup_{subframework}.html')
+app.register_blueprint(documentation)
 
 @app.route('/aiwaf/admin')
 def aiwaf_admin():
