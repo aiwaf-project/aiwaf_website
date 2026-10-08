@@ -1,8 +1,7 @@
-from flask import Flask, render_template, jsonify, request, Response
+from flask import Flask, render_template, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
-from datetime import datetime
 from documentation import documentation
 
 # Load environment variables
@@ -10,6 +9,7 @@ load_dotenv()
 
 app = Flask(__name__)
 SITE_URL = os.environ.get("SITE_URL", "https://aiwaf.org").rstrip("/")
+app.config["SITE_URL"] = SITE_URL
 # Load optional AIWAF-specific config overrides.
 app.config.from_pyfile("aiwaf_config.py", silent=True)
 
@@ -174,96 +174,6 @@ def docs():
     """Main documentation landing page"""
     return render_template('docs.html')
 
-
-@app.route('/robots.txt')
-def robots():
-    """Search engine crawl directives."""
-    content = (
-        "User-agent: *\n"
-        "Allow: /\n"
-        "Disallow: /aiwaf/admin\n"
-        f"Sitemap: {SITE_URL}/sitemap.xml\n"
-    )
-    return Response(content, mimetype="text/plain")
-
-
-@app.route('/sitemap.xml')
-def sitemap():
-    """Basic XML sitemap for primary documentation pages."""
-    routes = [
-        "/",
-        "/docs",
-        "/docs/getting_started",
-        "/docs/contents",
-        "/docs/testing",
-        "/docs/tutorial/installation",
-        "/docs/tutorial/application",
-        "/docs/tutorial/routes",
-        "/docs/tutorial/verification",
-        "/docs/tutorial/policies",
-        "/docs/tutorial/logging",
-        "/docs/architecture",
-        "/docs/configuration",
-        "/docs/migration",
-        "/docs/troubleshooting",
-        "/docs/python",
-        "/docs/python/setup",
-        "/docs/python/setup/django",
-        "/docs/python/setup/flask",
-        "/docs/python/setup/fastapi",
-        "/docs/python/architecture",
-        "/docs/python/adapters",
-        "/docs/python/operations",
-        "/docs/javascript",
-        "/docs/javascript/setup",
-        "/docs/javascript/setup/express",
-        "/docs/javascript/setup/fastify",
-        "/docs/javascript/setup/hapi",
-        "/docs/javascript/setup/koa",
-        "/docs/javascript/setup/nestjs",
-        "/docs/javascript/setup/nextjs",
-        "/docs/javascript/setup/adonis",
-        "/docs/javascript/setup/sails",
-        "/docs/javascript/architecture",
-        "/docs/javascript/operations",
-        "/docs/php",
-        "/docs/php/setup",
-        "/docs/php/setup/plain",
-        "/docs/php/setup/laravel",
-        "/docs/php/setup/symfony",
-        "/docs/php/setup/wordpress",
-        "/docs/php/architecture",
-        "/docs/php/operations",
-        "/docs/java",
-        "/docs/java/setup",
-        "/docs/java/setup/servlet",
-        "/docs/java/setup/spring",
-        "/docs/java/architecture",
-        "/docs/java/operations",
-        "/docs/rust",
-        "/docs/rust/architecture",
-        "/docs/rust/bindings",
-        "/docs/rust/operations",
-    ]
-    now = datetime.utcnow().strftime("%Y-%m-%d")
-    url_nodes = "".join(
-        (
-            "<url>"
-            f"<loc>{SITE_URL}{path}</loc>"
-            f"<lastmod>{now}</lastmod>"
-            "<changefreq>weekly</changefreq>"
-            "<priority>0.8</priority>"
-            "</url>"
-        )
-        for path in routes
-    )
-    xml = (
-        '<?xml version="1.0" encoding="UTF-8"?>'
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-        f"{url_nodes}"
-        "</urlset>"
-    )
-    return Response(xml, mimetype="application/xml")
 
 app.register_blueprint(documentation)
 

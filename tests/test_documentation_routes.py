@@ -7,10 +7,11 @@ from html.parser import HTMLParser
 import json
 import re
 import unittest
+from xml.etree import ElementTree
 from urllib.parse import urlsplit
 
 from flask import Flask, render_template
-from jinja2 import DictLoader, TemplateNotFound
+from jinja2 import ChoiceLoader, DictLoader, TemplateNotFound
 
 from documentation import documentation
 from scripts.build_docs_search import entries
@@ -40,6 +41,7 @@ class DocumentationRoutesTests(unittest.TestCase):
         self.app.config["TESTING"] = True
         self.app.register_blueprint(documentation)
         self.app.add_url_rule("/docs", "docs", lambda: render_template("docs.html"))
+        self.app.add_url_rule("/", "home", lambda: render_template("docs.html"))
         self.client = self.app.test_client()
 
     def test_setup_landing_pages_redirect_to_existing_guides(self):
@@ -162,6 +164,42 @@ class DocumentationRoutesTests(unittest.TestCase):
         self.app.jinja_loader = DictLoader({"docs_python.html": "{% include 'missing.html' %}"})
         with self.assertRaises(TemplateNotFound):
             self.client.get("/docs/python")
+
+    def test_sitemap_contains_every_canonical_page_once(self):
+        self.app.config["SITE_URL"] = "https://docs.example.test/"
+        response = self.client.get("/sitemap.xml", base_url="https://untrusted.example")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.mimetype, "application/xml")
+        root = ElementTree.fromstring(response.data)
+        namespace = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+        self.assertEqual(root.tag, "{http://www.sitemaps.org/schemas/sitemap/0.9}urlset")
+        locations = [node.text for node in root.findall("s:url/s:loc", namespace)]
+        expected = {"https://docs.example.test" + path for path in {"/"} | {entry["url"] for entry in entries()}}
+        self.assertEqual(set(locations), expected)
+        self.assertEqual(len(locations), len(expected))
+        self.assertEqual(root.findall("s:url/s:lastmod", namespace), [])
+        for location in locations:
+            with self.subTest(location=location):
+                self.assertEqual(self.client.get(urlsplit(location).path).status_code, 200)
+
+    def test_sitemap_automatically_discovers_new_documentation(self):
+        self.app.jinja_loader = ChoiceLoader([
+            DictLoader({"docs_new.html": "<main>New documentation</main>"}),
+            self.app.jinja_loader,
+        ])
+        response = self.client.get("/sitemap.xml")
+        self.assertIn(b"/docs/new</loc>", response.data)
+        self.assertNotIn(b"/docs/python/setup</loc>", response.data)
+        self.assertNotIn(b"/health</loc>", response.data)
+        self.assertNotIn(b"/aiwaf/", response.data)
+
+    def test_robots_advertises_configured_sitemap(self):
+        self.app.config["SITE_URL"] = "https://docs.example.test/"
+        response = self.client.get("/robots.txt")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.mimetype, "text/plain")
+        self.assertIn(b"Sitemap: https://docs.example.test/sitemap.xml\n", response.data)
+        self.assertIn(b"Disallow: /aiwaf/\n", response.data)
 
 
 if __name__ == "__main__":

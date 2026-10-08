@@ -4,9 +4,12 @@ from html.parser import HTMLParser
 import json
 from pathlib import Path
 import re
+import sys
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from documentation_catalog import documentation_path
 
 
 class PageText(HTMLParser):
@@ -43,8 +46,7 @@ def entries():
                                 (ROOT / "templates/_configuration_defaults.html").read_text(encoding="utf-8"))
         parser = PageText()
         parser.feed(re.sub(r"\{%[\s\S]*?%\}|\{\{[\s\S]*?\}\}", "", source))
-        slug = template.stem.removeprefix("docs_")
-        url = "/docs" if template.stem == "docs" else "/docs/" + (slug if slug == "getting_started" else slug.replace("_", "/"))
+        url = documentation_path(template.name)
         yield {"title": " ".join(" ".join(parser.title).split()), "url": url,
                "text": " ".join(" ".join(parser.body).split())}
 

@@ -1,7 +1,12 @@
 """Shared documentation routing for the production and alternate app runners."""
 
-from flask import Blueprint, abort, current_app, redirect, render_template, request
+import os
+from xml.etree.ElementTree import Element, SubElement, tostring
+
+from flask import Blueprint, Response, abort, current_app, redirect, render_template, request
 from jinja2 import TemplateNotFound
+
+from documentation_catalog import documentation_path
 
 
 documentation = Blueprint("documentation", __name__)
@@ -13,6 +18,33 @@ SETUP_DEFAULTS = {
     "java": "servlet",
 }
 PYTHON_ALIASES = {"django", "flask", "fastapi", "fast"}
+
+
+def site_url():
+    return current_app.config.get("SITE_URL", os.environ.get("SITE_URL", "https://aiwaf.org")).rstrip("/")
+
+
+@documentation.route("/robots.txt")
+def robots():
+    content = "User-agent: *\nAllow: /\nDisallow: /aiwaf/\n"
+    content += f"Sitemap: {site_url()}/sitemap.xml\n"
+    return Response(content, mimetype="text/plain")
+
+
+@documentation.route("/sitemap.xml")
+def sitemap():
+    """Discover canonical documentation pages; omit aliases and operational routes."""
+    paths = {"/"}
+    paths.update(
+        path for template in current_app.jinja_env.list_templates()
+        if (path := documentation_path(template)) is not None
+    )
+    root = Element("urlset", xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
+    for path in sorted(paths):
+        node = SubElement(root, "url")
+        SubElement(node, "loc").text = site_url() + path
+    # Omit lastmod until reliable content modification dates are available.
+    return Response(tostring(root, encoding="utf-8", xml_declaration=True), mimetype="application/xml")
 
 
 def render_documentation_template(template):
