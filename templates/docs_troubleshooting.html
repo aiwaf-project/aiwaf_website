@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#5b2a86,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: .8rem; margin-top: .8rem; }
+        .stats { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .stats .k { color: #4ecdc4; font-size: .82rem; }
+        .stats .v { font-size: 1.2rem; font-weight: 800; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: .8rem; }
+        .module-card { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .module-card h4 { color: #4ecdc4; margin-bottom: .45rem; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar"><h3 class="sidebar-title">Documentation</h3><ul class="sidebar-nav"><li><a href="/docs">Runtime guides</a></li><li><a href="/docs/architecture">Architecture</a></li><li><a href="/docs/configuration">Configuration</a></li><li><a href="/docs/migration">Migration</a></li><li><a href="/docs/troubleshooting">Troubleshooting</a></li></ul></aside>
+<main class="content">
+<h1 class="page-title">Troubleshooting and Verification</h1>
+{% include '_docs_source.html' %}
+<h2>CLI rejects --app app.py</h2>
+<p><code>--app</code> takes a Python import target, not a filename. For <code>app.py</code> containing <code>app = Flask(__name__)</code>, run from its directory:</p>
+<pre><code class="language-bash">aiwaf init --framework flask --app app:app</code></pre>
+<p>For a factory use <code>app:create_app</code>. For Django use <code>--framework django --settings project.settings</code>. Install dependencies and load the application's configuration in the same environment; discovery imports the live application.</p>
+<h2>Manifest has only / and static routes</h2>
+<p>Confirm the imported file is your intended application, all blueprints/routers are registered, and the app factory finishes before discovery:</p>
+<pre><code class="language-bash">python -c "import app; print(app.__file__); print(*sorted(r.rule for r in app.app.url_map.iter_rules()), sep='\n')"</code></pre>
+<p>This diagnostic is for a Flask module-level app. Regenerate the manifest after registering additional routes. An unimported blueprint cannot appear in the live route table.</p>
+<h2>Website setup page returns 404 or 500</h2>
+<p><code>/docs/python/setup</code> redirects to <code>/docs/python/setup/django</code>. <code>/python/setup/django</code> redirects to the same canonical guide. Both app runners register the shared documentation blueprint. Unknown pages return 404; errors inside an existing template remain server errors.</p>
+<ol><li>Check which checkout the WSGI worker imports and which entrypoint the host uses.</li><li>Deploy <code>documentation.py</code> and all templates together, including shared includes.</li><li>Reload the host's web application or restart workers after updating source/dependencies.</li><li>Read the server traceback for import errors, missing includes, or initialization failures. A 500 page alone does not identify the cause.</li></ol>
+<pre><code class="language-bash">python -m unittest discover -s tests -v
+python -c "from wsgi import application; print(application.url_map)"
+curl -i https://aiwaf.org/health</code></pre>
+<p>The import check initializes the actual website and may create runtime files. Tests isolate documentation routing and rendering; a passing test does not establish that the deployed worker has reloaded. <code>/health</code> is liveness, not database/cache readiness.</p>
+<h2>Normal traffic is blocked, or test traffic is never blocked</h2>
+<p>Compare response details and logs with the selected middleware, route plan, client IP, headers, and block/reputation state. A 403 may come from AIWAF or a proxy; avoid attributing it without evidence. Rate throttling can have different status semantics from a deterministic block.</p>
+<p>Private clients, health paths, static paths, or route annotations may be exempt. Local curl success alone does not demonstrate protection for public clients. To exercise header validation, use a non-exempt route and a client context matching deployment; include representative User-Agent/Accept headers and browser-standard headers such as Accept-Language/Accept-Encoding in the normal case. Plain curl requests can be rejected by the website's header policy; use a browser or matching headers to check protected documentation. The website explicitly exempts /health for liveness probes. Configure a small staging threshold and test below, at, and above the boundary. Do not disable protection globally to resolve a single route.</p>
+<h2>Client IP or multi-worker counters look wrong</h2>
+<p>Inspect address extraction for your adapter and the actual forwarding-header chain. Have the trusted outer proxy overwrite client-supplied headers. Java has explicit trusted proxy CIDRs; Python/Node resolution follows their own rules.</p>
+<p>File persistence is separate from a shared rate cache. Redis configuration must resolve to an active shared backend. In Flask, Redis initialization can fall back to memory; test enforcement across two workers and examine initialization logs. Use the same rate-key prefix for workers sharing one service, and distinct prefixes for unrelated services.</p>
+<h2>Training produces no usable model</h2>
+<p>Verify that the trainer reads the actual log path/format, logs include response observations, minimum sample thresholds are met, and the output model is written where runtime inference loads it. Representative normal traffic is needed; forced training does not repair missing or malformed inputs. Inspect trainer/model help for the installed adapter:</p>
+<pre><code class="language-bash">aiwaf flask train --help
+aiwaf flask model --help
+# Django uses its management commands:
+python manage.py detect_and_train --help</code></pre>
+<p>Python requires JSON model state. Regenerate legacy executable artifacts rather than renaming their extension. Verify model load diagnostics after deployment/reload. Models with different feature schemas or native formats need a supported conversion path or retraining.</p>
+<h2>Verification before publishing documentation</h2>
+<p>Render every page; check internal links, fragment anchors, setup redirects, and unknown-page behavior. Then test code samples with the installed runtime in a clean staging environment, including a normal request and an intentional rejection. Finally test the public URLs after deployment. These are separate checks.</p>
+<p>See <a href="/docs/configuration">configuration</a>, <a href="/docs/migration">migration</a>, and the runtime operations pages for the exact settings and supported tools.</p>
+</main>
+</div></div>
+</body>
+</html>

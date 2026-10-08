@@ -75,11 +75,11 @@
 <h1 class="page-title">Flask Setup</h1>
 {% include '_docs_source.html' %}
 <p class="architecture-link"><a href="/docs/architecture">How AIWAF works: system architecture</a></p>
-<h2>Install</h2>
+<p class="docs-lead">Add AIWAF to a Flask application and verify that protection is registered with the live route table.</p><div class="docs-callout"><strong>Before you begin</strong><p>Use an environment compatible with your framework. This guide assumes a Python application file named app.py. New to middleware? Start with the <a href="/docs/tutorial/installation">six-step first protected app tutorial</a>, which includes complete files and expected responses.</p></div><h2>1. Install the framework extra</h2>
 <pre><code class="language-bash">pip install &quot;aiwaf[flask]&quot;
 pip install &quot;aiwaf[rust]&quot;  # optional native acceleration</code></pre>
 <p>Install into the environment used to run your application. Choose an interpreter compatible with the framework and dependencies.</p>
-<h2>Integrate with the application</h2>
+<h2>2. Register protection</h2><p class="code-filename">app.py</p>
 <pre><code class="language-python">from flask import Flask
 from aiwaf.flask import AIWAF
 
@@ -93,11 +93,12 @@ AIWAF(
 def home():
     return {&quot;protected&quot;: True}</code></pre>
 <p><code>middlewares=["all"]</code> enables the canonical middleware set. <code>auto</code> starts from the same set and omits checks that are not useful for the detected application signals.</p>
-<h2>Generate the route manifest</h2>
+<h2>3. Discover your live routes</h2>
 <p>Run from the application checkout after all routes are registered:</p>
 <pre><code class="language-bash">aiwaf init --framework flask --app app:app</code></pre>
+<p>For a file named <code>app.py</code> containing <code>app = Flask(__name__)</code>, use <code>--app app:app</code>, not <code>--app app.py</code>. The first part is the Python module name without <code>.py</code>; the second is the application object. Run the command from the directory containing <code>app.py</code>. The CLI imports your application, so its dependencies and configuration must be available.</p>
 <p>The default output is <code>.aiwaf/paths.json</code>. Flask and FastAPI require <code>module:object</code> in <code>--app</code>; Flask factories such as <code>app:create_app</code> are supported. Repeat discovery when registered routes change.</p>
-<h2>Route exemptions</h2>
+<h2>4. Scope route exemptions</h2>
 <p>Django, Flask, and FastAPI expose equivalent route helpers:</p>
 <pre><code class="language-python">from aiwaf.flask import (
     aiwaf_exempt,
@@ -116,8 +117,8 @@ def health():
 def webhook():
     return {&quot;accepted&quot;: True}</code></pre>
 <p>Canonical middleware names include <code>header_validation</code>, <code>rate_limit</code>, <code>ip_keyword_block</code>, <code>honeypot</code>, <code>geo_block</code>, <code>uuid_tamper</code>, <code>ai_anomaly</code>, and <code>logging</code>.</p>
-<h2>Configuration and model storage</h2>
-<p>Python adapters use flat <code>AIWAF_*</code> settings or their equivalent constructor options.</p>
+<h2>5. Configure settings and model storage</h2>
+<p>Set flat <code>AIWAF_*</code> values in <code>app.config</code> before calling <code>AIWAF(app)</code>. Flask's constructor selects middleware; it does not accept FastAPI's nested option dictionaries.</p>
 <div class="table-wrap"><table><thead><tr><th>Area</th><th>Important settings</th></tr></thead><tbody>
 <tr><td>Training</td><td><code>AIWAF_ACCESS_LOG</code>, <code>AIWAF_MIN_TRAIN_LOGS</code>, <code>AIWAF_MIN_AI_LOGS</code>, <code>AIWAF_FORCE_AI_TRAINING</code></td></tr>
 <tr><td>Rate limiting</td><td><code>AIWAF_RATE_WINDOW</code>, <code>AIWAF_RATE_MAX</code>, <code>AIWAF_RATE_FLOOD</code></td></tr>
@@ -129,24 +130,9 @@ def webhook():
 <tr><td>Models</td><td><code>AIWAF_MODEL_PATH</code>, <code>AIWAF_MODEL_STORAGE</code>, <code>AIWAF_MODEL_STORAGE_FALLBACK</code></td></tr>
 </tbody></table></div>
 <p>When <code>aiwaf_rust</code> is importable, supported acceleration paths are selected automatically. Python remains the fallback when a native capability is unavailable. Persisted runtime models use JSON state; AIWAF does not load pickle, joblib, or other executable Python-object formats.</p>
-<h2>Verify and operate</h2>
-<pre><code class="language-bash"># Unified CLI
-aiwaf --help
-aiwaf blacklist migrate
-aiwaf status
-
-# Django management commands
-python manage.py detect_and_train
-python manage.py regenerate_model
-python manage.py aiwaf_reset --keywords --confirm
-python manage.py aiwaf_logging --status
-python manage.py geo_block_country list
-
-# Explicit adapter dispatch
-aiwaf django aiwaf_list --all
-aiwaf flask --help
-aiwaf fast --help</code></pre>
-<h2>Production configuration</h2>
+<h2>6. Start and verify</h2><pre><code class="language-bash">python -m flask --app app:app run --port 5000</code></pre><p>Open <code>http://127.0.0.1:5000/</code> in a browser. The handler should return <code>{"protected": true}</code>. Also test a deliberately rejected request on a non-exempt route; success alone does not prove enforcement. For exact three-success/one-throttle behavior, use <a href="/docs/tutorial/verification">the tutorial's controlled rate-limit test</a>.</p><pre><code class="language-bash">aiwaf flask --help
+aiwaf flask train --help
+aiwaf flask model --help</code></pre><p>Use <a href="/docs/python/operations">Python operations</a> for training, model inspection, and state migration. Training requires representative logs in a supported format; setup alone does not train a model.</p><h2>Production configuration</h2>
 <ul>
 <li>Configure the application to trust forwarding headers only from known proxy CIDRs.</li>
 <li>Configure the outermost proxy to overwrite client-supplied forwarding headers.</li>
@@ -157,7 +143,7 @@ aiwaf fast --help</code></pre>
 <li>Sign model/configuration artifacts where the runtime supports HMAC verification.</li>
 <li>Run AIWAF alongside normal secure-development controls and an edge/reverse-proxy layer.</li>
 </ul>
-</main>
+<div class="docs-checkpoint"><strong>Checkpoint</strong> You can identify the settings location, import target, registered routes, and verification step for Flask.</div><nav class="docs-pagination" aria-label="Next reading"><a href="/docs/getting_started">Choose a runtime</a><a href="/docs/python/architecture">Next: understand Python architecture</a></nav></main>
 </div></div>
 </body>
 </html>

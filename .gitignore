@@ -180,6 +180,7 @@ logs/
 
 # Temporary package validation and release staging checkouts
 /.ci-*-validation/
+/.ci-*-validation-*/
 /.publish-*-stage/
 
 # Node dependencies and package-manager diagnostics

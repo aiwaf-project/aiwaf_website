@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#5b2a86,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: .8rem; margin-top: .8rem; }
+        .stats { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .stats .k { color: #4ecdc4; font-size: .82rem; }
+        .stats .v { font-size: 1.2rem; font-weight: 800; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: .8rem; }
+        .module-card { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .module-card h4 { color: #4ecdc4; margin-bottom: .45rem; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar"><h3 class="sidebar-title">Documentation</h3><ul class="sidebar-nav"><li><a href="/docs">Runtime guides</a></li><li><a href="/docs/architecture">Architecture</a></li><li><a href="/docs/configuration">Configuration</a></li><li><a href="/docs/migration">Migration</a></li><li><a href="/docs/troubleshooting">Troubleshooting</a></li></ul></aside>
+<main class="content">
+<h1 class="page-title">Upgrade and Migration Guide</h1>
+{% include '_docs_source.html' %}
+<p>All maintained packages use <a href="https://github.com/aiwaf-project/aiwaf">the AIWAF monorepo</a>. Each package releases independently. Compare the installed version, source manifest, and release notes for your runtime before upgrading; source versions are not confirmation that a registry release exists.</p>
+<h2>Upgrade sequence</h2>
+<ol><li>Record installed versions, enabled middleware, exemptions, configuration, state backend, model path, and proxy behavior. Back up persisted state, configuration, and models.</li>
+<li>Upgrade one runtime in staging using its package manager or build from a reviewed source revision. Preserve the matching dependency lockfiles.</li>
+<li>Apply package-name and configuration changes below. Regenerate manifests from the live application after its routes are registered.</li>
+<li>Migrate blacklist state with the runtime's supported command; inspect counts, expiry, reasons, and exemptions afterward.</li>
+<li>Regenerate unsupported models with the current trainer. Verify schema, feature order, output location, and load diagnostics.</li>
+<li>Test normal public traffic, intentional blocks, rate boundaries, intended exemptions, and actual response logging. Test across workers when state is shared.</li>
+<li>Deploy code, configuration, and compatible state/models together. Reload workers and repeat checks. Keep a compatible rollback snapshot.</li></ol>
+<h2>Node.js package name</h2>
+<p>The npm middleware package is now <a href="https://www.npmjs.com/package/aiwaf"><code>aiwaf</code></a>. Replace the old dependency and imports; regenerate the lockfile and test every adapter entrypoint your application uses.</p>
+<pre><code class="language-bash">npm uninstall aiwaf-js
+npm install aiwaf</code></pre>
+<pre><code class="language-javascript">const aiwaf = require('aiwaf');
+app.use(aiwaf({ AIWAF_MIDDLEWARES: ['all'] }));</code></pre>
+<p><code>aiwaf-wasm</code> remains a separate package. Installing it does not replace Node framework middleware. Check normalized aliases and defaults in <a href="/docs/configuration">the configuration reference</a> before moving settings between versions.</p>
+<h2>Python reputation and blacklist data</h2>
+<p>Python 1.0.7 introduced weighted reputation, progressive temporary blocking, expiry, and richer metadata. Legacy blacklist compatibility is backend-aware, including CSV schema detection and conversion of imported permanent blocks. Use the same checkout, environment, and backend configuration as your application:</p>
+<pre><code class="language-bash">aiwaf blacklist migrate</code></pre>
+<p>Inspect <code>aiwaf --help</code> and the selected adapter's help when multiple frameworks are installed. Do not manually reinterpret old CSV columns or assume historical permanent blocks retain identical enforcement semantics. Back up first and compare the resulting entries.</p>
+<h2>Python models and Rust acceleration</h2>
+<p>Persisted Python runtime models are JSON. Pickle, joblib, and executable Python-object artifacts are unsupported; use representative logs and the current trainer to create a new model. Check minimum log thresholds rather than forcing production training on a tiny sample.</p>
+<p>Python 1.0.8 requires <code>aiwaf-rust&gt;=0.2.1</code> for the Rust extra and fixes FastAPI header normalization and the disabled Rust-header path. Supported installed Rust capabilities are selected automatically, with Python fallback. Update the core package and accelerator together, and test header behavior in the real adapter.</p>
+<pre><code class="language-bash">python -m pip install --upgrade 'aiwaf[flask,rust]'
+# Use the extra matching your application.
+aiwaf flask train --help
+aiwaf flask model --help</code></pre>
+<h2>Route manifests and import targets</h2>
+<pre><code class="language-bash">aiwaf init --framework flask --app app:app
+aiwaf init --framework flask --app app:create_app
+aiwaf init --framework fastapi --app app:app
+aiwaf init --framework django --settings project.settings</code></pre>
+<p><code>--app app.py</code> is invalid. The target must be a module and application object/factory. Run discovery in the application's environment; it imports the application. Do not carry a stale manifest across route changes.</p>
+<h2>Java 1.2 and 1.3 changes</h2>
+<p>Java 1.2 adds scoped per-engine storage, distributed Redis enforcement state, Spring Boot live route/annotation discovery, JSON/environment configuration, native MaxMind lookup, and updated reputation behavior. Remove the old requirement for an external <code>mmdblookup</code> executable. Review default private-address exemptions and manifest loading.</p>
+<p>Java 1.3 adds bounded Redis connection/socket/pool waits, fail-open/fail-closed policy, diagnostics, and state-schema compatibility guards. It supports standalone Redis and rejects Sentinel/Cluster modes. Before a rolling upgrade, test old/new instances with the intended namespace and schema. Do not bypass compatibility guards or point unrelated services at one prefix.</p>
+<p>Review legacy model feature schema against the current six-feature pipeline; retrain or use an explicit supported importer when required. Artifacts are not generally interchangeable between languages. Spring Boot applications should use the ordered filter once, rather than adding an independent interceptor as a second enforcement layer.</p>
+<h2>Rollback and release notes</h2>
+<p>Restore compatible code, configuration, state, and model artifacts together. Avoid reverting code while leaving a newer incompatible state schema. Repeat public-client and shared-worker checks after reload.</p>
+<p>See the <a href="https://github.com/aiwaf-project/aiwaf/blob/main/CHANGELOG.md">upstream changelog</a>, <a href="/docs/python/operations">Python operations</a>, <a href="/docs/javascript/operations">Node operations</a>, and <a href="/docs/java/operations">Java operations</a> for runtime commands.</p>
+</main>
+</div></div>
+</body>
+</html>

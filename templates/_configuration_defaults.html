@@ -1,0 +1,214 @@
+<p>Source snapshot: Python 1.0.8, Node.js 1.0.2, Java 1.3.0; commit <code>b439a8dda577a0e68314bdc8f273b360c0744809</code>. These are source defaults, not a registry availability check. Runtime configuration and route policies can change effective values.</p>
+<h3>Python nested configuration defaults</h3>
+<div class="table-wrap"><table><thead><tr><th>Setting</th><th>Type</th><th>Source default</th></tr></thead><tbody>
+<tr><td><code>storage.backend</code></td><td><code>str</code></td><td><code>&quot;memory&quot;</code></td></tr>
+<tr><td><code>storage.file_path</code></td><td><code>str</code></td><td><code>&quot;aiwaf_data.json&quot;</code></td></tr>
+<tr><td><code>header_validation.enabled</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>header_validation.block_suspicious</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>header_validation.quality_threshold</code></td><td><code>int</code></td><td><code>3</code></td></tr>
+<tr><td><code>header_validation.exempt_paths</code></td><td><code>list</code></td><td><code>[&quot;/health&quot;, &quot;/healthz&quot;, &quot;/status&quot;, &quot;/ping&quot;, &quot;/metrics&quot;, &quot;/favicon.ico&quot;, &quot;/robots.txt&quot;]</code></td></tr>
+<tr><td><code>header_validation.custom_suspicious_patterns</code></td><td><code>list</code></td><td><code>[]</code></td></tr>
+<tr><td><code>header_validation.custom_legitimate_patterns</code></td><td><code>list</code></td><td><code>[]</code></td></tr>
+<tr><td><code>header_validation.trust_legitimate_bots</code></td><td><code>bool</code></td><td><code>false</code></td></tr>
+<tr><td><code>rate_limiting.enabled</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>rate_limiting.max_requests</code></td><td><code>int</code></td><td><code>20</code></td></tr>
+<tr><td><code>rate_limiting.window_seconds</code></td><td><code>int</code></td><td><code>10</code></td></tr>
+<tr><td><code>rate_limiting.flood_threshold</code></td><td><code>int</code></td><td><code>40</code></td></tr>
+<tr><td><code>rate_limiting.key_mode</code></td><td><code>str</code></td><td><code>&quot;ip_path&quot;</code></td></tr>
+<tr><td><code>rate_limiting.soft_block_blacklist</code></td><td><code>bool</code></td><td><code>false</code></td></tr>
+<tr><td><code>rate_limiting.cache_backend</code></td><td><code>str</code></td><td><code>&quot;memory&quot;</code></td></tr>
+<tr><td><code>rate_limiting.redis_url</code></td><td><code>null or string</code></td><td><code>null</code></td></tr>
+<tr><td><code>rate_limiting.cache_key_prefix</code></td><td><code>str</code></td><td><code>&quot;aiwaf:rate:&quot;</code></td></tr>
+<tr><td><code>rate_limiting.exempt_ips</code></td><td><code>list</code></td><td><code>[]</code></td></tr>
+<tr><td><code>ip_keyword_block.enabled</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>ip_keyword_block.malicious_keywords</code></td><td><code>list</code></td><td><code>[&quot;.php&quot;, &quot;xmlrpc&quot;, &quot;wp-&quot;, &quot;.env&quot;, &quot;.git&quot;, &quot;.bak&quot;, &quot;shell&quot;, &quot;filemanager&quot;]</code></td></tr>
+<tr><td><code>honeypot.enabled</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>honeypot.min_form_time</code></td><td><code>float</code></td><td><code>1.0</code></td></tr>
+<tr><td><code>honeypot.max_page_time</code></td><td><code>int</code></td><td><code>240</code></td></tr>
+<tr><td><code>geo_block.enabled</code></td><td><code>bool</code></td><td><code>false</code></td></tr>
+<tr><td><code>geo_block.allow_countries</code></td><td><code>list</code></td><td><code>[]</code></td></tr>
+<tr><td><code>geo_block.block_countries</code></td><td><code>list</code></td><td><code>[]</code></td></tr>
+<tr><td><code>ai_anomaly.enabled</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>uuid_tamper.enabled</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>logging_middleware.enabled</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>logging_middleware.log_dir</code></td><td><code>str</code></td><td><code>&quot;aiwaf_logs&quot;</code></td></tr>
+<tr><td><code>logging_middleware.log_format</code></td><td><code>str</code></td><td><code>&quot;combined&quot;</code></td></tr>
+<tr><td><code>blacklist.default_block_duration</code></td><td><code>int</code></td><td><code>3600</code></td></tr>
+<tr><td><code>blacklist.permanent_block_threshold</code></td><td><code>int</code></td><td><code>5</code></td></tr>
+<tr><td><code>blacklist.auto_unblock_enabled</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>blacklist.cleanup_interval</code></td><td><code>int</code></td><td><code>3600</code></td></tr>
+<tr><td><code>exemptions.private_ips_exempted</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>exemptions.localhost_exempted</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>exemptions.auto_exempt_patterns</code></td><td><code>list</code></td><td><code>[&quot;127.0.0.1&quot;, &quot;::1&quot;, &quot;192.168.*.*&quot;, &quot;10.*.*.*&quot;, &quot;172.16.*.*&quot;]</code></td></tr>
+<tr><td><code>security.log_blocked_requests</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>security.log_suspicious_requests</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>security.max_header_length</code></td><td><code>int</code></td><td><code>8192</code></td></tr>
+<tr><td><code>security.max_user_agent_length</code></td><td><code>int</code></td><td><code>512</code></td></tr>
+<tr><td><code>performance.enable_caching</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>performance.cache_duration</code></td><td><code>int</code></td><td><code>300</code></td></tr>
+<tr><td><code>performance.max_cache_entries</code></td><td><code>int</code></td><td><code>10000</code></td></tr>
+<tr><td><code>logging.level</code></td><td><code>str</code></td><td><code>&quot;INFO&quot;</code></td></tr>
+<tr><td><code>logging.format</code></td><td><code>str</code></td><td><code>&quot;%(asctime)s - %(name)s - %(levelname)s - %(message)s&quot;</code></td></tr>
+<tr><td><code>logging.log_file</code></td><td><code>null or string</code></td><td><code>null</code></td></tr>
+<tr><td><code>path_rules</code></td><td><code>list</code></td><td><code>[]</code></td></tr>
+</tbody></table></div>
+<h3>Node.js normalized option defaults</h3>
+<div class="table-wrap"><table><thead><tr><th>Setting</th><th>Type</th><th>Source default</th></tr></thead><tbody>
+<tr><td><code>staticKeywords</code></td><td><code>array</code></td><td><code>[]</code></td></tr>
+<tr><td><code>dynamicTopN</code></td><td><code>number</code></td><td><code>10</code></td></tr>
+<tr><td><code>WINDOW_SEC</code></td><td><code>number</code></td><td><code>60</code></td></tr>
+<tr><td><code>MAX_REQ</code></td><td><code>number</code></td><td><code>100</code></td></tr>
+<tr><td><code>FLOOD_REQ</code></td><td><code>number</code></td><td><code>200</code></td></tr>
+<tr><td><code>HONEYPOT_FIELD</code></td><td><code>optional</code></td><td><code>unset (resolved by consumer)</code></td></tr>
+<tr><td><code>AIWAF_MIN_FORM_TIME</code></td><td><code>number</code></td><td><code>0</code></td></tr>
+<tr><td><code>AIWAF_MAX_PAGE_TIME</code></td><td><code>number</code></td><td><code>3600</code></td></tr>
+<tr><td><code>AIWAF_LOGIN_PATH_PREFIXES</code></td><td><code>array</code></td><td><code>[]</code></td></tr>
+<tr><td><code>AIWAF_POST_ONLY_SUFFIXES</code></td><td><code>array</code></td><td><code>[]</code></td></tr>
+<tr><td><code>AIWAF_ALLOWED_METHODS</code></td><td><code>array</code></td><td><code>[]</code></td></tr>
+<tr><td><code>AIWAF_METHOD_POLICY_ENABLED</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>AIWAF_EXEMPT_PATHS</code></td><td><code>array</code></td><td><code>[]</code></td></tr>
+<tr><td><code>AIWAF_EXEMPT_IPS</code></td><td><code>array</code></td><td><code>[]</code></td></tr>
+<tr><td><code>AIWAF_ALLOWED_PATH_KEYWORDS</code></td><td><code>array</code></td><td><code>[]</code></td></tr>
+<tr><td><code>AIWAF_EXEMPT_KEYWORDS</code></td><td><code>array</code></td><td><code>[]</code></td></tr>
+<tr><td><code>AIWAF_EXEMPTIONS_DB</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>AIWAF_HEADER_VALIDATION</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>AIWAF_REQUIRED_HEADERS</code></td><td><code>array</code></td><td><code>[]</code></td></tr>
+<tr><td><code>AIWAF_HEADER_QUALITY_MIN_SCORE</code></td><td><code>number</code></td><td><code>3</code></td></tr>
+<tr><td><code>AIWAF_MAX_HEADER_BYTES</code></td><td><code>number</code></td><td><code>32768</code></td></tr>
+<tr><td><code>AIWAF_MAX_HEADER_COUNT</code></td><td><code>number</code></td><td><code>100</code></td></tr>
+<tr><td><code>AIWAF_MAX_USER_AGENT_LENGTH</code></td><td><code>number</code></td><td><code>500</code></td></tr>
+<tr><td><code>AIWAF_MAX_ACCEPT_LENGTH</code></td><td><code>number</code></td><td><code>4096</code></td></tr>
+<tr><td><code>AIWAF_BLOCKED_USER_AGENTS</code></td><td><code>array</code></td><td><code>[&quot;sqlmap&quot;,&quot;nikto&quot;,&quot;acunetix&quot;,&quot;nmap&quot;,&quot;masscan&quot;]</code></td></tr>
+<tr><td><code>AIWAF_GEO_BLOCK_ENABLED</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>AIWAF_GEO_BLOCK_COUNTRIES</code></td><td><code>array</code></td><td><code>[]</code></td></tr>
+<tr><td><code>AIWAF_GEO_ALLOW_COUNTRIES</code></td><td><code>array</code></td><td><code>[]</code></td></tr>
+<tr><td><code>AIWAF_GEO_MMDB_PATH</code></td><td><code>optional</code></td><td><code>unset (resolved by consumer)</code></td></tr>
+<tr><td><code>AIWAF_GEO_CACHE_SECONDS</code></td><td><code>number</code></td><td><code>3600</code></td></tr>
+<tr><td><code>AIWAF_GEO_CACHE_PREFIX</code></td><td><code>string</code></td><td><code>&quot;aiwaf:geo:&quot;</code></td></tr>
+<tr><td><code>AIWAF_DYNAMIC_KEYWORDS_DB</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>AIWAF_MODEL_STORAGE</code></td><td><code>string</code></td><td><code>&quot;file&quot;</code></td></tr>
+<tr><td><code>AIWAF_MODEL_PATH</code></td><td><code>optional</code></td><td><code>unset (resolved by consumer)</code></td></tr>
+<tr><td><code>AIWAF_MODEL_STORAGE_FALLBACK</code></td><td><code>string</code></td><td><code>&quot;file&quot;</code></td></tr>
+<tr><td><code>AIWAF_MODEL_CACHE_KEY</code></td><td><code>optional</code></td><td><code>unset (resolved by consumer)</code></td></tr>
+<tr><td><code>AIWAF_MODEL_CACHE_TTL</code></td><td><code>number</code></td><td><code>0</code></td></tr>
+<tr><td><code>AIWAF_MIDDLEWARE_LOGGING</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>AIWAF_MIDDLEWARE_LOG_PATH</code></td><td><code>string</code></td><td><code>&quot;logs/aiwaf-requests.jsonl&quot;</code></td></tr>
+<tr><td><code>AIWAF_MIDDLEWARE_LOG_DB</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>AIWAF_MIDDLEWARE_LOG_CSV</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>AIWAF_MIDDLEWARE_LOG_CSV_PATH</code></td><td><code>string</code></td><td><code>&quot;logs/aiwaf-requests.csv&quot;</code></td></tr>
+<tr><td><code>AIWAF_CAPTURE_EXTENDED_REQUEST_INFO</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>AIWAF_EXTENDED_INFO_MAX_HEADERS</code></td><td><code>number</code></td><td><code>50</code></td></tr>
+<tr><td><code>AIWAF_EXTENDED_INFO_MAX_VALUE_LENGTH</code></td><td><code>number</code></td><td><code>512</code></td></tr>
+<tr><td><code>AIWAF_MIN_AI_LOGS</code></td><td><code>number</code></td><td><code>0</code></td></tr>
+<tr><td><code>AIWAF_ENABLE_KEYWORD_LEARNING</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>AIWAF_MIDDLEWARES</code></td><td><code>optional</code></td><td><code>unset (resolved by consumer)</code></td></tr>
+<tr><td><code>AIWAF_DISABLE_MIDDLEWARES</code></td><td><code>array</code></td><td><code>[]</code></td></tr>
+<tr><td><code>AIWAF_PATH_RULES</code></td><td><code>array</code></td><td><code>[]</code></td></tr>
+<tr><td><code>AIWAF_PATH_MANIFEST</code></td><td><code>string</code></td><td><code>&quot;.aiwaf/paths.json&quot;</code></td></tr>
+<tr><td><code>AIWAF_ROUTE_PLAN_VERSION</code></td><td><code>number</code></td><td><code>0</code></td></tr>
+<tr><td><code>AIWAF_ACCESS_LOG</code></td><td><code>optional</code></td><td><code>unset (resolved by consumer)</code></td></tr>
+<tr><td><code>AIWAF_FORCE_JSON_ERRORS</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+</tbody></table></div>
+<h3>Java AiwafConfig field defaults</h3>
+<p>Java expressions are shown as declared in source. Collection constructors describe initial values; constants are resolved by the Java implementation.</p>
+<div class="table-wrap"><table><thead><tr><th>Setting</th><th>Type</th><th>Source default</th></tr></thead><tbody>
+<tr><td><code>headerValidationEnabled</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>rateLimitEnabled</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>rateLimitMax</code></td><td><code>int</code></td><td><code>20</code></td></tr>
+<tr><td><code>rateLimitWindowSeconds</code></td><td><code>int</code></td><td><code>10</code></td></tr>
+<tr><td><code>rateLimitScope</code></td><td><code>RateLimitScope</code></td><td><code>RateLimitScope.PER_PATH</code></td></tr>
+<tr><td><code>blockIpOnRateLimitBreach</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>blockIpOnFloodBreach</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>rateLimitFloodThreshold</code></td><td><code>int</code></td><td><code>40</code></td></tr>
+<tr><td><code>trustedProxyCidrs</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;(Set.of(&quot;127.0.0.0/8&quot;, &quot;::1/128&quot;))</code></td></tr>
+<tr><td><code>maxForwardedForEntries</code></td><td><code>int</code></td><td><code>16</code></td></tr>
+<tr><td><code>exemptIps</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;()</code></td></tr>
+<tr><td><code>exemptIpPatterns</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;()</code></td></tr>
+<tr><td><code>privateIpsExempted</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>localhostExempted</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>autoExemptPathPrefixes</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;()</code></td></tr>
+<tr><td><code>exemptPaths</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;(Arrays.asList( &quot;/favicon.ico&quot;, &quot;/robots.txt&quot;, &quot;/sitemap.xml&quot;, &quot;/sitemap.txt&quot;, &quot;/ads.txt&quot;, &quot;/security.txt&quot;, &quot;/.well-known/&quot;, &quot;/apple-touch-icon.png&quot;, &quot;/apple-touch-icon-precomposed.png&quot;, &quot;/manifest.json&quot;, &quot;/browserconfig.xml&quot;, &quot;/health&quot;, &quot;/healthcheck&quot;, &quot;/ping&quot;, &quot;/status&quot;, &quot;*.css&quot;, &quot;*.js&quot;, &quot;*.png&quot;, &quot;*.jpg&quot;, &quot;*.jpeg&quot;, &quot;*.gif&quot;, &quot;*.ico&quot;, &quot;*.svg&quot;, &quot;*.woff&quot;, &quot;*.woff2&quot;, &quot;*.ttf&quot;, &quot;*.eot&quot;, &quot;/static/&quot;, &quot;/assets/&quot;, &quot;/css/&quot;, &quot;/js/&quot;, &quot;/images/&quot;, &quot;/img/&quot;, &quot;/fonts/&quot;, &quot;/healthz&quot;, &quot;/metrics&quot;, &quot;/api/health&quot;, &quot;/api/status&quot; ))</code></td></tr>
+<tr><td><code>exemptAllowWildcards</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>exemptAllowPrefix</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>geoBlockEnabled</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>geoAllowedCountries</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;()</code></td></tr>
+<tr><td><code>geoBlockedCountries</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;()</code></td></tr>
+<tr><td><code>geoExemptPaths</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;()</code></td></tr>
+<tr><td><code>geoIpDatabasePath</code></td><td><code>String</code></td><td><code>null</code></td></tr>
+<tr><td><code>geoCacheSeconds</code></td><td><code>int</code></td><td><code>3600</code></td></tr>
+<tr><td><code>geoMaxCacheEntries</code></td><td><code>int</code></td><td><code>10_000</code></td></tr>
+<tr><td><code>honeypotEnabled</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>minFormTimeSeconds</code></td><td><code>double</code></td><td><code>1.0</code></td></tr>
+<tr><td><code>maxFormPageTimeSeconds</code></td><td><code>double</code></td><td><code>240.0</code></td></tr>
+<tr><td><code>loginMinFormTimeSeconds</code></td><td><code>double</code></td><td><code>0.1</code></td></tr>
+<tr><td><code>loginPathPrefixes</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;(Set.of( &quot;/admin/login/&quot;, &quot;/login/&quot;, &quot;/accounts/login/&quot;, &quot;/auth/login/&quot;, &quot;/signin/&quot; ))</code></td></tr>
+<tr><td><code>uuidTamperEnabled</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>uuidScoreEnabled</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>uuidScoreWindowSeconds</code></td><td><code>int</code></td><td><code>60</code></td></tr>
+<tr><td><code>uuidScoreBlockThreshold</code></td><td><code>int</code></td><td><code>5</code></td></tr>
+<tr><td><code>uuidMalformedWeight</code></td><td><code>int</code></td><td><code>5</code></td></tr>
+<tr><td><code>uuidNotFoundWeight</code></td><td><code>int</code></td><td><code>1</code></td></tr>
+<tr><td><code>uuidSuccessDecay</code></td><td><code>int</code></td><td><code>2</code></td></tr>
+<tr><td><code>uuidParameterNames</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;(Set.of(&quot;uuid&quot;))</code></td></tr>
+<tr><td><code>ipKeywordBlockEnabled</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>methodValidationEnabled</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>allowedMethods</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;(Arrays.asList(&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;PATCH&quot;, &quot;DELETE&quot;, &quot;OPTIONS&quot;, &quot;HEAD&quot;))</code></td></tr>
+<tr><td><code>enabledMiddlewares</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;()</code></td></tr>
+<tr><td><code>disabledMiddlewares</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;()</code></td></tr>
+<tr><td><code>maxHeaderBytes</code></td><td><code>int</code></td><td><code>32 * 1024</code></td></tr>
+<tr><td><code>maxHeaderCount</code></td><td><code>int</code></td><td><code>100</code></td></tr>
+<tr><td><code>maxUserAgentLength</code></td><td><code>int</code></td><td><code>500</code></td></tr>
+<tr><td><code>maxAcceptLength</code></td><td><code>int</code></td><td><code>4096</code></td></tr>
+<tr><td><code>maxRequestBodyBytes</code></td><td><code>int</code></td><td><code>1024 * 1024</code></td></tr>
+<tr><td><code>requestBodyInspectionBytes</code></td><td><code>int</code></td><td><code>64 * 1024</code></td></tr>
+<tr><td><code>requestBodyInspectionEnabled</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>allowCompressedRequestBodies</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>maxRuntimeStateEntries</code></td><td><code>int</code></td><td><code>10_000</code></td></tr>
+<tr><td><code>maxParameterCount</code></td><td><code>int</code></td><td><code>200</code></td></tr>
+<tr><td><code>maxParameterBytes</code></td><td><code>int</code></td><td><code>16 * 1024</code></td></tr>
+<tr><td><code>allowDuplicateParameters</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>allowedContentTypesByPathPrefix</code></td><td><code>Map&lt;String, Set&lt;String&gt;&gt;</code></td><td><code>new HashMap&lt;&gt;()</code></td></tr>
+<tr><td><code>minHeaderQualityScore</code></td><td><code>int</code></td><td><code>3</code></td></tr>
+<tr><td><code>requiredHeaders</code></td><td><code>List&lt;String&gt;</code></td><td><code>new ArrayList&lt;&gt;(HeaderValidationCore.REQUIRED_HEADERS)</code></td></tr>
+<tr><td><code>requiredHeadersByMethod</code></td><td><code>Map&lt;String, List&lt;String&gt;&gt;</code></td><td><code>new HashMap&lt;&gt;()</code></td></tr>
+<tr><td><code>blockedPathPatterns</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;(Arrays.asList(&quot;.env&quot;, &quot;../&quot;, &quot;%2e%2e&quot;, &quot;wp-admin&quot;, &quot;phpmyadmin&quot;, &quot;.git&quot;))</code></td></tr>
+<tr><td><code>pathRules</code></td><td><code>List&lt;PathRule&gt;</code></td><td><code>new ArrayList&lt;&gt;()</code></td></tr>
+<tr><td><code>pathManifestEnabled</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>pathManifestPath</code></td><td><code>String</code></td><td><code>&quot;.aiwaf/paths.json&quot;</code></td></tr>
+<tr><td><code>aiEnabled</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>aiLazyLoadModel</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>aiBackgroundPreload</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>aiModelPath</code></td><td><code>String</code></td><td><code>&quot;aiwaf-model.bin&quot;</code></td></tr>
+<tr><td><code>aiAnomalyScoreThreshold</code></td><td><code>double</code></td><td><code>0.7</code></td></tr>
+<tr><td><code>aiRequireBehaviorConfirmation</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>aiRecentWindowSeconds</code></td><td><code>int</code></td><td><code>300</code></td></tr>
+<tr><td><code>aiMinRecentSamplesToBlock</code></td><td><code>int</code></td><td><code>5</code></td></tr>
+<tr><td><code>aiTimingLogsEnabled</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>enableKeywordLearning</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>dynamicTopN</code></td><td><code>int</code></td><td><code>10</code></td></tr>
+<tr><td><code>exemptKeywords</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;()</code></td></tr>
+<tr><td><code>legitimatePathKeywords</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;()</code></td></tr>
+<tr><td><code>storeExtendedBlockInfo</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>blockInfoMaxHeaders</code></td><td><code>int</code></td><td><code>50</code></td></tr>
+<tr><td><code>blockInfoMaxHeaderValueLength</code></td><td><code>int</code></td><td><code>512</code></td></tr>
+<tr><td><code>blockInfoRedactHeaders</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;(Set.of(&quot;authorization&quot;, &quot;cookie&quot;, &quot;set-cookie&quot;))</code></td></tr>
+<tr><td><code>sensitiveParameterNames</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;(Set.of( &quot;password&quot;, &quot;passwd&quot;, &quot;pwd&quot;, &quot;token&quot;, &quot;access_token&quot;, &quot;refresh_token&quot;, &quot;secret&quot;, &quot;api_key&quot;, &quot;apikey&quot;, &quot;authorization&quot;, &quot;code&quot;, &quot;session&quot;, &quot;sessionid&quot; ))</code></td></tr>
+<tr><td><code>logQueryParameters</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+<tr><td><code>observabilityEnabled</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>loggingEnabled</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+<tr><td><code>logDir</code></td><td><code>String</code></td><td><code>&quot;aiwaf_logs&quot;</code></td></tr>
+<tr><td><code>logFormat</code></td><td><code>String</code></td><td><code>&quot;combined&quot;</code></td></tr>
+<tr><td><code>storageBackend</code></td><td><code>String</code></td><td><code>&quot;memory&quot;</code></td></tr>
+<tr><td><code>storageFilePath</code></td><td><code>String</code></td><td><code>null</code></td></tr>
+<tr><td><code>storageRedisUrl</code></td><td><code>String</code></td><td><code>null</code></td></tr>
+<tr><td><code>storageKeyPrefix</code></td><td><code>String</code></td><td><code>&quot;aiwaf:&quot;</code></td></tr>
+<tr><td><code>storageRedisMode</code></td><td><code>String</code></td><td><code>&quot;standalone&quot;</code></td></tr>
+<tr><td><code>storageRedisFailureMode</code></td><td><code>String</code></td><td><code>&quot;fail_closed&quot;</code></td></tr>
+<tr><td><code>storageRedisConnectionTimeoutMillis</code></td><td><code>int</code></td><td><code>1_000</code></td></tr>
+<tr><td><code>storageRedisSocketTimeoutMillis</code></td><td><code>int</code></td><td><code>2_000</code></td></tr>
+<tr><td><code>storageRedisPoolMaxTotal</code></td><td><code>int</code></td><td><code>32</code></td></tr>
+<tr><td><code>storageRedisPoolMaxIdle</code></td><td><code>int</code></td><td><code>16</code></td></tr>
+<tr><td><code>storageRedisPoolMinIdle</code></td><td><code>int</code></td><td><code>0</code></td></tr>
+<tr><td><code>storageRedisPoolMaxWaitMillis</code></td><td><code>int</code></td><td><code>250</code></td></tr>
+<tr><td><code>legitimateRouteHints</code></td><td><code>Set&lt;String&gt;</code></td><td><code>new HashSet&lt;&gt;()</code></td></tr>
+</tbody></table></div>

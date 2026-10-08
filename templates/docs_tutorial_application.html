@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#5b2a86,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: .8rem; margin-top: .8rem; }
+        .stats { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .stats .k { color: #4ecdc4; font-size: .82rem; }
+        .stats .v { font-size: 1.2rem; font-weight: 800; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: .8rem; }
+        .module-card { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .module-card h4 { color: #4ecdc4; margin-bottom: .45rem; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar"><h3 class="sidebar-title">First protected app</h3><ul class="sidebar-nav"><li><a href="/docs/tutorial/installation">1. Prepare your environment</a></li><li><a aria-current="page" href="/docs/tutorial/application">2. Create your first protected app</a></li><li><a href="/docs/tutorial/routes">3. Discover your routes</a></li><li><a href="/docs/tutorial/verification">4. Verify a rate limit</a></li><li><a href="/docs/tutorial/policies">5. Add a route policy</a></li><li><a href="/docs/tutorial/logging">6. Read logs and plan training</a></li><li><a href="/docs/getting_started">Choose another framework</a></li><li><a href="/docs/architecture">Architecture</a></li></ul></aside>
+<main class="content"><p class="docs-eyebrow">First protected app / Step 2 of 6</p><h1 class="page-title">Create your first protected app</h1>{% include '_docs_source.html' %}<p>In the directory you prepared, create a file named <code>app.py</code>. This is a complete application. You can copy the whole block without filling in missing routes or configuration.</p>
+<h2 id="files">1. Create app.py</h2><p class="code-filename">app.py</p><pre><code class="language-python" data-example="examples/tutorial/first_app.py">&quot;&quot;&quot;Local learning app. Its small limits are for the tutorial, not production.&quot;&quot;&quot;
+
+from flask import Flask
+from aiwaf.flask import AIWAF, aiwaf_exempt
+
+app = Flask(__name__)
+app.config.update(
+    AIWAF_USE_CSV=True,
+    AIWAF_DATA_DIR=&quot;aiwaf_data&quot;,
+    AIWAF_RATE_WINDOW=60,
+    AIWAF_RATE_MAX=3,
+    AIWAF_RATE_FLOOD=100,
+    AIWAF_PATH_RULES=[
+        {&quot;PREFIX&quot;: &quot;/api/message&quot;, &quot;RATE_LIMIT&quot;: {&quot;WINDOW&quot;: 60, &quot;MAX&quot;: 3, &quot;FLOOD&quot;: 100}},
+    ],
+    AIWAF_LOG_DIR=&quot;aiwaf_logs&quot;,
+    AIWAF_LOG_FORMAT=&quot;json&quot;,
+)
+
+
+@app.get(&quot;/api/message&quot;)
+def message():
+    return {&quot;message&quot;: &quot;Hello from a protected route&quot;}
+
+
+@app.get(&quot;/health&quot;)
+@aiwaf_exempt
+def health():
+    return {&quot;ok&quot;: True}
+
+
+AIWAF(app, middlewares=[&quot;rate_limit&quot;, &quot;logging&quot;])</code></pre><h2 id="explanation">2. Understand the pieces</h2>
+<ul><li><code>Flask(__name__)</code> creates the application object. It is named <code>app</code>, so both Flask and the AIWAF CLI will use the import target <code>app:app</code>.</li>
+<li><code>app.config.update(...)</code> applies settings before middleware registration. The teaching limit is three requests in 60 seconds; the flood threshold is intentionally higher so the rate-limit demonstration does not create a flood block.</li>
+<li><code>AIWAF_PATH_RULES</code> pins the message route to the teaching budget. Generated manifests can supply inferred rate settings; the explicit rule keeps this exercise at three requests.</li><li><code>/api/message</code> is the protected route. The handler runs only when the selected middleware allows the request.</li>
+<li><code>@aiwaf_exempt</code> marks <code>/health</code> as exempt from protection. Use this deliberately for liveness; it does not turn off checks for other routes.</li>
+<li><code>AIWAF(...)</code> registers rate limiting and logging after the routes have been defined. Header, keyword, geo, and anomaly checks are not selected in this teaching app, making the first verification predictable with a plain HTTP client.</li></ul>
+<div class="docs-callout"><strong>Selected checks are a learning choice</strong><p>The app demonstrates two components. It is not a complete production security policy. The framework setup and architecture guides explain <code>all</code>, <code>auto</code>, and the other checks.</p></div>
+<h2 id="run">3. Start the development server</h2><pre><code class="language-bash" >python -m flask --app app:app run --port 5000</code></pre><p>The console should report a development server listening at <code>http://127.0.0.1:5000</code>. Leave that terminal open. Flask's development server is suitable for this local exercise; choose your framework's production server before deployment.</p>
+<h2 id="layout">4. Recognize the generated files</h2><pre><code class="language-text" >aiwaf-demo/
+  app.py
+  .venv/
+  aiwaf_logs/        # request logs
+  aiwaf_data/        # CSV state when a store needs it
+  .aiwaf/           # route manifest after the next step</code></pre><p>Runtime directories are created as they are needed. Keep the application source in Git; ignore the virtual environment, request logs, local state, and generated route manifest.</p>
+<div class="docs-checkpoint"><strong>Checkpoint</strong> Your server starts from app.py without Redis or a trained anomaly model. Do not send repeated requests yet; the verification chapter starts with a fresh counter.</div><nav class="docs-pagination" aria-label="Tutorial sequence"><a rel="prev" href="/docs/tutorial/installation">Previous: Prepare your environment</a><a rel="next" href="/docs/tutorial/routes">Next: Discover your routes</a></nav></main>
+</div></div>
+</body>
+</html>

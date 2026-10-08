@@ -70,13 +70,15 @@
 <h1 class="page-title">Jakarta Servlet Setup</h1>
 {% include '_docs_source.html' %}
 <p class="architecture-link"><a href="/docs/architecture">How AIWAF works: system architecture</a></p>
-<p>Java source version <code>1.3.0</code> is declared in <code>java/pom.xml</code>. It targets Java 17, Spring Framework 7.0, and Jakarta Servlet 6.1, and runs natively without Rust. Use the Maven dependency below once this version is published to Maven Central; source builds are available from the monorepo.</p>
+<p class="docs-lead">Integrate native Java enforcement into Jakarta Servlet and verify how the adapter observes requests and responses.</p><div class="docs-callout"><strong>Before you begin</strong><p>You need Java 17+, Maven, and an existing Jakarta Servlet 6.1 application and a compatible container. These are integration snippets, not a standalone generated application. First confirm that an ordinary endpoint runs without AIWAF.</p></div><h2>1. Add the Java dependency</h2><p class="code-filename">pom.xml / dependencies</p><p>Java source version <code>1.3.0</code> is declared in <code>java/pom.xml</code>. It targets Java 17, Spring Framework 7.0, and Jakarta Servlet 6.1, and runs natively without Rust. Use the Maven dependency below once this version is published to Maven Central; source builds are available from the monorepo.</p>
 <pre><code class="language-xml">&lt;dependency&gt;
   &lt;groupId&gt;io.github.aiwaf-project&lt;/groupId&gt;
   &lt;artifactId&gt;aiwaf-java&lt;/artifactId&gt;
   &lt;version&gt;1.3.0&lt;/version&gt;
-&lt;/dependency&gt;</code></pre>
-<h2>Core engine</h2>
+&lt;/dependency&gt;</code></pre><h3>Build from source when needed</h3><p>If the required version is unavailable in your registry, install the reviewed monorepo source in your local Maven repository:</p><pre><code class="language-bash">git clone https://github.com/aiwaf-project/aiwaf.git
+cd aiwaf/java
+mvn -Dgpg.skip=true install</code></pre><p>Return to your application checkout afterward. Match its dependency version to the version built from java/pom.xml.</p>
+<h2>2. Understand the engine boundary</h2><p>The following code belongs inside application initialization/request handling, not at the top level of a Java source file. It illustrates the core API; the filter shown next performs this adapter work for Servlet requests.</p>
 <p>Use the two-stage API when the integration can observe the handler response. Deterministic controls run before the application; anomaly scoring then receives the actual status and elapsed time.</p>
 <pre><code class="language-java">import com.aiwaf.core.AiwafConfig;
 import com.aiwaf.core.AiwafDecision;
@@ -113,7 +115,7 @@ if (decision.allowed()) {
     );
 }</code></pre>
 <p><code>evaluate(request)</code> remains available for request-only integrations and uses provisional response values for AI features.</p>
-<h2>Servlet filter</h2>
+<h2>3. Register the Servlet filter</h2><p>During servlet-context initialization, add the filter before the handlers it protects. Import <code>com.aiwaf.servlet.AiwafServletFilter</code> in the class that owns this initialization. Keep the container's existing initialization and filter ordering.</p>
 <pre><code class="language-java">AiwafConfig config = new AiwafConfig();
 AiwafEngine engine = new AiwafEngine(config);
 
@@ -155,7 +157,7 @@ aiwaf-cli logs --dir aiwaf_logs</code></pre>
 mvn test
 mvn -Dgpg.skip=true package</code></pre>
 <p>The build produces the main, source, and Javadoc JARs under <code>java/target/</code>. The main JAR embeds the root license as <code>META-INF/LICENSE</code>. FastR training is optional and falls back to the Java trainer when R or <code>jsonlite</code> is unavailable.</p>
-</main>
+<h2>Verify the deployed adapter</h2><ol><li>Build the existing application with <code>mvn test</code> and its normal packaging command. Resolve framework/Servlet compatibility errors before starting the server.</li><li>Start the application with its existing launcher and request a known non-exempt handler through a browser.</li><li>Inspect the enabled policy, observed client IP, response status, and duration. Private-address exemptions can affect local tests.</li><li>Exercise a deliberate block or rate boundary on a staging route, and confirm the handler response is not returned for the rejected request.</li><li>For distributed deployments, repeat across instances and verify the selected namespace, backend, and failure policy.</li></ol><p>A successful normal request proves reachability. It does not prove that every middleware is selected or that a trained model is loaded. Use the <a href="/docs/java/architecture">Java architecture guide</a> to understand request-only versus response-aware decisions.</p><div class="docs-checkpoint"><strong>Checkpoint</strong> You can locate the dependency, initialization/filter registration, configuration file, and operational verification for this adapter.</div><nav class="docs-pagination" aria-label="Next reading"><a href="/docs/getting_started">Choose a runtime</a><a href="/docs/java/architecture">Next: understand Java architecture</a></nav></main>
 </div></div>
 </body>
 </html>

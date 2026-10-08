@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#5b2a86,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: .8rem; margin-top: .8rem; }
+        .stats { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .stats .k { color: #4ecdc4; font-size: .82rem; }
+        .stats .v { font-size: 1.2rem; font-weight: 800; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: .8rem; }
+        .module-card { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .module-card h4 { color: #4ecdc4; margin-bottom: .45rem; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar"><h3 class="sidebar-title">First protected app</h3><ul class="sidebar-nav"><li><a href="/docs/tutorial/installation">1. Prepare your environment</a></li><li><a href="/docs/tutorial/application">2. Create your first protected app</a></li><li><a href="/docs/tutorial/routes">3. Discover your routes</a></li><li><a href="/docs/tutorial/verification">4. Verify a rate limit</a></li><li><a aria-current="page" href="/docs/tutorial/policies">5. Add a route policy</a></li><li><a href="/docs/tutorial/logging">6. Read logs and plan training</a></li><li><a href="/docs/getting_started">Choose another framework</a></li><li><a href="/docs/architecture">Architecture</a></li></ul></aside>
+<main class="content"><p class="docs-eyebrow">First protected app / Step 5 of 6</p><h1 class="page-title">Add a route policy</h1>{% include '_docs_source.html' %}<p>A route policy lets you change one check on one route. Here you will add a preview endpoint that bypasses rate limiting while the existing message endpoint retains its limit.</p>
+<h2 id="import">1. Import the selective exemption helper</h2><p>Change the AIWAF import at the top of app.py:</p><pre><code class="language-python" >from aiwaf.flask import AIWAF, aiwaf_exempt, aiwaf_exempt_from</code></pre><h2 id="route">2. Add the preview route</h2><p>Insert this handler before the final <code>AIWAF(app, ...)</code> registration:</p><pre><code class="language-python" >@app.get(&quot;/api/preview&quot;)
+@aiwaf_exempt_from(&quot;rate_limit&quot;)
+def preview():
+    return {&quot;message&quot;: &quot;Preview has no rate limit&quot;}</code></pre><p>Also add this explicit preview budget before the final AIWAF registration. It keeps the baseline at three requests even after manifest inference, so five successful requests demonstrate the decorator exemption:</p><pre><code class="language-python"># Pin the preview budget too; its decorator selectively bypasses that check.
+app.config[&quot;AIWAF_PATH_RULES&quot;].append(
+    {&quot;PREFIX&quot;: &quot;/api/preview&quot;, &quot;RATE_LIMIT&quot;: {&quot;WINDOW&quot;: 60, &quot;MAX&quot;: 3, &quot;FLOOD&quot;: 100}}
+)</code></pre><p>The Flask route decorator is outside the AIWAF decorator. <code>aiwaf_exempt_from</code> disables the named check on this handler, while <code>aiwaf_exempt</code> on health marks a full exemption. The example selects rate limiting and logging; adding other checks later requires reviewing the preview route's intended policy.</p>
+<h2 id="regenerate">3. Regenerate and restart</h2><pre><code class="language-bash" >aiwaf init --framework flask --app app:app
+python -m flask --app app:app run --port 5000</code></pre><p>Stop the earlier server before starting another one. Run the four-request message test again: its fourth request should still be 429. Then request preview five times:</p><pre><code class="language-bash" >python -c &quot;from urllib.request import urlopen; print([urlopen(&#x27;http://127.0.0.1:5000/api/preview&#x27;).status for _ in range(5)])&quot;</code></pre><pre><code class="language-text" >[200, 200, 200, 200, 200]</code></pre><p>Using a different path gives a different default rate bucket; five successes exceed the three-request threshold and demonstrate the selective exemption.</p>
+<h2 id="complete">Complete app after this change</h2><details><summary>Show the final app.py</summary><p class="code-filename">app.py</p><pre><code class="language-python" data-example="examples/tutorial/app.py">&quot;&quot;&quot;Local learning app. Its small limits are for the tutorial, not production.&quot;&quot;&quot;
+
+from flask import Flask
+from aiwaf.flask import AIWAF, aiwaf_exempt, aiwaf_exempt_from
+
+app = Flask(__name__)
+app.config.update(
+    AIWAF_USE_CSV=True,
+    AIWAF_DATA_DIR=&quot;aiwaf_data&quot;,
+    AIWAF_RATE_WINDOW=60,
+    AIWAF_RATE_MAX=3,
+    AIWAF_RATE_FLOOD=100,
+    AIWAF_PATH_RULES=[
+        {&quot;PREFIX&quot;: &quot;/api/message&quot;, &quot;RATE_LIMIT&quot;: {&quot;WINDOW&quot;: 60, &quot;MAX&quot;: 3, &quot;FLOOD&quot;: 100}},
+    ],
+    AIWAF_LOG_DIR=&quot;aiwaf_logs&quot;,
+    AIWAF_LOG_FORMAT=&quot;json&quot;,
+)
+
+
+@app.get(&quot;/api/message&quot;)
+def message():
+    return {&quot;message&quot;: &quot;Hello from a protected route&quot;}
+
+
+@app.get(&quot;/health&quot;)
+@aiwaf_exempt
+def health():
+    return {&quot;ok&quot;: True}
+
+
+# Added in the tutorial&#x27;s route-policy chapter.
+@app.get(&quot;/api/preview&quot;)
+@aiwaf_exempt_from(&quot;rate_limit&quot;)
+def preview():
+    return {&quot;message&quot;: &quot;Preview has no rate limit&quot;}
+
+
+# Pin the preview budget too; its decorator selectively bypasses that check.
+app.config[&quot;AIWAF_PATH_RULES&quot;].append(
+    {&quot;PREFIX&quot;: &quot;/api/preview&quot;, &quot;RATE_LIMIT&quot;: {&quot;WINDOW&quot;: 60, &quot;MAX&quot;: 3, &quot;FLOOD&quot;: 100}}
+)
+
+
+AIWAF(app, middlewares=[&quot;rate_limit&quot;, &quot;logging&quot;])</code></pre></details>
+<div class="docs-checkpoint"><strong>Checkpoint</strong> Message remains limited, preview skips rate limiting, and health keeps its deliberate full exemption.</div><nav class="docs-pagination" aria-label="Tutorial sequence"><a rel="prev" href="/docs/tutorial/verification">Previous: Verify a rate limit</a><a rel="next" href="/docs/tutorial/logging">Next: Read logs and plan training</a></nav></main>
+</div></div>
+</body>
+</html>

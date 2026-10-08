@@ -78,10 +78,10 @@
 <h1 class="page-title">Express Setup</h1>
 {% include '_docs_source.html' %}
 <p class="architecture-link"><a href="/docs/architecture">How AIWAF works: system architecture</a></p>
-<h2>Install</h2>
-<pre><code class="language-bash">npm install aiwaf</code></pre>
+<p class="docs-lead">Protect an Express application, confirm the adapter runs before its handler, and decide how routes and state should be managed.</p><div class="docs-callout"><strong>Before you begin</strong><p>A fresh CommonJS application. The example uses Express 4, matching the upstream adapter test dependency. Use a Node.js version supported by your framework and dependency lockfile. For an existing application, confirm that its ordinary routes work before integrating AIWAF.</p></div><h2>1. Install the adapter and dependencies</h2>
+<pre><code class="language-bash">npm install express@4 aiwaf</code></pre>
 <p>Install the framework dependencies used by your existing application. The Node middleware package is <code>aiwaf</code>; source code and package scripts live in the monorepo's <code>js/</code> directory.</p>
-<h2>Register the adapter</h2>
+<h2>2. Register the adapter</h2><p class="code-filename">app.cjs</p>
 <pre><code class="language-javascript">const express = require(&#x27;express&#x27;);
 const aiwaf = require(&#x27;aiwaf&#x27;);
 
@@ -100,9 +100,9 @@ app.use(aiwaf({
 }));
 
 app.get(&#x27;/&#x27;, (req, res) =&gt; res.json({ protected: true }));
-app.listen(3000);</code></pre>
+app.listen(3000);</code></pre><h3>How this registration works</h3><p>The JSON body parser runs first, then AIWAF, then the handler. A blocked request ends before the handler; middleware registered after a route cannot protect a response already sent by that route.</p><p><code>auto</code> selects checks based on application signals; it is not a fixed promise that every check runs. Review the <a href="/docs/javascript/architecture">Node request lifecycle</a> and <a href="/docs/configuration">configuration reference</a> when choosing checks.</p><h2>3. Run and verify the integration</h2><pre><code class="language-bash">node app.cjs</code></pre><p>Open <code>http://127.0.0.1:3000/</code> in a browser. The example handler returns <code>{"protected": true}</code>; existing NestJS/Adonis/Sails routes return their own handler response. This proves reachability, so also test an intended rejection on a non-exempt route before rollout.</p><p>A plain curl client can fail header checks when they are selected. Inspect the actual response and logs, route policy, and observed client address. A private client or exempt path may bypass enforcement. See <a href="/docs/tutorial/verification">the controlled allow/throttle exercise</a> for what an enforcement test should establish.</p>
 <p>Attach AIWAF after the body parser when honeypot rules inspect parsed form or JSON fields.</p>
-<h2>Generate route policies</h2>
+<h2>4. Discover routes and review policy</h2>
 <p>Generate a manifest after the application's routes are registered. Express applications can call <code>aiwaf.generateExpressManifest(app, '.aiwaf/paths.json')</code>. Other adapters expose <code>aiwaf.generateFrameworkManifest(framework, app, outputPath, options)</code> with framework-specific route extraction.</p>
 <p>For a route list stored in <code>routes.json</code>, use the installed CLI:</p>
 <pre><code class="language-bash">npx aiwaf manifest --framework express --routes routes.json --output .aiwaf/paths.json</code></pre>
@@ -136,7 +136,7 @@ AIWAF_ACCESS_LOG=/path/to/access.log npm run train</code></pre>
 <li><a href="/docs/javascript/operations">Node.js operations</a></li>
 <li><a href="/docs/javascript/architecture">Architecture and route policies</a></li>
 </ul>
-</main>
+<div class="docs-checkpoint"><strong>Checkpoint</strong> You can locate the adapter registration, start this application, and inspect normal and rejected requests.</div><nav class="docs-pagination" aria-label="Next reading"><a href="/docs/getting_started">Choose a runtime</a><a href="/docs/javascript/architecture">Next: understand Node architecture</a></nav></main>
 </div></div>
 </body>
 </html>

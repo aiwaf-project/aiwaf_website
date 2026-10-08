@@ -5,7 +5,7 @@ services:
   github:
     repo: aayushgauba/aiwaf_website
     branch: main
-  run_command: gunicorn --worker-tmp-dir /dev/shm --config gunicorn.conf.py wsgi:application
+  run_command: gunicorn --config gunicorn.conf.py wsgi:application
   environment_slug: python
   instance_count: 1
   instance_size_slug: basic-xxs
@@ -18,24 +18,3 @@ services:
     value: "8080"
   - key: SECRET_KEY
     value: "your-production-secret-key-here"
-  # Database credentials - SECURE approach using individual components
-  - key: DB_USER
-    value: "your-mysql-username"
-  - key: DB_PASSWORD
-    value: "your-mysql-password"
-  - key: DB_HOST
-    value: "your-mysql-host"
-  - key: DB_PORT
-    value: "3306"
-  - key: DB_NAME
-    value: "aiwaf_docs"
-  # Alternative: Use DATABASE_URL if you prefer (will override individual components)
-  # - key: DATABASE_URL
-  #   value: "mysql://username:password@hostname:port/database"
-
-# Remove the databases section since you're using external MySQL
-# databases:
-# - name: aiwaf-db
-#   engine: MYSQL
-#   version: "8"
-#   size: db-s-1vcpu-1gb

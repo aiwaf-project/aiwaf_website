@@ -1,74 +1,75 @@
-# DigitalOcean Deployment Guide with MySQL
+# Deploy the documentation website
 
-## Files for Deployment
+The primary application is app.py, exported as application by wsgi.py. It uses AIWAF CSV state in aiwaf_data, request logs in logs, and a local SQLite URI initialized through Flask-SQLAlchemy. MySQL analytics and SSH tunneling belong to simple_app.py; they are not required by the primary WSGI application. /health reports liveness, not database or Redis readiness.
 
-1. **wsgi.py** - WSGI entry point
-2. **Procfile** - Process definition (`web: gunicorn --bind 0.0.0.0:$PORT wsgi:application`)
-3. **requirements.txt** - Python dependencies (includes Flask-SQLAlchemy, PyMySQL)
-4. **runtime.txt** - Python version specification
-5. **.do/app.yaml** - DigitalOcean App Platform configuration with MySQL database
-6. **.env.example** - Environment variables template
+## Install and start
 
-## Database Setup
+Use a Python environment compatible with requirements.txt. Several pinned numerical dependencies require a newer interpreter than AIWAF's own minimum; runtime.txt records this website's requested runtime.
 
-The application now includes MySQL integration with the following features:
-- **PageView tracking** - Analytics for documentation usage
-- **UserFeedback** - Collect user feedback on documentation pages
-- **DownloadStats** - Track AIWAF framework downloads
+~~~bash
+python -m venv venv
+source venv/bin/activate
+python -m pip install -r requirements.txt
+export SECRET_KEY='replace-with-a-generated-secret'
+export PORT=8080
+gunicorn --config gunicorn.conf.py wsgi:application
+~~~
 
-### Database Models
-- `PageView` - Track page visits and user analytics
-- `UserFeedback` - Store user ratings and comments
-- `DownloadStats` - Monitor download statistics by framework
+Run from the repository root. gunicorn.conf.py uses two sync workers, a 30-second timeout, stdout/stderr logging, and PORT (default 8080). Its /dev/shm worker temporary directory is intended for Linux deployments. Set a suitable worker_tmp_dir if your host lacks it. python wsgi.py and python app.py start Flask's development server; use the WSGI export for hosting.
 
-## Environment Variables
+app.py reads SECRET_KEY, PORT, and SITE_URL (default https://aiwaf.org). Set SITE_URL to the public staging domain when applicable; trailing slashes are normalized. Configure AIWAF through app.config before AIWAF(app), including aiwaf_config.py. The primary app does not consume DB_USER, DB_PASSWORD, DB_HOST, or DATABASE_URL. The .env.example file also contains settings for the alternate runner; select only the settings your runner uses.
 
-Required environment variables for your DigitalOcean app:
-- `PORT`: Automatically set by the platform (usually 8080)
-- `SECRET_KEY`: Set a secure secret key for Flask sessions
+## DigitalOcean App Platform
 
-**Database Configuration (Option 1 - Recommended for Security):**
-- `DB_USER`: MySQL username
-- `DB_PASSWORD`: MySQL password  
-- `DB_HOST`: MySQL server hostname/IP
-- `DB_PORT`: MySQL port (usually 3306)
-- `DB_NAME`: Database name
+Use .do/app.yaml with the actual website repository and branch. Its run command is Gunicorn with gunicorn.conf.py and wsgi:application; its health check is /health. Set SECRET_KEY as a platform secret and PORT to the service port. Procfile uses the same Gunicorn entrypoint.
 
-**Database Configuration (Option 2 - Alternative):**
-- `DATABASE_URL`: Full MySQL connection URL (if set, overrides individual components)
+Provide writable locations for runtime state and logs. Ephemeral filesystem state may disappear during replacement or redeployment. Persist state outside the disposable application filesystem when it must survive. CSV files alone do not make rate-limit counters shared across workers: configure and verify a shared rate cache separately. The Flask rate cache can fall back to memory if Redis initialization fails, so test behavior across workers rather than assuming that setting a URL is enough.
 
-## Deployment Steps
+## Hosted WSGI, including PythonAnywhere
 
-1. **Prepare your repository**:
-   - Ensure all files are committed to GitHub
-   - Copy `.env.example` to `.env` and configure for local development
-   - **Never commit your `.env` file with real credentials!**
+Select the website virtual environment in the host's web application settings. In the host's WSGI configuration, add the checkout to sys.path and import the export:
 
-2. **Create DigitalOcean App**:
-   - Create a new app in DigitalOcean App Platform
-   - Connect your GitHub repository
-   - The app.yaml will automatically configure the web service
+~~~python
+import sys
 
-3. **Configure Environment Variables in DigitalOcean Dashboard**:
-   - Set `SECRET_KEY` to a secure random string
-   - Set database credentials: `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`, `DB_NAME`
-   - **OR** alternatively set `DATABASE_URL` with full connection string
+checkout = '/home/YOUR_USERNAME/aiwaf_website'
+if checkout not in sys.path:
+    sys.path.insert(0, checkout)
+from wsgi import application
+~~~
 
-4. **Database Setup**:
-   - Ensure your external MySQL server allows connections from DigitalOcean
-   - Database tables will be created automatically on first run
-   - The `/health` endpoint will verify database connectivity
-4. DigitalOcean will automatically detect the Python app and use the Procfile
-5. The app will start using `python wsgi.py`
+Replace the username and checkout path. Ensure the worker can read templates/static files and write runtime state. The host controls its WSGI process; do not launch Gunicorn from the host's WSGI file. Reload the web application after updating source or dependencies.
 
-## Health Check
+Before reloading, check imports in the same virtual environment and checkout:
 
-The app should respond on:
-- Health check endpoint: `/` (homepage)
-- Port: Whatever is set in the `PORT` environment variable
+~~~bash
+python -c "from wsgi import application; print(application.url_map)"
+aiwaf init --framework flask --app app:app
+~~~
 
-## Common Issues
+Importing wsgi starts the actual application's initialization. This can create runtime state and expose missing dependencies; documentation-only tests intentionally do not perform this check.
 
-1. **Module not found**: Ensure all dependencies are in requirements.txt
-2. **Port binding**: The app binds to 0.0.0.0 and uses PORT environment variable
-3. **WSGI issues**: Using simple Flask development server instead of gunicorn for simplicity
+## Verify after deployment
+
+~~~bash
+curl -i https://aiwaf.org/health
+# Match the site's header policy when probing protected documentation.
+probe_docs() {
+  curl -A 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130.0.0.0 Safari/537.36' \
+    -H 'Accept: text/html' -H 'Accept-Language: en-US' -H 'Accept-Encoding: identity' "$@"
+}
+probe_docs -i https://aiwaf.org/docs/python/setup
+probe_docs -i https://aiwaf.org/python/setup/django
+probe_docs -fL https://aiwaf.org/docs/python/setup/django
+probe_docs -f https://aiwaf.org/docs/configuration
+probe_docs -f https://aiwaf.org/docs/migration
+probe_docs -f https://aiwaf.org/docs/troubleshooting
+~~~
+
+The explicit /health exemption permits plain health probes. Protected documentation can reject curl default headers; use the browser-style probe or a browser for those pages. Expect /health to return 200; the setup landing and short URL to redirect to the canonical Django guide; and the final pages to return 200. Replace the domain for staging. Unknown documentation pages should return 404. Inspect canonical tags and sitemap locations for the deployed domain.
+
+A 500 requires the server error log/traceback: verify that documentation.py and the templates are deployed together, that the active worker imports the expected checkout, and that the host was reloaded. A 403 can originate from AIWAF or an upstream proxy; inspect response details and logs before changing policy. See /docs/troubleshooting for package and route diagnostics.
+
+## Rollback
+
+Keep the previous code revision, dependency versions, configuration, and backups of writable state/model files. Restore compatible code and state together, then reload workers and repeat the HTTP checks. A successful template test does not establish that production has been updated.

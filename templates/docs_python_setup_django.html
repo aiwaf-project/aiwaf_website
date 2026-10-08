@@ -75,11 +75,11 @@
 <h1 class="page-title">Django Setup</h1>
 {% include '_docs_source.html' %}
 <p class="architecture-link"><a href="/docs/architecture">How AIWAF works: system architecture</a></p>
-<h2>Install</h2>
+<p class="docs-lead">Add AIWAF to a Django application and verify that protection is registered with the live route table.</p><div class="docs-callout"><strong>Before you begin</strong><p>Use an environment compatible with your framework. This guide assumes an existing Django project with manage.py and a settings module. New to middleware? Start with the <a href="/docs/tutorial/installation">six-step first protected app tutorial</a>, which includes complete files and expected responses.</p></div><h2>1. Install the framework extra</h2>
 <pre><code class="language-bash">pip install &quot;aiwaf[django]&quot;
 pip install &quot;aiwaf[rust]&quot;  # optional native acceleration</code></pre>
 <p>Install into the environment used to run your application. Choose an interpreter compatible with the framework and dependencies.</p>
-<h2>Integrate with the application</h2>
+<h2>2. Register protection</h2><p class="code-filename">project/settings.py (merge into existing lists)</p>
 <p>Add the app and the unified middleware alias in <code>settings.py</code>:</p>
 <pre><code class="language-python">INSTALLED_APPS = [
     # ...
@@ -104,11 +104,11 @@ MIDDLEWARE = [
     &quot;aiwaf.django.middleware_logger.AIWAFLoggerMiddleware&quot;,
 ]</code></pre>
 <p>Protection middleware should run early. Logging should run late enough to observe the application response.</p>
-<h2>Generate the route manifest</h2>
+<h2>3. Discover your live routes</h2>
 <p>Run from the application checkout after all routes are registered:</p>
 <pre><code class="language-bash">aiwaf init --framework django --settings project.settings</code></pre>
 <p>The default output is <code>.aiwaf/paths.json</code>. Flask and FastAPI require <code>module:object</code> in <code>--app</code>; Flask factories such as <code>app:create_app</code> are supported. Repeat discovery when registered routes change.</p>
-<h2>Route exemptions</h2>
+<h2>4. Scope route exemptions</h2><p class="code-filename">project/views.py</p>
 <pre><code class="language-python">from django.http import JsonResponse
 from aiwaf.django import aiwaf_exempt, aiwaf_only
 
@@ -119,12 +119,19 @@ def health(request):
 @aiwaf_only(&quot;header_validation&quot;)
 def webhook(request):
     return JsonResponse({&quot;accepted&quot;: True})</code></pre>
-<p>Map these views in your Django URL configuration. Apply migrations for ORM-backed stores:</p>
+<p>Merge these paths into your existing Django URL configuration, keeping other project routes:</p><p class="code-filename">project/urls.py</p><pre><code class="language-python">from django.urls import path
+from .views import health, webhook
+
+urlpatterns = [
+    path("health/", health),
+    path("webhook/", webhook),
+    # Keep your existing paths here.
+]</code></pre><p>Apply migrations for ORM-backed stores:</p>
 <pre><code class="language-bash">python manage.py makemigrations aiwaf
 python manage.py migrate
 python manage.py check</code></pre>
-<h2>Configuration and model storage</h2>
-<p>Python adapters use flat <code>AIWAF_*</code> settings or their equivalent constructor options.</p>
+<h2>5. Configure settings and model storage</h2>
+<p>Define flat <code>AIWAF_*</code> settings in your Django settings module. Merge the app and middleware into existing lists rather than replacing your authentication/session middleware.</p>
 <div class="table-wrap"><table><thead><tr><th>Area</th><th>Important settings</th></tr></thead><tbody>
 <tr><td>Training</td><td><code>AIWAF_ACCESS_LOG</code>, <code>AIWAF_MIN_TRAIN_LOGS</code>, <code>AIWAF_MIN_AI_LOGS</code>, <code>AIWAF_FORCE_AI_TRAINING</code></td></tr>
 <tr><td>Rate limiting</td><td><code>AIWAF_RATE_WINDOW</code>, <code>AIWAF_RATE_MAX</code>, <code>AIWAF_RATE_FLOOD</code></td></tr>
@@ -136,24 +143,10 @@ python manage.py check</code></pre>
 <tr><td>Models</td><td><code>AIWAF_MODEL_PATH</code>, <code>AIWAF_MODEL_STORAGE</code>, <code>AIWAF_MODEL_STORAGE_FALLBACK</code></td></tr>
 </tbody></table></div>
 <p>When <code>aiwaf_rust</code> is importable, supported acceleration paths are selected automatically. Python remains the fallback when a native capability is unavailable. Persisted runtime models use JSON state; AIWAF does not load pickle, joblib, or other executable Python-object formats.</p>
-<h2>Verify and operate</h2>
-<pre><code class="language-bash"># Unified CLI
-aiwaf --help
-aiwaf blacklist migrate
-aiwaf status
-
-# Django management commands
-python manage.py detect_and_train
-python manage.py regenerate_model
-python manage.py aiwaf_reset --keywords --confirm
-python manage.py aiwaf_logging --status
-python manage.py geo_block_country list
-
-# Explicit adapter dispatch
-aiwaf django aiwaf_list --all
-aiwaf flask --help
-aiwaf fast --help</code></pre>
-<h2>Production configuration</h2>
+<h2>6. Check and run Django</h2><pre><code class="language-bash">python manage.py check
+python manage.py migrate
+python manage.py runserver</code></pre><p>The settings snippet does not create an application view. Request <code>http://127.0.0.1:8000/health/</code> after registering the health view as shown above. It should return <code>{"ok": true}</code>. Then test a non-exempt application route for normal and rejected traffic; health is deliberately exempt.</p><pre><code class="language-bash">python manage.py detect_and_train --help
+python manage.py regenerate_model --help</code></pre><p>Use <a href="/docs/python/operations">Python operations</a> for training, model inspection, and state migration. Training requires representative logs in a supported format; setup alone does not train a model.</p><h2>Production configuration</h2>
 <ul>
 <li>Configure the application to trust forwarding headers only from known proxy CIDRs.</li>
 <li>Configure the outermost proxy to overwrite client-supplied forwarding headers.</li>
@@ -164,7 +157,7 @@ aiwaf fast --help</code></pre>
 <li>Sign model/configuration artifacts where the runtime supports HMAC verification.</li>
 <li>Run AIWAF alongside normal secure-development controls and an edge/reverse-proxy layer.</li>
 </ul>
-</main>
+<div class="docs-checkpoint"><strong>Checkpoint</strong> You can identify the settings location, import target, registered routes, and verification step for Django.</div><nav class="docs-pagination" aria-label="Next reading"><a href="/docs/getting_started">Choose a runtime</a><a href="/docs/python/architecture">Next: understand Python architecture</a></nav></main>
 </div></div>
 </body>
 </html>

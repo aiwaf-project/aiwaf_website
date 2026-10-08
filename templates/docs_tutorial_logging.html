@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#5b2a86,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: .8rem; margin-top: .8rem; }
+        .stats { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .stats .k { color: #4ecdc4; font-size: .82rem; }
+        .stats .v { font-size: 1.2rem; font-weight: 800; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: .8rem; }
+        .module-card { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .module-card h4 { color: #4ecdc4; margin-bottom: .45rem; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar"><h3 class="sidebar-title">First protected app</h3><ul class="sidebar-nav"><li><a href="/docs/tutorial/installation">1. Prepare your environment</a></li><li><a href="/docs/tutorial/application">2. Create your first protected app</a></li><li><a href="/docs/tutorial/routes">3. Discover your routes</a></li><li><a href="/docs/tutorial/verification">4. Verify a rate limit</a></li><li><a href="/docs/tutorial/policies">5. Add a route policy</a></li><li><a aria-current="page" href="/docs/tutorial/logging">6. Read logs and plan training</a></li><li><a href="/docs/getting_started">Choose another framework</a></li><li><a href="/docs/architecture">Architecture</a></li></ul></aside>
+<main class="content"><p class="docs-eyebrow">First protected app / Step 6 of 6</p><h1 class="page-title">Read logs and plan training</h1>{% include '_docs_source.html' %}<p>Enforcement decisions are easier to operate when you can connect them to request observations. The tutorial already selects logging; now inspect the files it writes and understand the boundary between logging and training.</p>
+<h2 id="inspect">1. Read the access log</h2><p>From the app directory:</p><pre><code class="language-bash" >python -c &quot;from pathlib import Path; print(Path(&#x27;aiwaf_logs/access.log&#x27;).read_text())&quot;</code></pre><p><code>AIWAF_LOG_FORMAT='json'</code> writes JSON records to the access log. Look for the request path and response status for the message/preview calls. Timestamps, durations, addresses, and record details depend on the runtime; the file is evidence of the observed requests, not a trained model.</p>
+<h2 id="ownership">2. Separate three kinds of state</h2><div class="table-wrap"><table><thead><tr><th>Data</th><th>Purpose</th><th>Tutorial behavior</th></tr></thead><tbody><tr><td>Rate counters</td><td>Decide whether the current request crosses the window</td><td>In memory in this process; lost on restart</td></tr><tr><td>Request logs / CSV state</td><td>Record observations and persist store data when used</td><td>Files under the configured directories</td></tr><tr><td>Model artifact</td><td>Score behavior after offline training</td><td>No anomaly model is trained or selected here</td></tr></tbody></table></div>
+<p>Keeping CSV files does not make rate counters shared across workers. See <a href="/docs/configuration#state">shared state configuration</a> before scaling beyond a single process.</p>
+<h2 id="training">3. Inspect the trainer before running it</h2><pre><code class="language-bash" >aiwaf flask train --help
+aiwaf flask model --help</code></pre><p>For an application with a representative combined-format log corpus, the Flask trainer accepts:</p><pre><code class="language-bash" >aiwaf flask train --log-dir /path/to/combined-format-logs</code></pre><p>This is a separate operational example, not the next command to run on these few JSON tutorial records. Check the installed trainer's supported input formats, volume thresholds, output path, and model diagnostics. Convert or collect a supported log format deliberately; do not assume the logger format is the trainer format.</p>
+<p>Current Python persisted models use JSON. A file with a different extension does not become a compatible model by renaming it. Collect representative traffic, train with the runtime's supported workflow, and verify model loading before enabling anomaly inference. Logs can contain request data; configure retention and redaction for your application.</p>
+<h2 id="next">4. Choose your next task</h2><ul><li><a href="/docs/python/setup/flask">Integrate the wider Flask middleware set</a>.</li><li><a href="/docs/architecture">Follow policy, deterministic checks, observations, and training through the architecture</a>.</li><li><a href="/docs/configuration">Configure defaults, exemptions, and a shared backend</a>.</li><li><a href="/docs/python/operations">Operate Python training and state</a>.</li><li><a href="/docs/migration">Upgrade an existing installation</a>.</li></ul>
+<div class="docs-checkpoint"><strong>Checkpoint</strong> You can locate request observations, distinguish them from counters/models, and identify what must be verified before a production rollout.</div><nav class="docs-pagination" aria-label="Tutorial sequence"><a rel="prev" href="/docs/tutorial/policies">Previous: Add a route policy</a><a rel="next" href="/docs/architecture">Next: Understand the architecture</a></nav></main>
+</div></div>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#5b2a86,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: .8rem; margin-top: .8rem; }
+        .stats { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .stats .k { color: #4ecdc4; font-size: .82rem; }
+        .stats .v { font-size: 1.2rem; font-weight: 800; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: .8rem; }
+        .module-card { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .module-card h4 { color: #4ecdc4; margin-bottom: .45rem; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar"><h3 class="sidebar-title">Documentation</h3><ul class="sidebar-nav"><li><a href="/docs">Runtime guides</a></li><li><a href="/docs/architecture">Architecture</a></li><li><a href="/docs/configuration">Configuration</a></li><li><a href="/docs/migration">Migration</a></li><li><a href="/docs/troubleshooting">Troubleshooting</a></li></ul></aside>
+<main class="content">
+<h1 class="page-title">Configuration Reference</h1>
+{% include '_docs_source.html' %}
+<p>Configuration is adapter-specific. Use the names accepted by your runtime, and apply settings before registering protection. The tables below describe source defaults; they do not guarantee that a middleware is selected or that a route is protected.</p>
+<nav class="section"><a href="#inputs">Inputs and precedence</a> | <a href="#policy">Policy and exemptions</a> | <a href="#state">Workers and shared state</a> | <a href="#defaults">Default tables</a></nav>
+<h2 id="inputs">Inputs and precedence</h2>
+<div class="table-wrap"><table><thead><tr><th>Runtime</th><th>Input</th><th>Resolution</th></tr></thead><tbody>
+<tr><td>Flask</td><td>Flat <code>app.config['AIWAF_*']</code> settings; constructor middleware selection</td><td>Load application configuration before <code>AIWAF(app)</code>. A shell variable does not automatically become Flask app.config. The middleware reads adapter settings and its own defaults.</td></tr>
+<tr><td>Django</td><td>Flat settings in <code>settings.py</code></td><td>Explicit flat settings take precedence over legacy <code>AIWAF_SETTINGS</code> compatibility mappings for settings that use set-if-missing. Django does not automatically read arbitrary environment variables; map them in settings.py.</td></tr>
+<tr><td>FastAPI</td><td>Nested constructor options or <code>AIWAFConfig</code></td><td>Defaults, then JSON file, then recognized environment mappings, then explicit constructor overrides. If a <code>config</code> object is supplied, it is used directly rather than rebuilding from config_file/overrides.</td></tr>
+<tr><td>Node.js</td><td>Options to the framework adapter</td><td>The normalized resolver uses the first defined canonical option, supported aliases, legacy settings, recognized environment variables, and finally defaults. <code>false</code> and <code>0</code> remain explicit values.</td></tr>
+<tr><td>Java/Spring</td><td><code>AiwafConfig</code>, nested JSON, environment, Spring properties</td><td>Spring's loader creates defaults/file configuration, applies supported environment mappings, then Spring property lookups. Custom configuration beans replace auto-configuration where supported.</td></tr>
+<tr><td>Rust/WASM</td><td>Arguments to primitive bindings</td><td>These bindings are not a framework configuration loader. Host adapters control middleware, policy, storage, and proxy handling.</td></tr>
+</tbody></table></div>
+<h3>Flask and Django flat settings</h3>
+<p>The nested Python table below is the shared configuration manager, primarily exposed through FastAPI. It is not the Flask/Django constructor signature. Their important flat names include <code>AIWAF_RATE_WINDOW</code> (seconds), <code>AIWAF_RATE_MAX</code> and <code>AIWAF_RATE_FLOOD</code> (integer counts), <code>AIWAF_EXEMPT_PATHS</code> (path list), <code>AIWAF_PATH_RULES</code> (rule list), <code>AIWAF_GEO_BLOCK_COUNTRIES</code> and <code>AIWAF_GEO_ALLOW_COUNTRIES</code> (country-code lists), and <code>AIWAF_MODEL_PATH</code> (path). Consult each adapter's settings guide for the full flat surface.</p>
+<pre><code class="language-python"># Flask: set values before middleware registration.
+app.config.update(
+    AIWAF_RATE_WINDOW=10,
+    AIWAF_RATE_MAX=20,
+    AIWAF_RATE_FLOOD=40,
+    AIWAF_RATE_CACHE_BACKEND='redis',
+    AIWAF_REDIS_URL='redis://localhost:6379/0',
+    AIWAF_RATE_CACHE_KEY_PREFIX='my-service:rate:',
+)
+AIWAF(app, middlewares=['all'])</code></pre>
+<p>Flask's rate middleware defaults to 10 seconds, 20 requests, and flood threshold 40. The website overrides these values in app.py. Node's normalized defaults are 60 seconds, 100 requests, and flood threshold 200. Do not use website thresholds as universal package defaults.</p>
+<h3>FastAPI nested options</h3>
+<pre><code class="language-python">from fastapi import FastAPI
+from aiwaf.fast import AIWAF
+
+app = FastAPI()
+AIWAF(app, middlewares=['all'],
+      rate_limiting={'window_seconds': 10, 'max_requests': 20,
+                     'flood_threshold': 40, 'cache_backend': 'redis',
+                     'redis_url': 'redis://localhost:6379/0',
+                     'cache_key_prefix': 'my-service:rate:'})</code></pre>
+<p>The shared environment loader recognizes names such as <code>AIWAF_RATE_WINDOW_SECONDS</code> and <code>AIWAF_RATE_MAX_REQUESTS</code>. Those differ from the Flask/Django flat names. Boolean strings accept <code>true</code>, <code>1</code>, <code>yes</code>, and <code>on</code> as true; list mappings split comma-separated values. File lists use JSON arrays. Review the environment map before assuming a setting is supported.</p>
+<h2 id="policy">Middleware, route policy, and exemptions</h2>
+<p><code>all</code> selects the canonical middleware set. <code>auto</code> omits checks based on detected application signals. Explicitly disabled middleware and route exemptions can bypass checks even when their configuration says enabled. Regenerate route manifests after route changes and inspect the selected middleware at runtime.</p>
+<p>Default exemptions differ. Django includes administrative/login paths; Flask includes health, crawler, static and asset paths. Private-address behavior also differs from an explicit trusted-client whitelist. Review <a href="https://github.com/aiwaf-project/aiwaf/blob/main/py/aiwaf/core/defaults.py">Python default exemption lists</a> and <a href="/docs/architecture#how-route-policies-become-decisions">the policy lifecycle</a> before interpreting a successful local request as a public-client test.</p>
+<p>Configure forwarding-header handling with the actual deployment topology. Java exposes <code>trustedProxyCidrs</code> and <code>maxForwardedForEntries</code>. Python and Node extraction use adapter-specific rules; these Java options are not portable knobs. Have the outer proxy overwrite untrusted client forwarding headers, and compare observed client addresses with the intended public client.</p>
+<h2 id="state">Multiple workers and storage</h2>
+<p>Persistent blacklist files, model storage, logs, and rate counters have separate ownership. A CSV blacklist does not share every in-memory counter. Flask/FastAPI use separate rate-cache settings; install the Redis client required by the selected backend. Flask can fall back to a process-local cache if Redis initialization fails. Verify repeated requests across workers and inspect backend diagnostics.</p>
+<p>Node accepts a shared <code>cache</code> implementation; its fallback is process-local. Java Redis shares enforcement state within <code>storageKeyPrefix</code>, supports standalone mode, and defaults to <code>fail_closed</code>. Use the same namespace only for intentionally shared policy/state, and review schema compatibility before mixed-version deployments.</p>
+<h2 id="defaults">Source default tables</h2>
+<p>The Python table includes every leaf returned by the shared manager. The Node table includes normalized options, not every raw option consumed by individual modules (for example cache/WASM settings). The Java table includes public AiwafConfig field initializers. Disabled middleware can leave a setting inactive. These tables are a source snapshot, not your effective live configuration.</p>
+{% include '_configuration_defaults.html' %}
+<h2>Source loaders and complete adapter references</h2>
+<ul>
+<li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/py/aiwaf/core/runtime_config.py">Python nested defaults and environment mappings</a>; <a href="https://github.com/aiwaf-project/aiwaf/blob/main/py/aiwaf/core/runtime_fastapi.py">FastAPI constructor precedence</a>.</li>
+<li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/py/aiwaf/flask/AIWAF_SETTINGS_GUIDE.py">Flask flat settings guide</a>; <a href="https://github.com/aiwaf-project/aiwaf/blob/main/py/aiwaf/django/settings_compat.py">Django compatibility mapper</a>; <a href="https://github.com/aiwaf-project/aiwaf/blob/main/AIWAF_SETTINGS_GUIDE.py">Python settings guide</a>.</li>
+<li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/js/lib/settingsCompat.js">Node options and alias resolution</a>; <a href="https://github.com/aiwaf-project/aiwaf/blob/main/js/lib/wafMiddleware.js">Node middleware consumers</a>.</li>
+<li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/java/src/main/java/com/aiwaf/core/AiwafConfig.java">Java typed fields</a>; <a href="https://github.com/aiwaf-project/aiwaf/blob/main/java/src/main/java/com/aiwaf/spring/SpringAiwafConfig.java">Spring properties</a>; <a href="https://github.com/aiwaf-project/aiwaf/blob/main/java/src/main/java/com/aiwaf/core/AiwafConfigCompatCore.java">Java environment mappings</a>.</li>
+</ul>
+</main>
+</div></div>
+</body>
+</html>

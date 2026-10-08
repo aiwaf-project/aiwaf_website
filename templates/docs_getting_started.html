@@ -70,66 +70,23 @@
                 </ul>
             </aside>
 
-            <main class="content">
-<h1 class="page-title">Getting Started</h1>
-{% include '_docs_source.html' %}
-<p class="architecture-link"><a href="/docs/architecture">How AIWAF works: system architecture</a></p>
-<p>AIWAF is installed in your application runtime and wired into its framework middleware. All current implementations live in one monorepo.</p>
-<h2>Choose a package</h2>
-<p>Each package is versioned and released independently.</p>
-<div class="table-wrap"><table><thead><tr><th>Runtime</th><th>Package</th><th>Repository version</th><th>Primary use</th></tr></thead><tbody>
-<tr><td>Python</td><td><a href="https://pypi.org/project/aiwaf/"><code>aiwaf</code></a></td><td><code>1.0.8</code></td><td>Django, Flask, and FastAPI protection</td></tr>
-<tr><td>Node.js</td><td><a href="https://www.npmjs.com/package/aiwaf"><code>aiwaf</code></a></td><td><code>1.0.2</code></td><td>Express and Node framework middleware</td></tr>
-<tr><td>Rust/Python</td><td><a href="https://pypi.org/project/aiwaf-rust/"><code>aiwaf-rust</code></a></td><td><code>0.2.1</code></td><td>Native Python acceleration and JSON model inference</td></tr>
-<tr><td>WebAssembly</td><td><a href="https://www.npmjs.com/package/aiwaf-wasm"><code>aiwaf-wasm</code></a></td><td><code>0.2.1</code></td><td>Rust detection and model primitives for JavaScript</td></tr>
-<tr><td>Java</td><td><code>io.github.aiwaf-project:aiwaf-java</code></td><td><code>1.3.0</code></td><td>Spring MVC and Jakarta Servlet protection</td></tr>
+            <main class="content"><h1 class="page-title">Getting started with AIWAF</h1>{% include '_docs_source.html' %}
+<p class="docs-lead">Build a small protected application, see an enforced request boundary, and then learn how middleware, route policy, state, and training fit together.</p>
+<h2 id="first-app">Start with a complete application</h2>
+<p>The first-app tutorial uses Flask so every file and command can be shown in full. It needs Python and a terminal; it does not assume an existing project, Redis service, Rust extension, or trained model.</p>
+<ol class="docs-learning-path"><li><a href="/docs/tutorial/installation">Prepare your environment</a> — create a workspace and install the Flask extra.</li><li><a href="/docs/tutorial/application">Create your application</a> — understand app.py, registration, and the generated files.</li><li><a href="/docs/tutorial/routes">Discover live routes</a> — use module:object imports and inspect the manifest.</li><li><a href="/docs/tutorial/verification">Verify a rate limit</a> — observe three 200 responses and a fourth 429.</li><li><a href="/docs/tutorial/policies">Add a route policy</a> — exempt one check on one endpoint.</li><li><a href="/docs/tutorial/logging">Inspect logs and plan training</a> — distinguish observations, counters, and models.</li></ol>
+<h2 id="existing-app">Integrate an existing application</h2>
+<p>Each framework guide identifies its prerequisites, the file to edit, the adapter's registration point, the run command, and what to inspect. Use the guide for your framework rather than translating option names between runtimes.</p>
+<div class="table-wrap"><table><thead><tr><th>Runtime</th><th>Framework guides</th><th>Configuration surface</th></tr></thead><tbody>
+<tr><td>Python</td><td><a href="/docs/python/setup/flask">Flask</a>, <a href="/docs/python/setup/django">Django</a>, <a href="/docs/python/setup/fastapi">FastAPI</a></td><td>Flask app.config; Django settings.py; FastAPI nested options</td></tr>
+<tr><td>Node.js</td><td><a href="/docs/javascript/setup/express">Express</a>, <a href="/docs/javascript/setup/fastify">Fastify</a>, <a href="/docs/javascript/setup/hapi">Hapi</a>, <a href="/docs/javascript/setup/koa">Koa</a>, <a href="/docs/javascript/setup/nestjs">NestJS</a>, <a href="/docs/javascript/setup/nextjs">Next.js API routes</a>, <a href="/docs/javascript/setup/adonis">AdonisJS</a>, <a href="/docs/javascript/setup/sails">Sails</a></td><td>Adapter options and normalized aliases</td></tr>
+<tr><td>Java</td><td><a href="/docs/java/setup/spring">Spring</a>, <a href="/docs/java/setup/servlet">Jakarta Servlet</a></td><td>Typed fields, JSON/environment settings, Spring properties</td></tr>
+<tr><td>Rust/WASM</td><td><a href="/docs/rust/bindings">Primitive bindings</a></td><td>Host adapter configuration and primitive API arguments</td></tr>
 </tbody></table></div>
-<p>Supported framework integrations include Django, Flask, FastAPI, Express, Fastify, Hapi, Koa, NestJS, Next.js API routes, AdonisJS, Sails.js, Spring MVC, and Jakarta Servlet.</p>
-<h2>Install</h2>
-<p>Choose the package for the application runtime:</p>
-<pre><code class="language-bash"># Python core or a framework extra
-pip install aiwaf
-pip install &quot;aiwaf[django]&quot;
-pip install &quot;aiwaf[flask]&quot;
-pip install &quot;aiwaf[fastapi]&quot;
-
-# Python with the optional Rust accelerator
-pip install &quot;aiwaf[rust]&quot;
-
-# Node.js middleware
-npm install aiwaf
-
-# Standalone WebAssembly bindings
-npm install aiwaf-wasm</code></pre>
-<p>Java 1.3.0, after it is published to Maven Central:</p>
-<pre><code class="language-xml">&lt;dependency&gt;
-  &lt;groupId&gt;io.github.aiwaf-project&lt;/groupId&gt;
-  &lt;artifactId&gt;aiwaf-java&lt;/artifactId&gt;
-  &lt;version&gt;1.3.0&lt;/version&gt;
-&lt;/dependency&gt;</code></pre>
-<h2>Integrate and verify</h2>
-<ul>
-<li><a href="/docs/python/setup">Python setup</a> for Django, Flask, and FastAPI.</li>
-<li><a href="/docs/javascript/setup">Node.js setup</a> for Express and other Node frameworks.</li>
-<li><a href="/docs/java/setup/spring">Spring setup</a> or <a href="/docs/java/setup/servlet">Servlet setup</a>.</li>
-<li><a href="/docs/rust">Rust and WASM</a> for standalone accelerator primitives.</li>
-</ul>
-<p>Register the adapter, configure route exemptions and state storage, and test representative normal requests plus rate-limit and probing scenarios in staging. Training uses configured access or middleware logs and only runs after volume thresholds are met.</p>
-<h2>Source checkout</h2>
-<pre><code class="language-bash">git clone https://github.com/aiwaf-project/aiwaf.git
-cd aiwaf</code></pre>
-<h2>Deployment</h2>
-<ul>
-<li>Configure the application to trust forwarding headers only from known proxy CIDRs.</li>
-<li>Configure the outermost proxy to overwrite client-supplied forwarding headers.</li>
-<li>Use Redis, a database, or another shared backend when multiple workers must share rate-limit, blacklist, or exemption state.</li>
-<li>Keep health checks, static assets, and trusted webhook routes explicitly scoped instead of disabling protection globally.</li>
-<li>Start anomaly detection in observe-only or conservative mode and tune it with representative normal traffic.</li>
-<li>Rotate logs and exclude secrets, authorization headers, cookies, and personal data.</li>
-<li>Sign model/configuration artifacts where the runtime supports HMAC verification.</li>
-<li>Run AIWAF alongside normal secure-development controls and an edge/reverse-proxy layer.</li>
-</ul>
-</main>
+<h2 id="understand">Understand what happens to a request</h2><p><a href="/docs/architecture">System architecture</a> follows the adapter, policy selection, deterministic controls, runtime state, response observations, and offline training. Continue with <a href="/docs/python/architecture">Python</a>, <a href="/docs/javascript/architecture">Node</a>, <a href="/docs/java/architecture">Java</a>, or <a href="/docs/rust/architecture">Rust/WASM</a> internals for implementation boundaries.</p>
+<h2 id="reference">Look up a specific task</h2><ul><li><a href="/docs/configuration">Configuration reference</a>: settings, types, source defaults, precedence, and shared state.</li><li><a href="/docs/migration">Upgrade guide</a>: package rename, reputation state, manifests, and models.</li><li><a href="/docs/troubleshooting">Troubleshooting</a>: rejected imports, missing routes, unexpected blocks, and training inputs.</li><li><a href="/docs/api">API entry points</a>: runtime APIs and the distinction from website administration.</li></ul>
+<h2 id="packages">Choose packages deliberately</h2><p>Python and npm both use the name <code>aiwaf</code>. The optional Python accelerator is <code>aiwaf-rust</code>; WebAssembly primitives are <code>aiwaf-wasm</code>. Java builds under <code>java/</code> in the same <a href="https://github.com/aiwaf-project/aiwaf">monorepo</a>. See the <a href="/docs">source-version matrix</a> and installed package metadata before choosing a release. PHP pages are legacy reference.</p>
+<nav class="docs-pagination" aria-label="Next reading"><a href="/docs">Documentation hub</a><a rel="next" href="/docs/tutorial/installation">Next: prepare your environment</a></nav></main>
         </div>
     </div>
 

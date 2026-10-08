@@ -9,8 +9,7 @@ from documentation import documentation
 load_dotenv()
 
 app = Flask(__name__)
-# SITE_URL = os.environ.get("SITE_URL", "http://localhost:5000").rstrip("/")
-SITE_URL = "https://aiwaf.org/"
+SITE_URL = os.environ.get("SITE_URL", "https://aiwaf.org").rstrip("/")
 # Load optional AIWAF-specific config overrides.
 app.config.from_pyfile("aiwaf_config.py", silent=True)
 
@@ -49,7 +48,17 @@ def inject_seo_defaults():
     title_map = {
         "/": "AIWAF Documentation | Python, Node.js, Java, and Rust/WASM Security Guides",
         "/docs": "AIWAF Documentation Hub | Comprehensive Deep Dives for All Languages",
+        "/docs/getting_started": "Getting Started with AIWAF | Tutorials and Framework Guides",
+        "/docs/tutorial/installation": "AIWAF Tutorial | Prepare Your Environment",
+        "/docs/tutorial/application": "AIWAF Tutorial | Create Your First Protected App",
+        "/docs/tutorial/routes": "AIWAF Tutorial | Discover Live Routes",
+        "/docs/tutorial/verification": "AIWAF Tutorial | Verify a Rate Limit",
+        "/docs/tutorial/policies": "AIWAF Tutorial | Add a Route Policy",
+        "/docs/tutorial/logging": "AIWAF Tutorial | Read Logs and Plan Training",
         "/docs/architecture": "How AIWAF Works | System Architecture and Request Lifecycle",
+        "/docs/configuration": "AIWAF Configuration Reference | Runtime Defaults and Precedence",
+        "/docs/migration": "AIWAF Upgrade Guide | Package, State, and Model Migration",
+        "/docs/troubleshooting": "AIWAF Troubleshooting | CLI, Routes, Training, and Verification",
         "/docs/python": "AIWAF Python Deep Dive | Architecture and Operations",
         "/docs/python/setup/django": "AIWAF Django Setup Guide | End-to-End Installation",
         "/docs/python/setup/flask": "AIWAF Flask Setup Guide | End-to-End Installation",
@@ -88,6 +97,9 @@ def inject_seo_defaults():
         "/": "Official AIWAF documentation for Python, Node.js, Java, and Rust/WASM integrations, setup guides, architecture, and operational best practices.",
         "/docs": "Browse AIWAF deep-dive documentation for all implementations, including setup, architecture, and operations.",
         "/docs/architecture": "Understand AIWAF request processing, route policies, runtime state, response-aware decisions, and the offline learning loop across Python, Node.js, Java, and Rust/WASM.",
+        "/docs/configuration": "Runtime-specific AIWAF settings, types, source defaults, configuration precedence, exemptions, and shared state.",
+        "/docs/migration": "Upgrade AIWAF packages, migrate reputation state, regenerate route manifests and models, and plan compatible rollbacks.",
+        "/docs/troubleshooting": "Diagnose AIWAF import targets, missing routes, website errors, proxy addresses, shared counters, and training failures.",
         "/docs/python": "Comprehensive Python reference for AIWAF covering architecture, adapters, storage, training lifecycle, and runtime behavior.",
         "/docs/python/setup": "End-to-end setup guide for AIWAF in Python with production-ready configuration and troubleshooting.",
         "/docs/python/setup/django": "End-to-end setup guide for AIWAF in Django with production-ready configuration and troubleshooting.",
@@ -179,7 +191,17 @@ def sitemap():
     routes = [
         "/",
         "/docs",
+        "/docs/getting_started",
+        "/docs/tutorial/installation",
+        "/docs/tutorial/application",
+        "/docs/tutorial/routes",
+        "/docs/tutorial/verification",
+        "/docs/tutorial/policies",
+        "/docs/tutorial/logging",
         "/docs/architecture",
+        "/docs/configuration",
+        "/docs/migration",
+        "/docs/troubleshooting",
         "/docs/python",
         "/docs/python/setup",
         "/docs/python/setup/django",
@@ -283,7 +305,7 @@ def aiwaf_whitelist():
     """Manage IP whitelist"""
     if request.method == 'POST':
         try:
-            from aiwaf_flask.storage import add_ip_whitelist
+            from aiwaf.flask.storage import add_ip_whitelist
             ip = request.json.get('ip')
             if ip:
                 add_ip_whitelist(ip)
@@ -314,7 +336,7 @@ def aiwaf_blacklist():
     """Manage IP blacklist"""
     if request.method == 'POST':
         try:
-            from aiwaf_flask.storage import add_ip_blacklist
+            from aiwaf.flask.storage import add_ip_blacklist
             ip = request.json.get('ip')
             reason = request.json.get('reason', 'Manual block')
             
@@ -347,7 +369,7 @@ def aiwaf_keywords():
     """Manage blocked keywords"""
     if request.method == 'POST':
         try:
-            from aiwaf_flask.storage import add_keyword
+            from aiwaf.flask.storage import add_keyword
             keyword = request.json.get('keyword')
             
             if keyword:

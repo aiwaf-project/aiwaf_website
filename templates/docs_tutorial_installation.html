@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#5b2a86,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: .8rem; margin-top: .8rem; }
+        .stats { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .stats .k { color: #4ecdc4; font-size: .82rem; }
+        .stats .v { font-size: 1.2rem; font-weight: 800; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: .8rem; }
+        .module-card { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .module-card h4 { color: #4ecdc4; margin-bottom: .45rem; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+<div class="container"><div class="main-content">
+<aside class="sidebar"><h3 class="sidebar-title">First protected app</h3><ul class="sidebar-nav"><li><a aria-current="page" href="/docs/tutorial/installation">1. Prepare your environment</a></li><li><a href="/docs/tutorial/application">2. Create your first protected app</a></li><li><a href="/docs/tutorial/routes">3. Discover your routes</a></li><li><a href="/docs/tutorial/verification">4. Verify a rate limit</a></li><li><a href="/docs/tutorial/policies">5. Add a route policy</a></li><li><a href="/docs/tutorial/logging">6. Read logs and plan training</a></li><li><a href="/docs/getting_started">Choose another framework</a></li><li><a href="/docs/architecture">Architecture</a></li></ul></aside>
+<main class="content"><p class="docs-eyebrow">First protected app / Step 1 of 6</p><h1 class="page-title">Prepare your environment</h1>{% include '_docs_source.html' %}<p>This tutorial builds a small Flask API and follows one request from the client through AIWAF to the handler and request log. You will see three successful requests followed by a rate-limit response, and then exempt one route without removing protection from the others.</p>
+<div class="docs-callout"><strong>Before you begin</strong><p>Use Python 3.11 or newer, a terminal, and an empty directory. The commands use the current Python AIWAF API. They do not require Redis, Rust, a trained model, or the AIWAF source checkout. Flask is the teaching example; use the framework guides if you are integrating an existing app.</p></div>
+<h2 id="workspace">1. Create a workspace</h2><pre><code class="language-bash" >mkdir aiwaf-demo
+cd aiwaf-demo
+python -m venv .venv</code></pre><p>A virtual environment keeps the tutorial's packages separate from other applications. Run every later command from this directory with that environment active.</p>
+<h2 id="activate">2. Activate the environment</h2><h3>Linux and macOS</h3><pre><code class="language-bash" >source .venv/bin/activate</code></pre><h3>Windows PowerShell</h3><pre><code class="language-powershell" >.\.venv\Scripts\Activate.ps1</code></pre><p>If your machine names Python <code>python3</code> or uses the <code>py</code> launcher, use that command to create the environment. Once active, <code>python</code> should refer to its interpreter.</p>
+<h2 id="install">3. Install the framework extra</h2><pre><code class="language-bash" >python -m pip install &quot;aiwaf[flask]&quot;
+python -m pip show aiwaf Flask</code></pre><p>The <code>flask</code> extra installs the dependencies for the Flask adapter. <code>aiwaf-rust</code> is optional acceleration and is deliberately left out of this first walkthrough. You can add it after you have verified the baseline behavior.</p>
+<h2 id="check">4. Check the import</h2><pre><code class="language-bash" >python -c &quot;from aiwaf.flask import AIWAF; print(&#x27;Flask adapter ready&#x27;)&quot;</code></pre><pre><code class="language-text" >Flask adapter ready</code></pre><p>If the import fails, compare <code>python -m pip --version</code> with the active interpreter. Do not install packages into a different environment to silence the error.</p>
+<div class="docs-checkpoint"><strong>Checkpoint</strong> You have an isolated environment and can import the Flask adapter. No server or model is running yet.</div><nav class="docs-pagination" aria-label="Tutorial sequence"><a rel="prev" href="/docs/getting_started">Previous: Choose a runtime</a><a rel="next" href="/docs/tutorial/application">Next: Create your first protected app</a></nav></main>
+</div></div>
+</body>
+</html>
