@@ -36,7 +36,7 @@ app.config['AIWAF_MIN_FORM_TIME'] = 2.0  # Minimum form submission time
 
 # Initialize AIWAF protection
 
-from aiwaf.flask import AIWAF
+from aiwaf.flask import AIWAF, aiwaf_exempt
 
 aiwaf = AIWAF(app)
 
@@ -176,6 +176,9 @@ def docs():
 
 
 app.register_blueprint(documentation)
+# Keep crawler discovery public even if the optional path-exemption config is absent.
+for crawler_endpoint in ("documentation.sitemap", "documentation.robots"):
+    app.view_functions[crawler_endpoint] = aiwaf_exempt(app.view_functions[crawler_endpoint])
 
 @app.route('/aiwaf/admin')
 def aiwaf_admin():

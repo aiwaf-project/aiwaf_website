@@ -68,6 +68,8 @@ probe_docs -f https://aiwaf.org/docs/troubleshooting
 
 The explicit /health exemption permits plain health probes. Protected documentation can reject curl default headers; use the browser-style probe or a browser for those pages. Expect /health to return 200; the setup landing and short URL to redirect to the canonical Django guide; and the final pages to return 200. Replace the domain for staging. Unknown documentation pages should return 404. Inspect canonical tags and sitemap locations for the deployed domain.
 
+The sitemap and robots routes also have explicit AIWAF route exemptions in app.py, alongside the optional config file's path exemptions. After deployment, verify GET and HEAD return 200 for /sitemap.xml and /robots.txt without browser headers. The sitemap must return application/xml and parse as XML, not an HTML error or challenge. If Search Console still reports an earlier failed fetch, inspect its last-read time and request a new fetch/resubmit the sitemap after verifying the deployed endpoint. A successful local or public probe does not prove that Google's actual crawler IP can reach it; check server/proxy logs for its failed request if the error recurs.
+
 A 500 requires the server error log/traceback: verify that documentation.py and the templates are deployed together, that the active worker imports the expected checkout, and that the host was reloaded. A 403 can originate from AIWAF or an upstream proxy; inspect response details and logs before changing policy. See /docs/troubleshooting for package and route diagnostics.
 
 ## Rollback

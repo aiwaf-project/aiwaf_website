@@ -55,6 +55,8 @@ For new documentation, choose the reader's goal first. Tutorials need complete f
 
 The XML sitemap automatically includes the home page and every documentation template at its canonical URL. Both app runners serve it through the shared documentation blueprint; robots.txt advertises it. Set SITE_URL to the public site origin (default https://aiwaf.org). Redirect aliases, health checks, and administration endpoints are omitted. The human-readable documentation index is /docs/contents. Modification dates are omitted until reliable content dates are available, rather than reporting each request as a page update.
 
+The production app explicitly exempts sitemap.xml and robots.txt with AIWAF's route decorator, in addition to the path exemptions in aiwaf_config.py. Run `python scripts/verify_crawler_endpoints.py` with the Flask AIWAF extra, Flask-SQLAlchemy, and python-dotenv installed to verify GET/HEAD access through the real middleware with isolated runtime state.
+
 Both app.py and simple_app.py register documentation.py. Setup landing pages redirect to their default guide; short setup URLs redirect to canonical /docs URLs. simple_app.py is an alternate database/SSH-tunnel runner, not the production WSGI target.
 
 ## Production and verification
