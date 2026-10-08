@@ -27,3 +27,15 @@ jobs:
           python-version: '3.11'
       - run: python -m pip install 'aiwaf[flask]'
       - run: python scripts/verify_flask_tutorial.py
+      - run: python -m unittest discover -s examples/testing -p test_flask_protection.py -v
+
+  django-testing-example:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install 'aiwaf[django]'
+      - run: python -m django test test_django_protection --settings=django_test_settings -v 2
+        working-directory: examples/testing

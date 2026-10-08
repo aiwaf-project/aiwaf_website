@@ -48,6 +48,8 @@ def inject_seo_defaults():
     title_map = {
         "/": "AIWAF Documentation | Python, Node.js, Java, and Rust/WASM Security Guides",
         "/docs": "AIWAF Documentation Hub | Comprehensive Deep Dives for All Languages",
+        "/docs/contents": "AIWAF Documentation Contents | Tutorials, Topics, How-to Guides, and Reference",
+        "/docs/testing": "Testing AIWAF Applications | Flask, Django, and Protection Integration Tests",
         "/docs/getting_started": "Getting Started with AIWAF | Tutorials and Framework Guides",
         "/docs/tutorial/installation": "AIWAF Tutorial | Prepare Your Environment",
         "/docs/tutorial/application": "AIWAF Tutorial | Create Your First Protected App",
@@ -192,6 +194,8 @@ def sitemap():
         "/",
         "/docs",
         "/docs/getting_started",
+        "/docs/contents",
+        "/docs/testing",
         "/docs/tutorial/installation",
         "/docs/tutorial/application",
         "/docs/tutorial/routes",

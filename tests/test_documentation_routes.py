@@ -116,9 +116,9 @@ class DocumentationRoutesTests(unittest.TestCase):
                 with self.subTest(path=path, text=text):
                     self.assertIn(text, response.data)
 
-    def test_tutorial_code_matches_runnable_examples(self):
+    def test_documented_code_matches_runnable_examples(self):
         examples = set()
-        for template in (ROOT / "templates").glob("docs_tutorial_*.html"):
+        for template in (ROOT / "templates").glob("docs*.html"):
             source = template.read_text(encoding="utf-8")
             for name, block in re.findall(r'data-example="([^"]+)">([\s\S]*?)</code>', source):
                 with self.subTest(template=template.name, example=name):
@@ -127,7 +127,19 @@ class DocumentationRoutesTests(unittest.TestCase):
                     self.assertEqual(html.unescape(block).strip(), path.read_text(encoding="utf-8").strip())
                     ast.parse(path.read_text(encoding="utf-8"))
                     examples.add(name)
-        self.assertEqual(examples, {"examples/tutorial/first_app.py", "examples/tutorial/app.py", "examples/tutorial/verify.py"})
+        self.assertEqual(examples, {
+            "examples/tutorial/first_app.py", "examples/tutorial/app.py", "examples/tutorial/verify.py",
+            "examples/testing/test_flask_protection.py", "examples/testing/django_test_settings.py",
+            "examples/testing/test_django_protection.py",
+        })
+
+    def test_search_is_visible_above_documentation_layout(self):
+        for entry in entries():
+            markup = self.client.get(entry["url"], follow_redirects=True).get_data(as_text=True)
+            with self.subTest(url=entry["url"]):
+                self.assertEqual(markup.count('id="docs-search-input"'), 1)
+                self.assertLess(markup.index('data-docs-search'), markup.index('class="main-content"'))
+                self.assertNotIn('<details class="docs-search"', markup)
 
     def test_search_index_matches_templates_and_resolves(self):
         actual = json.loads((ROOT / "static/docs-search-index.json").read_text(encoding="utf-8"))
@@ -136,6 +148,13 @@ class DocumentationRoutesTests(unittest.TestCase):
             with self.subTest(url=page["url"]):
                 self.assertTrue(page["title"])
                 self.assertEqual(self.client.get(page["url"], follow_redirects=True).status_code, 200)
+
+    def test_contents_covers_every_documentation_page(self):
+        page = DocumentationHTML(self.client.get("/docs/contents").get_data(as_text=True))
+        self.assertTrue({"tutorials", "topics", "howto", "reference", "legacy"}.issubset(page.ids))
+        destinations = {urlsplit(link).path for link in page.links}
+        expected = {entry["url"] for entry in entries()} - {"/docs/contents"}
+        self.assertTrue(expected.issubset(destinations), f"Missing contents links: {expected - destinations}")
 
     def test_missing_include_in_existing_page_is_not_hidden(self):
         self.app.jinja_loader = DictLoader({"docs_python.html": "{% include 'missing.html' %}"})

@@ -36,6 +36,12 @@ The target means the app object in app.py, not a filename. Use app:create_app fo
 
 ## Documentation map
 
+The navigation separates tutorials (a connected learning example), topic guides (design and behavior), how-to guides (specific tasks), and reference (interfaces and defaults). This follows the organization described in [Django's documentation](https://docs.djangoproject.com/en/6.1/#how-the-documentation-is-organized).
+
+For new documentation, choose the reader's goal first. Tutorials need complete files, expected results, and checkpoints. Topic guides need request flow, policy precedence, state ownership, and runtime differences. How-to guides need prerequisites, exact file locations, commands, verification, and failure recovery. Reference pages need signatures, parameter types, defaults, return values, errors, and compatibility notes verified against the source. Link related explanations and tasks instead of repeating installation steps. Add every new page to /docs/contents and rebuild the search index.
+
+- /docs/contents: complete index organized into tutorials, topic guides, how-to guides, reference, and legacy pages.
+- /docs/testing: runnable Flask and Django protection tests, isolation, integration coverage, and CI commands. Example files live in examples/testing; the documentation workflow runs them separately from website route checks.
 - /docs: runtime setup guides and source-version matrix.
 - /docs/getting_started: learning paths and framework selection.
 - /docs/tutorial/installation: a six-step first protected app tutorial with complete app and verification files.

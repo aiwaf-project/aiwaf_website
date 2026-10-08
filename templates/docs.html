@@ -61,12 +61,19 @@
             </div>
         </div>
     </header>
+{% include '_docs_search.html' %}
 
     <div class="container">
         <div class="main-content">
             <aside class="sidebar">
-                <h3 class="sidebar-title">Frameworks</h3>
+                <h3 class="sidebar-title">Documentation</h3>
                 <ul class="sidebar-nav">
+                    <li><a href="/docs/contents#tutorials">Tutorials</a></li>
+                    <li><a href="/docs/contents#topics">Topic guides</a></li>
+                    <li><a href="/docs/contents#howto">How-to guides</a></li>
+                    <li><a href="/docs/contents#reference">Reference</a></li>
+                    <li><a href="/docs/contents">Full contents</a></li>
+                    <li><a href="/docs/testing">Testing</a></li>
                     <li><a href="/docs/architecture">System Architecture</a></li>
                     <li><a href="/docs/python">Python</a></li>
                     <li><a href="/docs/javascript">JavaScript</a></li>
@@ -80,6 +87,18 @@
                 <h1 class="page-title">Documentation</h1>
 {% include '_docs_source.html' %}
 <p class="architecture-link"><a href="/docs/architecture">How AIWAF works: system architecture</a></p>
+<section class="section" id="documentation-paths">
+<h2>Find the right kind of guide</h2>
+<p>New to AIWAF? Start with the tutorial. For an existing application, choose a task guide. Use topic guides to understand decisions and reference pages to look up runtime details.</p>
+<div class="table-wrap"><table><thead><tr><th>Your goal</th><th>Start here</th><th>What to expect</th></tr></thead><tbody>
+<tr><td>Learn by building</td><td><a href="/docs/contents#tutorials">Tutorials</a></td><td>A connected example with complete files and checkpoints.</td></tr>
+<tr><td>Understand how protection works</td><td><a href="/docs/contents#topics">Topic guides</a></td><td>Request flow, route decisions, state ownership, and the learning loop.</td></tr>
+<tr><td>Complete a specific task</td><td><a href="/docs/contents#howto">How-to guides</a></td><td>Framework integration, operations, upgrades, and troubleshooting.</td></tr>
+<tr><td>Look up a setting or interface</td><td><a href="/docs/contents#reference">Reference</a></td><td>Configuration defaults, runtime interfaces, adapters, and bindings.</td></tr>
+</tbody></table></div>
+<p><a href="/docs/contents">Browse the complete documentation contents</a></p>
+<p><a href="/docs/testing">Test your protected application</a>: runnable Flask and Django tests, state isolation, and a plan for full-stack and multi-worker checks.</p>
+</section>
 <div class="doc-card"><h2>Build your first protected app</h2><p>Follow complete files from installation to route discovery, a verified rate limit, selective exemptions, and request logs.</p><p><a href="/docs/tutorial/installation">Start the six-step tutorial</a> | <a href="/docs/getting_started">Choose your learning path and framework</a></p></div>
 <div class="doc-card architecture-card">
 <h2>Understand the architecture</h2>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ seo_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site_url }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; overflow-x: hidden; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16, 16, 30, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); position: fixed; top: 0; width: 100%; z-index: 1000; transition: all 0.3s ease; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientShift 3s ease-in-out infinite; }
+        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; padding: 0.5rem 1rem; border-radius: 50px; transition: all 0.3s ease; }
+        .nav-link:hover { color: #4ecdc4; transform: translateY(-2px); }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; position: relative; }
+        .sidebar { background: rgba(16, 16, 30, 0.6); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; color: #4ecdc4; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: 0.5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: 0.5rem 1rem; border-radius: 10px; display: block; transition: all 0.3s ease; }
+        .sidebar-nav a:hover { background: rgba(78, 205, 196, 0.2); color: #4ecdc4; transform: translateX(5px); }
+        .content { background: rgba(16, 16, 30, 0.4); backdrop-filter: blur(10px); border-radius: 20px; padding: 3rem; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .doc-card { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 2rem; margin-bottom: 2rem; transition: all 0.3s ease; }
+        .doc-card:hover { transform: translateY(-5px); border-color: rgba(78, 205, 196, 0.5); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); }
+        .doc-card h3 { color: #ff6b6b; margin-bottom: 1rem; font-size: 1.5rem; }
+        .doc-card a { color: #4ecdc4; text-decoration: none; font-weight: 600; }
+        .doc-card a:hover { text-decoration: underline; }
+        .page-title { font-size: 3rem; font-weight: 900; margin-bottom: 2rem; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="/static/docs-current.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">AIWAF</div>
+                <nav class="nav">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/docs" class="nav-link">Documentation</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+{% include '_docs_search.html' %}
+
+    <div class="container">
+        <div class="main-content">
+            <aside class="sidebar">
+                <h3 class="sidebar-title">Documentation</h3>
+                <ul class="sidebar-nav">
+                    <li><a href="/docs/contents#tutorials">Tutorials</a></li>
+                    <li><a href="/docs/contents#topics">Topic guides</a></li>
+                    <li><a href="/docs/contents#howto">How-to guides</a></li>
+                    <li><a href="/docs/contents#reference">Reference</a></li>
+                    <li><a href="/docs/contents">Full contents</a></li>
+                    <li><a href="/docs/architecture">System Architecture</a></li>
+                    <li><a href="/docs/python">Python</a></li>
+                    <li><a href="/docs/javascript">JavaScript</a></li>
+                    <li><a href="/docs/php">PHP (Legacy)</a></li>
+                    <li><a href="/docs/java">Java</a></li>
+                    <li><a href="/docs/rust">Rust Accelerator</a></li>
+                </ul>
+            </aside>
+
+            <main class="content">
+<h1 class="page-title">Testing an AIWAF-protected application</h1>
+{% include '_docs_source.html' %}
+<p class="docs-lead">Test both the application's successful responses and the protection decisions that can stop a request before its handler. Start with deterministic limits, then add the full middleware stack and deployment checks.</p>
+<section id="test-plan"><h2>Choose the right test boundary</h2>
+<div class="table-wrap"><table><thead><tr><th>Layer</th><th>What to verify</th><th>What it proves</th></tr></thead><tbody>
+<tr><td>Application tests</td><td>Validation, authentication, business rules, and successful response bodies.</td><td>The handler behaves correctly when reached.</td></tr>
+<tr><td>Focused protection tests</td><td>An allowed request, a rejected request, and a scoped exemption for one enabled check.</td><td>The middleware is registered and enforces the intended policy.</td></tr>
+<tr><td>Full application integration</td><td>Actual middleware order, route manifest, headers, storage, and known model fixtures.</td><td>The checks work together with your framework and application.</td></tr>
+<tr><td>Deployment tests</td><td>Real proxy/client identity, repeated requests across workers, shared state, and health probes.</td><td>The deployed topology behaves as intended.</td></tr>
+</tbody></table></div>
+<p>Keep a successful request beside each rejection assertion. A suite where every request fails can hide a broken registration, missing route, or overly broad policy. The examples below enable only rate limiting so an unrelated header or model check cannot cause an accidental pass.</p></section>
+<section id="isolation"><h2>Isolate state before writing assertions</h2>
+<ul><li>Use a fresh application or test client lifecycle and dedicated data, log, and model locations. CSV files and Redis state do not roll back with a database transaction.</li>
+<li>Give parallel workers separate cache namespaces, databases, or directories. Keep one namespace shared only for tests explicitly checking cross-worker behavior.</li>
+<li>Use fixed route budgets and an isolated manifest path. A discovered route policy can override the global limit, so test the effective route policy.</li>
+<li>Keep the client identity stable while testing a bucket. Use a new identity when testing independent clients.</li>
+<li>Use a known JSON model fixture for anomaly decisions. Do not train on live traffic as part of a deterministic application test.</li>
+<li>For window expiry tests, control the clock at the component boundary or use a dedicated timed integration test. Avoid long sleeps in ordinary tests.</li></ul>
+<p>Django's test runner creates test databases, but caches are not automatically isolated or cleared between tests. Use a dedicated test cache before clearing it. See <a href="https://docs.djangoproject.com/en/6.1/topics/testing/overview/">Django's testing overview</a>.</p></section>
+<section id="flask"><h2>Write and run Flask protection tests</h2>
+<p>Create an empty working directory, install <code>aiwaf[flask]</code>, and save this complete file as <code>test_flask_protection.py</code>. It builds a new application and temporary CSV directory for every test, explicitly selects memory counters, and pins both route budgets.</p>
+<pre><code>python -m pip install "aiwaf[flask]"</code></pre>
+<p class="code-filename">test_flask_protection.py</p><pre><code class="language-python" data-example="examples/testing/test_flask_protection.py">&quot;&quot;&quot;Run with: python -m unittest discover -s examples/testing -p test_flask_protection.py -v&quot;&quot;&quot;
+
+from pathlib import Path
+import tempfile
+import unittest
+
+from flask import Flask
+from aiwaf.flask import AIWAF, aiwaf_exempt, aiwaf_exempt_from
+
+
+class ProtectionTests(unittest.TestCase):
+    def setUp(self):
+        # A new application and state directory for every test.
+        directory = tempfile.TemporaryDirectory(prefix=&quot;.ci-protection-validation-&quot;, dir=Path.cwd())
+        self.addCleanup(directory.cleanup)
+        app = Flask(__name__)
+        app.config.update(
+            TESTING=True,
+            AIWAF_USE_CSV=True,
+            AIWAF_DATA_DIR=directory.name,
+            AIWAF_RATE_CACHE_BACKEND=&quot;memory&quot;,
+            AIWAF_PATH_MANIFEST=str(Path(directory.name) / &quot;paths.json&quot;),
+            AIWAF_RATE_WINDOW=60,
+            AIWAF_RATE_MAX=3,
+            AIWAF_RATE_FLOOD=100,
+            AIWAF_PATH_RULES=[
+                {&quot;PREFIX&quot;: path, &quot;RATE_LIMIT&quot;: {&quot;WINDOW&quot;: 60, &quot;MAX&quot;: 3, &quot;FLOOD&quot;: 100}}
+                for path in (&quot;/api/message&quot;, &quot;/api/preview&quot;)
+            ],
+        )
+
+        @app.get(&quot;/api/message&quot;)
+        def message():
+            return {&quot;message&quot;: &quot;Protected&quot;}
+
+        @app.get(&quot;/health&quot;)
+        @aiwaf_exempt
+        def health():
+            return {&quot;ok&quot;: True}
+
+        @app.get(&quot;/api/preview&quot;)
+        @aiwaf_exempt_from(&quot;rate_limit&quot;)
+        def preview():
+            return {&quot;message&quot;: &quot;Preview&quot;}
+
+        AIWAF(app, middlewares=[&quot;rate_limit&quot;])
+        self.client = app.test_client()
+
+    def test_protected_route_throttles(self):
+        for _ in range(3):
+            response = self.client.get(&quot;/api/message&quot;)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json, {&quot;message&quot;: &quot;Protected&quot;})
+        response = self.client.get(&quot;/api/message&quot;)
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response.json, {&quot;error&quot;: &quot;too_many_requests&quot;})
+
+    def test_health_stays_available_after_throttling(self):
+        for _ in range(4):
+            self.client.get(&quot;/api/message&quot;)
+        response = self.client.get(&quot;/health&quot;)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json, {&quot;ok&quot;: True})
+
+    def test_selective_exemption_bypasses_rate_limit(self):
+        self.assertEqual(
+            [self.client.get(&quot;/api/preview&quot;).status_code for _ in range(5)],
+            [200] * 5,
+        )
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+<pre><code>python -m unittest discover -s . -p test_flask_protection.py -v</code></pre>
+<p>Expect three passing tests. The first verifies three successful responses followed by HTTP 429 and the exact <code>too_many_requests</code> JSON body. The others verify health availability after the protected route is throttled and that a selective rate-limit exemption permits repeated requests.</p>
+<div class="docs-checkpoint"><strong>Checkpoint:</strong> Change the expected throttle status from 429 to 200 and rerun: that assertion should fail. Restore it afterward. This confirms the test can detect the behavior it claims to check.</div>
+<p>This fixture exercises AIWAF behavior independently. In your own project, also test your actual app factory and live routes so a mistake in production registration cannot be hidden by a separate fixture.</p></section>
+<section id="django"><h2>Write and run Django protection tests</h2>
+<p>In a separate empty directory, install <code>aiwaf[django]</code> and save both files below. The fixture uses Django's test client, ORM-backed AIWAF stores, an in-memory SQLite test database, and a dedicated local-memory cache. The URL configuration is the test module itself.</p>
+<pre><code>python -m pip install "aiwaf[django]"</code></pre>
+<p class="code-filename">django_test_settings.py</p><pre><code class="language-python" data-example="examples/testing/django_test_settings.py">&quot;&quot;&quot;Settings for this standalone example, separate from your application&#x27;s settings.&quot;&quot;&quot;
+
+from pathlib import Path
+
+SECRET_KEY = &quot;local-documentation-test-key&quot;
+INSTALLED_APPS = [&quot;aiwaf.django&quot;]
+DATABASES = {&quot;default&quot;: {&quot;ENGINE&quot;: &quot;django.db.backends.sqlite3&quot;, &quot;NAME&quot;: &quot;:memory:&quot;}}
+DEFAULT_AUTO_FIELD = &quot;django.db.models.BigAutoField&quot;
+# Only for this standalone fixture: create AIWAF tables without generated migrations.
+MIGRATION_MODULES = {&quot;aiwaf&quot;: None}
+ROOT_URLCONF = &quot;test_django_protection&quot;
+ALLOWED_HOSTS = [&quot;testserver&quot;]
+MIDDLEWARE = [&quot;aiwaf.django.middleware.RateLimitMiddleware&quot;]
+CACHES = {
+    &quot;default&quot;: {
+        &quot;BACKEND&quot;: &quot;django.core.cache.backends.locmem.LocMemCache&quot;,
+        &quot;LOCATION&quot;: &quot;documentation-protection-tests&quot;,
+    }
+}
+AIWAF_USE_CSV = False
+AIWAF_PATH_MANIFEST = str(Path(__file__).with_name(&quot;unused-test-manifest.json&quot;))
+AIWAF_RATE_WINDOW = 60
+AIWAF_RATE_MAX = 3
+AIWAF_RATE_FLOOD = 100
+AIWAF_EXEMPT_PATHS = [&quot;/health&quot;]
+AIWAF_SETTINGS = {
+    &quot;PATH_RULES&quot;: [
+        {&quot;PREFIX&quot;: &quot;/api/message&quot;, &quot;RATE_LIMIT&quot;: {&quot;WINDOW&quot;: 60, &quot;MAX&quot;: 3, &quot;FLOOD&quot;: 100}},
+        {&quot;PREFIX&quot;: &quot;/api/preview&quot;, &quot;DISABLE&quot;: [&quot;rate_limit&quot;]},
+    ]
+}
+</code></pre>
+<p class="code-filename">test_django_protection.py</p><pre><code class="language-python" data-example="examples/testing/test_django_protection.py">&quot;&quot;&quot;Run from this directory using django_test_settings; see /docs/testing.&quot;&quot;&quot;
+
+from django.core.cache import cache
+from django.http import JsonResponse
+from django.test import TestCase
+from django.urls import path
+
+
+def message(request):
+    return JsonResponse({&quot;message&quot;: &quot;Protected&quot;})
+
+
+def health(request):
+    return JsonResponse({&quot;ok&quot;: True})
+
+
+def preview(request):
+    return JsonResponse({&quot;message&quot;: &quot;Preview&quot;})
+
+
+urlpatterns = [
+    path(&quot;api/message&quot;, message),
+    path(&quot;health&quot;, health),
+    path(&quot;api/preview&quot;, preview),
+]
+
+
+class ProtectionTests(TestCase):
+    def setUp(self):
+        # django_test_settings points only at a dedicated local-memory test cache.
+        cache.clear()
+        self.addCleanup(cache.clear)
+
+    def test_protected_route_throttles(self):
+        for _ in range(3):
+            response = self.client.get(&quot;/api/message&quot;)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json(), {&quot;message&quot;: &quot;Protected&quot;})
+        response = self.client.get(&quot;/api/message&quot;)
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response.json(), {&quot;error&quot;: &quot;too_many_requests&quot;})
+
+    def test_health_stays_available_after_throttling(self):
+        for _ in range(4):
+            self.client.get(&quot;/api/message&quot;)
+        response = self.client.get(&quot;/health&quot;)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {&quot;ok&quot;: True})
+
+    def test_selective_exemption_bypasses_rate_limit(self):
+        self.assertEqual(
+            [self.client.get(&quot;/api/preview&quot;).status_code for _ in range(5)],
+            [200] * 5,
+        )
+</code></pre>
+<pre><code>python -m django test test_django_protection --settings=django_test_settings -v 2</code></pre>
+<p>Expect three passing tests and creation/destruction of the test database. <code>TestCase</code> isolates ORM changes; <code>setUp()</code> and cleanup clear only the dedicated local-memory cache. The standalone fixture disables AIWAF migrations to create its tables directly. In an existing project, keep your real migrations, include AIWAF in <code>INSTALLED_APPS</code>, and run your application's tests with its dedicated test settings.</p>
+<p>Adapt these assertions to the routes from the <a href="/docs/python/setup/django">Django setup guide</a>. Keep another suite using your real <code>ROOT_URLCONF</code> and complete <code>MIDDLEWARE</code> list: this focused fixture intentionally exercises only the rate limiter.</p></section>
+<div class="docs-callout"><strong>Django route-policy detail</strong><p>This fixture uses <code>AIWAF_EXEMPT_PATHS</code> for health and a <code>PATH_RULES</code> entry disabling only <code>rate_limit</code> for preview. In the current source, the rate limiter runs before Django resolves the view, while decorator detection reads <code>request.resolver_match</code>. A selective decorator alone did not bypass the limiter in this full test-client request. Use the explicit path policy for this case, and test decorators through your actual middleware stack.</p></div>
+<section id="more-frameworks"><h2>Apply the same assertions to other frameworks</h2>
+<p>The status sequence and test structure above belong to these Python fixtures. For other runtimes, use that runtime's configuration names, response contract, and policy precedence.</p>
+<ul><li><strong>FastAPI:</strong> use its test client against the actual ASGI application. Keep the client in a context manager when startup/shutdown initializes resources. Give each test its own policy/state configuration; see the <a href="/docs/python/setup/fastapi">FastAPI setup guide</a>.</li>
+<li><strong>Node.js:</strong> create a fresh app and AIWAF middleware instance per test. Use the framework's injection facility or an HTTP client against an ephemeral local port. Verify a normal response, configured throttle/block response, and exemption. See <a href="/docs/javascript/operations">Node.js operations</a>.</li>
+<li><strong>Java:</strong> test the engine decision independently, then exercise the registered Spring filter or Servlet filter through your framework test harness. Keep shared Redis integration tests separate from memory-backed tests. See <a href="/docs/java/operations">Java operations</a>.</li></ul></section>
+<section id="full-stack"><h2>Expand to the full protection stack</h2>
+<ul><li><strong>Headers and parsing:</strong> pair valid browser/API requests with requests violating your configured requirements. Assert the rejection reason or body as well as status.</li>
+<li><strong>Exemptions:</strong> verify that the intended check is bypassed and that another enabled check still runs. The rate-only examples prove the bypass, but do not prove other checks remain active.</li>
+<li><strong>Flood and reputation:</strong> distinguish a soft throttle from a hard block. Verify persistent state and later requests separately using disposable storage.</li>
+<li><strong>Models:</strong> cover a known normal sample, a known anomaly, and missing/invalid model handling for your configured runtime. Keep training tests separate from inference tests.</li>
+<li><strong>Route discovery:</strong> generate the manifest from the test application's live route table, verify the protected route is present, and repeat the behavior assertions with the manifest loaded.</li>
+<li><strong>Observation:</strong> check the expected log record and response status, including denied requests, without relying on a production log file.</li></ul>
+<p>For Redis or multiple workers, send a combined request sequence across workers using the same client identity and bucket. Assert the aggregate budget, expiry behavior, and configured backend-failure behavior. A single-process in-memory test cannot establish those guarantees.</p></section>
+<section id="ci"><h2>Run the examples in continuous integration</h2>
+<p>From the AIWAF website checkout, the checked-in examples run with these commands. Install the relevant framework extras first.</p>
+<pre><code>python -m unittest discover -s examples/testing -p test_flask_protection.py -v
+cd examples/testing
+python -m django test test_django_protection --settings=django_test_settings -v 2</code></pre>
+<p>Run application and focused protection tests on each change. Run shared-backend and deployed-topology checks in a separate integration job with disposable services. Save failure output and effective policy configuration so failures can be reproduced locally.</p></section>
+<section id="diagnostics"><h2>Diagnose a failing protection test</h2>
+<div class="table-wrap"><table><thead><tr><th>Failure</th><th>Check next</th></tr></thead><tbody>
+<tr><td>Expected 429, got 200</td><td>Middleware registration, route/IP exemptions, effective manifest rules, changing client identity, and counters split across workers.</td></tr>
+<tr><td>First request already rejected</td><td>Leaked cache/blocklist state, missing required headers, route mismatch, or another enabled check.</td></tr>
+<tr><td>Passes alone, fails in the suite</td><td>Shared storage/cache keys, module-level app reuse, test order, and model/manifest files left by another test.</td></tr>
+<tr><td>Expected JSON, got HTML or a redirect</td><td>Wrong URL, trailing-slash routing, framework exception handling, or a response produced by the application/proxy.</td></tr>
+</tbody></table></div>
+<p>Continue with <a href="/docs/troubleshooting">troubleshooting</a>, <a href="/docs/configuration">configuration reference</a>, and <a href="/docs/architecture#state-ownership-explains-multi-worker-behavior">state ownership across workers</a>.</p></section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Header scroll effect
+        const header = document.querySelector('.header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(16, 16, 30, 0.95)';
+            } else {
+                header.style.background = 'rgba(16, 16, 30, 0.9)';
+            }
+        });
+    </script>
+</body>
+</html>
