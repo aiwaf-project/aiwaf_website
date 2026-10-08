@@ -39,13 +39,13 @@
 .docs-code-toolbar + pre { margin-top: .4rem; }
 .docs-code-toolbar button, .docs-search input { font: inherit; color: #e0e0e0; background: #151b29; border: 1px solid #617181; border-radius: 6px; padding: .45rem .7rem; }
 .docs-code-toolbar button { cursor: pointer; }
-.docs-search-topbar { margin-top: 100px; }
-.docs-search-topbar + .container .main-content { padding-top: 2rem; }
-.docs-search { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: .25rem 1rem; padding: 1rem; background: #101522; border: 1px solid rgba(255,255,255,.18); border-radius: 8px; }
+.header-content { gap: 1.5rem; }
+.header .logo { flex-shrink: 0; }
+.docs-search { position: relative; flex: 1; min-width: 0; max-width: 420px; margin-left: auto; }
 .content details > summary { cursor: pointer; color: #4ecdc4; padding: .25rem 0; }
-.docs-search label { color: #4ecdc4; font-weight: 700; }
+.docs-search label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .docs-search input { width: 100%; }
-.docs-search [role="status"], .docs-search ol, .docs-search noscript { grid-column: 1 / -1; }
+.docs-search-panel { position: absolute; top: calc(100% + .75rem); right: 0; width: min(560px, calc(100vw - 40px)); padding: 1rem; background: #101522; border: 1px solid #617181; border-radius: 8px; box-shadow: 0 12px 30px rgba(0,0,0,.4); }
 .docs-search ol { max-height: 24rem; overflow-y: auto; margin: 0; padding-left: 1.5rem; }
 .docs-search ol:empty { display: none; }
 .docs-search a { color: #4ecdc4; }
@@ -57,5 +57,5 @@
 .content h2, .content h3 { scroll-margin-top: 110px; }
 .content :focus-visible { outline: 2px solid #4ecdc4; outline-offset: 4px; }
 @media (max-width: 600px) { .docs-toc ul { columns: 1; } .docs-pagination a { width: 100%; } }
-@media (max-width: 600px) { .docs-search { grid-template-columns: minmax(0, 1fr); } .header-content { flex-wrap: wrap; gap: .5rem; } .header .nav { gap: .25rem; } .header .nav-link { padding: .5rem; } .docs-search-topbar { margin-top: 125px; } }
+@media (max-width: 700px) { .header-content { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .5rem; } .header .nav { grid-column: 2; grid-row: 1; justify-self: end; gap: .25rem; } .header .nav-link { padding: .5rem; } .docs-search { grid-column: 1 / -1; grid-row: 2; width: 100%; max-width: none; margin-left: 0; } .main-content { padding-top: 175px; } .content section, .content h2, .content h3 { scroll-margin-top: 160px; } }
 @media (max-width: 600px) { .architecture-flow { grid-template-columns: 1fr; } .content { padding: 1.25rem; } .page-title { font-size: 2rem; overflow-wrap: anywhere; } }

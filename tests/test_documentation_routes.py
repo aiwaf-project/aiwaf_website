@@ -133,11 +133,13 @@ class DocumentationRoutesTests(unittest.TestCase):
             "examples/testing/test_django_protection.py",
         })
 
-    def test_search_is_visible_above_documentation_layout(self):
+    def test_search_is_in_the_header(self):
         for entry in entries():
             markup = self.client.get(entry["url"], follow_redirects=True).get_data(as_text=True)
             with self.subTest(url=entry["url"]):
                 self.assertEqual(markup.count('id="docs-search-input"'), 1)
+                self.assertLess(markup.index('<header'), markup.index('data-docs-search'))
+                self.assertLess(markup.index('data-docs-search'), markup.index('</header>'))
                 self.assertLess(markup.index('data-docs-search'), markup.index('class="main-content"'))
                 self.assertNotIn('<details class="docs-search"', markup)
 

@@ -63,12 +63,14 @@
   const input = search.querySelector('input');
   const results = search.querySelector('ol');
   const status = search.querySelector('[role="status"]');
+  const panel = search.querySelector('.docs-search-panel');
   let indexPromise;
   let generation = 0;
-  input.addEventListener('input', async () => {
+  const updateSearch = async () => {
     const current = ++generation;
     const query = input.value.trim().toLowerCase();
     results.replaceChildren();
+    panel.hidden = query.length < 2;
     if (query.length < 2) {
       status.textContent = 'Enter at least two characters.';
       return;
@@ -100,5 +102,19 @@
     } catch {
       if (current === generation) status.textContent = 'Search could not load. Use the documentation navigation links.';
     }
+  };
+  input.addEventListener('input', updateSearch);
+  input.addEventListener('focus', updateSearch);
+  search.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      input.focus();
+      panel.hidden = true;
+    }
+  });
+  document.addEventListener('pointerdown', (event) => {
+    if (!search.contains(event.target)) panel.hidden = true;
+  });
+  search.addEventListener('focusout', (event) => {
+    if (!search.contains(event.relatedTarget)) panel.hidden = true;
   });
 })();

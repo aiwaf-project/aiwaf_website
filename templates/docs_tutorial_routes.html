@@ -57,8 +57,9 @@
     <link rel="stylesheet" href="/static/docs-current.css">
 </head>
 <body>
-<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div><nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
-{% include '_docs_search.html' %}
+<header class="header"><div class="container"><div class="header-content"><div class="logo">AIWAF</div>
+{% include '_docs_search.html' %}<nav class="nav"><a href="/" class="nav-link">Home</a><a href="/docs" class="nav-link">Documentation</a></nav></div></div></header>
+
 <div class="container"><div class="main-content">
 <aside class="sidebar"><h3 class="sidebar-title">First protected app</h3><ul class="sidebar-nav"><li><a href="/docs/tutorial/installation">1. Prepare your environment</a></li><li><a href="/docs/tutorial/application">2. Create your first protected app</a></li><li><a aria-current="page" href="/docs/tutorial/routes">3. Discover your routes</a></li><li><a href="/docs/tutorial/verification">4. Verify a rate limit</a></li><li><a href="/docs/tutorial/policies">5. Add a route policy</a></li><li><a href="/docs/tutorial/logging">6. Read logs and plan training</a></li><li><a href="/docs/getting_started">Choose another framework</a></li><li><a href="/docs/architecture">Architecture</a></li></ul></aside>
 <main class="content"><p class="docs-eyebrow">First protected app / Step 3 of 6</p><h1 class="page-title">Discover your routes</h1>{% include '_docs_source.html' %}<p>Route discovery records the routes your application actually registers. It does not create handlers or launch a permanent server. AIWAF can use the generated manifest when building route policy.</p>
