@@ -49,6 +49,7 @@ def inject_seo_defaults():
         "/": "AIWAF Documentation | Python, Node.js, Java, and Rust/WASM Security Guides",
         "/docs": "AIWAF Documentation Hub | Comprehensive Deep Dives for All Languages",
         "/docs/contents": "AIWAF Documentation Contents | Tutorials, Topics, How-to Guides, and Reference",
+        "/docs/sandbox": "AIWAF Multi-Runtime Sandbox | Redis and Protection Checks",
         "/docs/testing": "Testing AIWAF Applications | Flask, Django, and Protection Integration Tests",
         "/docs/getting_started": "Getting Started with AIWAF | Tutorials and Framework Guides",
         "/docs/tutorial/installation": "AIWAF Tutorial | Prepare Your Environment",
@@ -96,6 +97,7 @@ def inject_seo_defaults():
         "/docs/rust/operations": "aiwaf-rust Build and Operations | Packaging and Validation",
     }
     description_map = {
+        "/docs/sandbox": "Run the Redis-enabled AIWAF sandbox across Node.js, Python, legacy PHP, and Java, and verify normal traffic, automation blocking, rate limits, and persistence.",
         "/": "Official AIWAF documentation for Python, Node.js, Java, and Rust/WASM integrations, setup guides, architecture, and operational best practices.",
         "/docs": "Browse AIWAF deep-dive documentation for all implementations, including setup, architecture, and operations.",
         "/docs/architecture": "Understand AIWAF request processing, route policies, runtime state, response-aware decisions, and the offline learning loop across Python, Node.js, Java, and Rust/WASM.",

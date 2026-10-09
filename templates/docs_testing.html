@@ -304,6 +304,7 @@ python -m django test test_django_protection --settings=django_test_settings -v 
 <tr><td>Passes alone, fails in the suite</td><td>Shared storage/cache keys, module-level app reuse, test order, and model/manifest files left by another test.</td></tr>
 <tr><td>Expected JSON, got HTML or a redirect</td><td>Wrong URL, trailing-slash routing, framework exception handling, or a response produced by the application/proxy.</td></tr>
 </tbody></table></div>
+<p>Use the <a href="/docs/sandbox">Redis-enabled multi-runtime sandbox</a> for pinned GitHub source builds and cross-runtime checks. Follow the <a href="/docs/sandbox/start">first-run tutorial</a>, run <a href="/docs/sandbox/validation">SQL, TLS, outage and dependency checks</a>, and review <a href="/docs/sandbox/owasp">OWASP coverage and limits</a> before interpreting results.</p>
 <p>Continue with <a href="/docs/troubleshooting">troubleshooting</a>, <a href="/docs/configuration">configuration reference</a>, and <a href="/docs/architecture#state-ownership-explains-multi-worker-behavior">state ownership across workers</a>.</p></section>
             </main>
         </div>

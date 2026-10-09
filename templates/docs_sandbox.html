@@ -1,0 +1,25 @@
+{% extends '_sandbox_layout.html' %}
+{% set page_title = 'AIWAF sandbox' %}
+{% set page_description = 'Build AIWAF from pinned GitHub source, test fifteen integrations with Redis and Juice Shop, and assess OWASP outcomes.' %}
+{% block content %}<main class="content">
+<p class="docs-eyebrow">Testing and security evaluation</p><h1 class="page-title">AIWAF sandbox</h1>{% include '_docs_source.html' %}
+<p class="docs-lead">Run the same request checks across JavaScript, Python, and Java. Compare protected traffic with OWASP Juice Shop, exercise shared Redis state, and test application outcomes with a separate reference fixture.</p>
+<section id="guides"><h2>Find the right guide</h2><div class="table-wrap"><table><thead><tr><th>Your goal</th><th>Guide</th><th>What it covers</th></tr></thead><tbody>
+<tr><td>Start from scratch</td><td><a href="/docs/sandbox/start">First sandbox run</a></td><td>Clone, build, verify source versions, and test one endpoint.</td></tr>
+<tr><td>Look up an integration</td><td><a href="/docs/sandbox/runtimes">Runtime and Redis reference</a></td><td>Services, ports, databases, state ownership, failure policies, and dependencies.</td></tr>
+<tr><td>Evaluate protection</td><td><a href="/docs/sandbox/validation">Validation and reports</a></td><td>Smoke, SQL outcomes, payload matrix, TLS, outages, scans, and report interpretation.</td></tr>
+<tr><td>Understand the security scope</td><td><a href="/docs/sandbox/owasp">OWASP Top 10 coverage</a></td><td>Implemented scenarios, recorded results, and remaining gaps.</td></tr>
+<tr><td>Maintain the stack</td><td><a href="/docs/sandbox/operations">Operations and troubleshooting</a></td><td>Source updates, Redis persistence, profiles, diagnosis, and cleanup.</td></tr>
+</tbody></table></div></section>
+<section id="architecture"><h2>How it works</h2><ol class="architecture-flow"><li><strong>Runner</strong><span>Sends normal requests, simulated clients, and payloads.</span></li><li><strong>AIWAF proxy</strong><span>Applies runtime controls before forwarding.</span></li><li><strong>Redis</strong><span>Shares supported state under isolated namespaces.</span></li><li><strong>Application</strong><span>Juice Shop supplies a vulnerable baseline; the reference fixture supplies outcome assertions.</span></li></ol>
+<p>The <a href="https://github.com/aayushgauba/sandbox">sandbox repository</a> owns Compose, proxies, fixtures, and runners. BuildKit fetches <a href="https://github.com/aayushgauba/aiwaf/tree/843a35f4fd48b4ef565e3c1ec8a42db9b1c41946">AIWAF commit 843a35f4fd48b4ef565e3c1ec8a42db9b1c41946</a>. No adjacent local AIWAF checkout is needed. Use a sandbox revision containing these source-context changes.</p><p>That commit builds Python/JavaScript <code>1.1.1</code> and Java <code>1.3.2</code>. Source versions do not establish registry publication. PHP remains a separate Composer integration, excluded from the current fifteen-runtime validation.</p></section>
+<section id="results"><h2>Recorded results: October 9, 2026</h2><div class="table-wrap"><table><thead><tr><th>Evidence</th><th>Result</th><th>Scope</th></tr></thead><tbody>
+<tr><td>Fresh GitHub source builds and version checks</td><td>15 of 15 verified</td><td>Commit labels, versions, install paths, and Java SQL-inspection class.</td></tr>
+<tr><td>Fresh smoke checks</td><td>15 of 15 passed</td><td>Normal/lowercase headers, automation denial, concurrent burst, benign JSON forwarding.</td></tr>
+<tr><td>Fresh SQL login checks</td><td>30 of 30 passed</td><td>Two payloads per integration; no token issued.</td></tr>
+<tr><td>Earlier local-source payload matrix</td><td>375 observations, zero request errors</td><td>Django rerun in isolation at the default timeout; other completed observations retained.</td></tr>
+<tr><td>Earlier extended assessment and outages</td><td>48 extended checks and two outage checks passed</td><td>Reference fixture, TLS, build declarations, Express Redis and shared upstream failures.</td></tr>
+<tr><td>Earlier fifteen-image scan</td><td>Zero critical matches; high matches remain</td><td>Node/Python: 55 high matches per image; Java: zero high. Lower severities remain.</td></tr>
+</tbody></table></div><div class="docs-callout"><p><strong>The latest GitHub run repeated build, source, version, smoke, and SQL checks.</strong> Broader OWASP, payload, SDK, npm and image reports predate the rebuilt images. They remain historical evidence and need fresh runs to characterize new images.</p></div><p>Passing implemented scenarios does not close an entire OWASP category. See <a href="/docs/sandbox/owasp">coverage and outstanding work</a> before making a security claim.</p></section>
+<nav class="docs-pagination"><a href="/docs/sandbox/start">Start your first sandbox run →</a></nav>
+</main>{% endblock %}
