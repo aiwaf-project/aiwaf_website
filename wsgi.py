@@ -1,4 +1,12 @@
 import os
+import sys
+from pathlib import Path
+
+# Resolve imports and relative runtime paths against this website checkout.
+checkout = Path(__file__).resolve().parent
+sys.path.insert(0, str(checkout))
+os.chdir(checkout)
+
 from app import app
 
 # This is the WSGI entry point for production servers like gunicorn
