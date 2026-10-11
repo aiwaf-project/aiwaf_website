@@ -1,5 +1,11 @@
 # AIWAF Documentation Website
 
+## License
+
+Original website code and documentation use the unmodified [Elastic License 2.0](LICENSE), with historical rights and separately licensed material identified in [NOTICE](NOTICE). AIWAF packages have independent release licenses: previously distributed MIT copies retain MIT permissions. This checkout's ELv2 migration does not retroactively change those releases. ELv2 permits commercial use and consulting but restricts providing substantial software functionality as a hosted or managed service. Include LICENSE, NOTICE, and licenses/ when redistributing this checkout.
+
+Python and Node.js AIWAF will use ELv2 from version **1.1.2 onward**. Other packages use independent version numbers; check the license included with each release.
+
 Flask documentation website for the [AIWAF monorepo](https://github.com/aiwaf-project/aiwaf). Python, Node.js, Java, and Rust/WASM are current runtimes; PHP pages are legacy reference. The upstream README is authoritative for package behavior and releases.
 
 ## Run locally

@@ -79,12 +79,14 @@
 <p>Run these commands in a virtual environment from the monorepo root. Stage the canonical README and LICENSE before changing directory:</p>
 <pre><code class="language-bash">cp README.md rust/README.md
 cp LICENSE rust/LICENSE
+cp NOTICE rust/NOTICE
+cp -R licenses rust/
 python -m pip install maturin
 cd rust
 maturin develop
 cd ..
 pytest -q rust/tests/test_python_api.py</code></pre>
-<p>PowerShell users can use <code>Copy-Item README.md rust/README.md</code> and <code>Copy-Item LICENSE rust/LICENSE</code> for staging. These generated package-local assets are ignored by Git.</p>
+<p>PowerShell users can stage the assets with <code>Copy-Item README.md rust/README.md</code>, <code>Copy-Item LICENSE rust/LICENSE</code>, <code>Copy-Item NOTICE rust/NOTICE</code>, and <code>Copy-Item -Recurse licenses rust/</code>. These generated package-local assets are ignored by Git.</p>
 <h2>Rust core and WASM</h2>
 <pre><code class="language-bash">cargo test --manifest-path rust/Cargo.toml --locked -p aiwaf_core
 cd rust/crates/aiwaf_wasm
@@ -92,12 +94,15 @@ wasm-pack test --node
 wasm-pack build --release --target bundler
 cd ../..
 python scripts/patch_wasm_pkg.py
-cp ../LICENSE crates/aiwaf_wasm/pkg/LICENSE</code></pre>
-<p>PowerShell can replace the final <code>cp</code> with <code>Copy-Item</code>. Browser applications require a bundler that understands WebAssembly assets; initialize the WASM module before calling its exports.</p>
+cp ../LICENSE crates/aiwaf_wasm/pkg/LICENSE
+cp ../NOTICE crates/aiwaf_wasm/pkg/NOTICE
+cp -R ../licenses crates/aiwaf_wasm/pkg/</code></pre>
+<p>The metadata script also stages LICENSE, NOTICE, and licenses/. The explicit copy commands above produce the same assets. PowerShell can use <code>Copy-Item</code> for files and <code>Copy-Item -Recurse</code> for directories. Browser applications require a bundler that understands WebAssembly assets; initialize the WASM module before calling its exports.</p>
 <h2>Release manifests</h2>
+<p>The next Rust/Python and WASM candidates are 0.2.2 under ELv2 and have not been published.</p>
 <ul>
-<li>PyPI: <code>rust/pyproject.toml</code> and <code>rust/Cargo.toml</code>, <code>rust-v0.2.1</code>, <code>rust-publish.yml</code>.</li>
-<li>npm: <code>rust/crates/aiwaf_wasm/Cargo.toml</code>, <code>wasm-v0.2.1</code>, <code>wasm-publish.yml</code>.</li>
+<li>PyPI: <code>rust/pyproject.toml</code> and <code>rust/Cargo.toml</code>, <code>rust-v0.2.2</code>, <code>rust-publish.yml</code>.</li>
+<li>npm: <code>rust/crates/aiwaf_wasm/Cargo.toml</code>, <code>wasm-v0.2.2</code>, <code>wasm-publish.yml</code>.</li>
 <li>PyO3 uses ABI3 wheels for Python 3.8 and newer, exporting <code>aiwaf_rust</code>.</li>
 </ul>
 <h2>Verification</h2>

@@ -112,6 +112,8 @@ restored = aiwaf_rust.IsolationForest.from_json(state)</code></pre>
 <p>For a local native build, stage the two canonical repository assets and run maturin:</p>
 <pre><code class="language-bash">cp README.md rust/README.md
 cp LICENSE rust/LICENSE
+cp NOTICE rust/NOTICE
+cp -R licenses rust/
 python -m pip install maturin
 cd rust
 maturin develop</code></pre>
@@ -150,7 +152,9 @@ wasm-pack test --node
 wasm-pack build --release --target bundler
 cd ../..
 python scripts/patch_wasm_pkg.py
-cp ../LICENSE crates/aiwaf_wasm/pkg/LICENSE</code></pre>
+cp ../LICENSE crates/aiwaf_wasm/pkg/LICENSE
+cp ../NOTICE crates/aiwaf_wasm/pkg/NOTICE
+cp -R ../licenses crates/aiwaf_wasm/pkg/</code></pre>
 <h2>Continue</h2>
 <ul>
 <li><a href="/docs/rust/bindings">Binding API and scoring semantics</a></li>

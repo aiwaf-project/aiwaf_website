@@ -112,13 +112,13 @@ python aiwaf_test.py --python-only
 pytest
 python -m benchmarks.benchmark_auto_middleware</code></pre>
 <h2>Independent releases</h2>
-<p>Release versions and tags must match the relevant manifest.</p>
+<p>The next ELv2 release candidates below have not been published. Release versions and tags must match the relevant manifest.</p>
 <div class="table-wrap"><table><thead><tr><th>Package</th><th>Manifest</th><th>Tag</th><th>Workflow</th></tr></thead><tbody>
-<tr><td>Python <code>aiwaf</code></td><td><code>pyproject.toml</code></td><td><code>python-v1.0.8</code></td><td><code>python-publish.yml</code></td></tr>
-<tr><td>npm <code>aiwaf</code></td><td><code>js/package.json</code></td><td><code>js-v1.0.2</code></td><td><code>npm-publish.yml</code></td></tr>
-<tr><td>PyPI <code>aiwaf-rust</code></td><td><code>rust/pyproject.toml</code> + <code>rust/Cargo.toml</code></td><td><code>rust-v0.2.1</code></td><td><code>rust-publish.yml</code></td></tr>
-<tr><td>npm <code>aiwaf-wasm</code></td><td><code>rust/crates/aiwaf_wasm/Cargo.toml</code></td><td><code>wasm-v0.2.1</code></td><td><code>wasm-publish.yml</code></td></tr>
-<tr><td>Maven <code>aiwaf-java</code></td><td><code>java/pom.xml</code></td><td><code>java-v1.3.0</code></td><td><code>java-publish.yml</code></td></tr>
+<tr><td>Python <code>aiwaf</code></td><td><code>pyproject.toml</code></td><td><code>python-v1.1.2</code></td><td><code>python-publish.yml</code></td></tr>
+<tr><td>npm <code>aiwaf</code></td><td><code>js/package.json</code></td><td><code>js-v1.1.2</code></td><td><code>npm-publish.yml</code></td></tr>
+<tr><td>PyPI <code>aiwaf-rust</code></td><td><code>rust/pyproject.toml</code> + <code>rust/Cargo.toml</code></td><td><code>rust-v0.2.2</code></td><td><code>rust-publish.yml</code></td></tr>
+<tr><td>npm <code>aiwaf-wasm</code></td><td><code>rust/crates/aiwaf_wasm/Cargo.toml</code></td><td><code>wasm-v0.2.2</code></td><td><code>wasm-publish.yml</code></td></tr>
+<tr><td>Maven <code>aiwaf-java</code></td><td><code>java/pom.xml</code></td><td><code>java-v1.3.3</code></td><td><code>java-publish.yml</code></td></tr>
 </tbody></table></div>
 <p>Python and Rust publish to PyPI with trusted publishing. The npm workflows use npm trusted publishing and stage packages for approval. Configure the trusted publisher with organization <code>aiwaf-project</code>, repository <code>aiwaf</code>, the exact workflow filename, and the environment used by that workflow.</p>
 <p>Java publishing uses the protected <code>maven-publish</code> environment plus <code>GPG_PRIVATE_KEY</code>, <code>GPG_PASSPHRASE</code>, <code>CENTRAL_TOKEN_USERNAME</code>, and <code>CENTRAL_TOKEN_PASSWORD</code>. The workflow verifies the tag, runs tests, signs the POM and all three JARs, uploads the deployment bundle, and waits for Maven Central publication.</p>
