@@ -44,6 +44,15 @@ their original submission. The form collects consent and saves registrations;
 email invitations are not sent automatically. The alternate `simple_app.py`
 runner does not initialize this form.
 
+The signup includes an off-screen honeypot field; filled traps receive a generic
+confirmation without saving a record. To view registrations, set
+`BETA_ADMIN_USERNAME` (default `admin`) and a strong `BETA_ADMIN_PASSWORD` in the
+server environment, then reload and visit `/aiwaf/beta-signups` over HTTPS. The
+browser prompts for credentials. The read-only page shows all four fields and
+submission time, newest first, in pages of 50. It returns 404 without a configured
+password and sends `no-store`/`noindex` headers. This access control belongs to the
+beta submissions page; the existing protection-management endpoints are separate.
+
 ## Generate routes
 
 Run in this checkout with the same virtual environment used by the server:

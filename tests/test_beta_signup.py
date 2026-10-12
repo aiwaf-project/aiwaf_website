@@ -1,7 +1,9 @@
 """Beta form validation and persistence using a real temporary SQLite database."""
 from pathlib import Path
 from tempfile import TemporaryDirectory
+import base64
 import unittest
+from werkzeug.datastructures import MultiDict
 
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
@@ -78,4 +80,68 @@ class BetaSignupTests(unittest.TestCase):
 
     def test_oversized_submission_rejected(self):
         self.assertEqual(self.client.post('/beta-signup', data={**self.fields, 'current_security': 'x' * 9000}).status_code, 413)
+        self.assertEqual(self.rows(), [])
+
+    def admin_headers(self, username='admin', password='test-password'):
+        encoded = base64.b64encode(f'{username}:{password}'.encode()).decode()
+        return {'Authorization': 'Basic ' + encoded}
+
+    def test_admin_disabled_without_password(self):
+        self.app.config['BETA_ADMIN_PASSWORD'] = ''
+        response = self.client.get('/aiwaf/beta-signups', headers=self.admin_headers())
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.headers['Cache-Control'], 'no-store')
+
+    def test_admin_requires_correct_credentials(self):
+        self.app.config['BETA_ADMIN_PASSWORD'] = 'test-password'
+        self.client.post('/beta-signup', data=self.fields)
+        for headers in ({}, self.admin_headers(password='wrong'), self.admin_headers(username='wrong'),
+                        {'Authorization': 'Bearer token'}):
+            with self.subTest(headers=list(headers)):
+                response = self.client.get('/aiwaf/beta-signups', headers=headers)
+                self.assertEqual(response.status_code, 401)
+                self.assertIn('Basic realm=', response.headers['WWW-Authenticate'])
+                self.assertNotIn(b'jane@example.com', response.data)
+                self.assertEqual(response.headers['Cache-Control'], 'no-store')
+                self.assertEqual(response.headers['X-Robots-Tag'], 'noindex, nofollow')
+
+    def test_admin_displays_fields_and_escapes_content(self):
+        self.app.config.update(BETA_ADMIN_USERNAME='owner', BETA_ADMIN_PASSWORD='test-password')
+        self.client.post('/beta-signup', data={**self.fields, 'current_security': '<script>alert(1)</script>'})
+        response = self.client.get('/aiwaf/beta-signups', headers=self.admin_headers(username='owner'))
+        self.assertEqual(response.status_code, 200)
+        for text in (b'Jane Doe', b'jane@example.com', b'Example Inc', b'Submitted (UTC)', b'&lt;script&gt;'):
+            self.assertIn(text, response.data)
+        self.assertNotIn(b'<script>alert(1)</script>', response.data)
+        self.assertEqual(response.headers['Cache-Control'], 'no-store')
+        self.assertIn('Authorization', response.headers['Vary'])
+
+    def test_admin_pagination_and_order(self):
+        self.app.config['BETA_ADMIN_PASSWORD'] = 'test-password'
+        with self.app.app_context():
+            self.db.session.execute(self.table.insert(), [dict(name=f'User{i}', email=f'user{i}@example.com',
+                company='Company', current_security='WAF') for i in range(51)])
+            self.db.session.commit()
+        response = self.client.get('/aiwaf/beta-signups', headers=self.admin_headers())
+        self.assertIn(b'user50@example.com', response.data)
+        self.assertNotIn(b'user0@example.com', response.data)
+        self.assertIn(b'Next page', response.data)
+        page_two = self.client.get('/aiwaf/beta-signups?page=2', headers=self.admin_headers())
+        self.assertIn(b'user0@example.com', page_two.data)
+        self.assertNotIn(b'user50@example.com', page_two.data)
+        self.assertNotIn(b'Next page', page_two.data)
+        self.assertEqual(len(self.rows()), 51)
+
+    def test_admin_empty_and_invalid_page(self):
+        self.app.config['BETA_ADMIN_PASSWORD'] = 'test-password'
+        response = self.client.get('/aiwaf/beta-signups', headers=self.admin_headers())
+        self.assertIn(b'No submissions to display.', response.data)
+        for page in ('0', '-1', 'bad', '1000001'):
+            self.assertEqual(self.client.get('/aiwaf/beta-signups?page=' + page, headers=self.admin_headers()).status_code, 400)
+
+    def test_duplicate_honeypot_fields_cannot_hide_a_filled_trap(self):
+        fields = MultiDict(self.fields)
+        fields.add('website', '')
+        fields.add('website', 'bot.example')
+        self.assertEqual(self.client.post('/beta-signup', data=fields).status_code, 303)
         self.assertEqual(self.rows(), [])

@@ -1,10 +1,11 @@
 """Beta registrations stored using the website's existing SQLAlchemy connection."""
 import hmac
+import os
 import re
 import secrets
 from pathlib import Path
 
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import Blueprint, Response, abort, flash, redirect, render_template, request, session, url_for
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 
@@ -23,6 +24,41 @@ def init_beta_signup(app, db):
         db.metadata.create_all(bind=db.engine, tables=[signups])
 
     beta = Blueprint('beta', __name__)
+    app.config.setdefault('BETA_ADMIN_USERNAME', os.environ.get('BETA_ADMIN_USERNAME', 'admin'))
+    app.config.setdefault('BETA_ADMIN_PASSWORD', os.environ.get('BETA_ADMIN_PASSWORD', ''))
+
+    @beta.after_request
+    def private_admin_response(response):
+        if request.endpoint == 'beta.admin':
+            response.headers['Cache-Control'] = 'no-store'
+            response.headers['X-Robots-Tag'] = 'noindex, nofollow'
+            response.vary.add('Authorization')
+        return response
+
+    @beta.get('/aiwaf/beta-signups')
+    def admin():
+        password = app.config.get('BETA_ADMIN_PASSWORD')
+        if not password:
+            abort(404)
+        auth = request.authorization
+        username = str(app.config.get('BETA_ADMIN_USERNAME', 'admin'))
+        user_ok = hmac.compare_digest((auth.username or '').encode(), username.encode()) if auth and auth.type == 'basic' else False
+        password_ok = hmac.compare_digest((auth.password or '').encode(), str(password).encode()) if auth and auth.type == 'basic' else False
+        if not (user_ok and password_ok):
+            return Response('Admin authentication required.', status=401,
+                headers={'WWW-Authenticate': 'Basic realm="AIWAF Cloud submissions", charset="UTF-8"'})
+        try:
+            page = int(request.args.get('page', '1'))
+            if page < 1 or page > 1000000:
+                raise ValueError
+        except ValueError:
+            abort(400)
+        page_size = 50
+        total = db.session.execute(db.select(db.func.count()).select_from(signups)).scalar_one()
+        rows = db.session.execute(db.select(signups).order_by(signups.c.created_at.desc(), signups.c.id.desc())
+            .limit(page_size).offset((page - 1) * page_size)).mappings().all()
+        return render_template('beta_admin.html', submissions=rows, total=total, page=page,
+                               has_next=page * page_size < total)
 
     @app.context_processor
     def beta_form_defaults():
@@ -41,7 +77,7 @@ def init_beta_signup(app, db):
         if not expected or not hmac.compare_digest(token.encode(), expected.encode()):
             return render_template('home.html', beta_error='Please reload the page and try again.'), 403
         # A filled trap receives the same confirmation without creating a record.
-        if request.form.get('website'):
+        if any(value.strip() for value in request.form.getlist('website')):
             return confirmation()
         fields = {key: request.form.get(key, '').strip() for key in
                   ('name', 'email', 'company', 'current_security')}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>AIWAF Cloud | Beta submissions</title>
+    <link rel="stylesheet" href="/static/brand.css">
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; line-height: 1.6; }
+        .admin-header { background: white; border-bottom: 1px solid var(--brand-line); padding: 16px 24px; }
+        .admin-main { max-width: 1280px; padding: 32px 24px; margin: auto; }
+        .admin-lead { color: var(--brand-muted); }
+        .admin-table { overflow-x: auto; background: white; border: 1px solid var(--brand-line); border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; min-width: 850px; }
+        caption { text-align: left; padding: 16px; font-weight: 600; }
+        th, td { text-align: left; vertical-align: top; padding: 16px; border-bottom: 1px solid var(--brand-line); }
+        td { overflow-wrap: anywhere; }
+        .security-answer { min-width: 240px; max-width: 400px; white-space: pre-wrap; }
+        .pagination { display: flex; gap: 24px; margin-top: 24px; }
+    </style>
+</head>
+<body>
+    <header class="admin-header"><a class="brand-logo" href="/" aria-label="AIWAF home"><img src="/static/aiwaf-logo.png" alt="AIWAF" width="2172" height="724"></a></header>
+    <main class="admin-main">
+        <h1>AIWAF Cloud beta submissions</h1>
+        <p class="admin-lead">{{ total }} registration{{ '' if total == 1 else 's' }} · Newest first</p>
+        {% if submissions %}
+        <div class="admin-table"><table>
+            <caption>Beta registrations — page {{ page }}</caption>
+            <thead><tr><th scope="col">Name</th><th scope="col">Email</th><th scope="col">Company</th><th scope="col">Current security</th><th scope="col">Submitted (UTC)</th></tr></thead>
+            <tbody>{% for submission in submissions %}<tr>
+                <td>{{ submission.name }}</td><td>{{ submission.email }}</td><td>{{ submission.company }}</td>
+                <td class="security-answer">{{ submission.current_security }}</td>
+                <td>{{ submission.created_at.strftime('%Y-%m-%d %H:%M') if submission.created_at else '—' }}</td>
+            </tr>{% endfor %}</tbody>
+        </table></div>
+        {% else %}<p>No submissions to display.</p>{% endif %}
+        <nav class="pagination" aria-label="Submission pages">
+            {% if page > 1 %}<a href="{{ url_for('beta.admin', page=page-1) }}">Previous page</a>{% endif %}
+            {% if has_next %}<a href="{{ url_for('beta.admin', page=page+1) }}">Next page</a>{% endif %}
+        </nav>
+    </main>
+</body>
+</html>
