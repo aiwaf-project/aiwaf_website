@@ -1,5 +1,9 @@
 # AIWAF Documentation Website
 
+The shared logo, palette, typography, and component rules are documented in
+[STYLE_GUIDE.md](STYLE_GUIDE.md). All pages load `static/brand.css` after their
+legacy styles and use the original supplied wordmark from `static/aiwaf-logo.png`.
+
 ## License
 
 Original website code and documentation use the unmodified [Elastic License 2.0](LICENSE), with historical rights and separately licensed material identified in [NOTICE](NOTICE). AIWAF packages have independent release licenses: previously distributed MIT copies retain MIT permissions. This checkout's ELv2 migration does not retroactively change those releases. ELv2 permits commercial use and consulting but restricts providing substantial software functionality as a hosted or managed service. Include LICENSE, NOTICE, and licenses/ when redistributing this checkout.

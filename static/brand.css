@@ -1,0 +1,61 @@
+/* Shared AIWAF brand tokens. Loaded after legacy page styles. */
+:root {
+  --brand-blue: #0066ff;
+  --brand-blue-hover: #0052cc;
+  --brand-ink: #071520;
+  --brand-muted: #526170;
+  --brand-surface: #ffffff;
+  --brand-page: #f6f8fb;
+  --brand-tint: #eef5ff;
+  --brand-line: #dbe3ec;
+  --brand-radius: 12px;
+}
+html { color-scheme: light; scroll-behavior: smooth; }
+body { background: var(--brand-page) !important; color: var(--brand-ink) !important; font-family: Inter, system-ui, -apple-system, sans-serif !important; }
+a { color: var(--brand-blue-hover) !important; text-underline-offset: .2em; }
+a:hover { color: var(--brand-blue) !important; }
+:focus-visible { outline: 3px solid var(--brand-blue) !important; outline-offset: 3px; }
+.header { background: var(--brand-surface) !important; border-bottom: 1px solid var(--brand-line) !important; backdrop-filter: none !important; }
+.header-content { min-height: 82px; }
+.brand-logo { display: block; width: 160px; height: 50px; position: relative; overflow: hidden; flex-shrink: 0; }
+.brand-logo img { position: absolute; width: 216px; max-width: none; height: 72px; left: -27px; top: -11px; }
+.nav-link { color: var(--brand-ink) !important; border-radius: 8px !important; }
+.nav-link:hover { background: var(--brand-tint) !important; transform: none !important; }
+.hero { background: var(--brand-surface) !important; padding-bottom: 56px; border-bottom: 1px solid var(--brand-line); }
+.hero::before, .floating-element { display: none !important; }
+.hero-title, .page-title { background: none !important; color: var(--brand-ink) !important; -webkit-text-fill-color: var(--brand-ink) !important; animation: none !important; letter-spacing: -.035em; }
+.hero-title { max-width: 950px; margin-left: auto; margin-right: auto; }
+.hero-subtitle, .architecture-lead, .docs-lead { color: var(--brand-muted) !important; }
+.hero .cta-button { margin: .4rem; }
+.cta-button, .btn-primary { background: var(--brand-blue) !important; color: #fff !important; border: 1px solid var(--brand-blue) !important; border-radius: 8px !important; box-shadow: none !important; animation: none !important; }
+.cta-button:hover, .btn-primary:hover { background: var(--brand-blue-hover) !important; transform: none !important; }
+.hero .cta-button:not(:last-child) { background: #fff !important; color: var(--brand-blue-hover) !important; border-color: var(--brand-line) !important; }
+.content, .content-section, .sidebar, .section, .feature-card, .doc-card, .api-section, .config-section, .sponsor-section {
+  background: var(--brand-surface) !important; border-color: var(--brand-line) !important; border-radius: var(--brand-radius) !important; backdrop-filter: none !important; color: var(--brand-ink) !important;
+}
+.feature-card:hover, .doc-card:hover { transform: none !important; box-shadow: 0 8px 24px #0715200d !important; border-color: var(--brand-blue) !important; }
+h2, h3, .feature-title, .sidebar-title, .beta-heading, .docs-eyebrow, .content h2, .content h3, .section h2, .section h3 { color: var(--brand-ink) !important; }
+.sidebar-nav a { color: var(--brand-muted) !important; }
+.sidebar-nav a:hover, .sidebar-nav a.active { background: var(--brand-tint) !important; color: var(--brand-blue-hover) !important; transform: none !important; }
+.info-box, .source-note, .docs-callout, .docs-checkpoint, .architecture-toc, .docs-toc, .architecture-flow li { background: var(--brand-tint) !important; border-color: #c2d8fa !important; color: var(--brand-ink) !important; }
+.architecture-flow strong, .architecture-toc strong { color: var(--brand-ink) !important; }
+.architecture-flow span, .code-filename { color: var(--brand-muted) !important; }
+.architecture-flow li::before, .content details > summary { color: var(--brand-blue-hover) !important; }
+.badge { background: var(--brand-tint) !important; color: var(--brand-blue-hover) !important; border: 1px solid #c2d8fa; }
+code { color: #0047ad !important; font-family: 'Fira Code', ui-monospace, monospace; }
+pre, .content pre { background: var(--brand-ink) !important; border-color: var(--brand-ink) !important; color: #edf4ff !important; }
+pre code { color: #edf4ff !important; }
+th, td, .content th, .content td, .docs-pagination { border-color: var(--brand-line) !important; }
+th { background: var(--brand-tint); }
+.beta-form input:not([type="checkbox"]), .beta-form textarea, .docs-search input, .docs-code-toolbar button {
+  background: #fff !important; color: var(--brand-ink) !important; border-color: #8899ad !important;
+}
+input[type="checkbox"] { accent-color: var(--brand-blue); }
+input::placeholder, textarea::placeholder { color: #657487; }
+.docs-search-results { background: #fff !important; border-color: var(--brand-line) !important; box-shadow: 0 12px 32px #0715201a; }
+.docs-search-results a:hover { background: var(--brand-tint) !important; }
+.beta-error { background: #fff1f1 !important; color: #a42020 !important; border-color: #e8aaaa !important; }
+.legacy-note { border-left-color: #a46500 !important; }
+@media (max-width: 900px) { .header .brand-logo { grid-column: 1; grid-row: 1; } }
+@media (max-width: 600px) { .hero-title { font-size: 2.4rem; } .hero-subtitle { font-size: 1.1rem; } .header-content { gap: .75rem; } .header .nav-link { font-size: .875rem; padding: .35rem; } .brand-logo { width: 136px; } .brand-logo img { width: 184px; height: 61.33px; left: -23px; top: -8px; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
