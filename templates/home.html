@@ -43,6 +43,18 @@
         .feature-card:hover { transform: translateY(-5px); border-color: rgba(78, 205, 196, 0.5); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); }
         .feature-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: #ff6b6b; }
         .info-box { background: rgba(78, 205, 196, 0.1); border: 1px solid rgba(78, 205, 196, 0.3); border-radius: 10px; padding: 1.5rem; margin: 2rem 0; }
+        #beta-signup { scroll-margin-top: 100px; }
+        .beta-heading { color: #4ecdc4; font-size: 2rem; margin-bottom: .5rem; }
+        .beta-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+        .beta-form label { display: block; font-weight: 700; margin-bottom: .4rem; }
+        .beta-form input:not([type="checkbox"]), .beta-form textarea { width: 100%; padding: .85rem; border: 1px solid #666; border-radius: 8px; background: #121222; color: #fff; font: inherit; }
+        .beta-form input:focus-visible, .beta-form textarea:focus-visible, .beta-form button:focus-visible { outline: 2px solid #4ecdc4; outline-offset: 3px; }
+        .beta-wide { grid-column: 1 / -1; }
+        .beta-form .beta-consent { font-weight: 400; display: flex; gap: .7rem; align-items: flex-start; }
+        .beta-consent input { margin-top: .4rem; }
+        .beta-trap { position: absolute; left: -10000px; }
+        .beta-error { color: #ffabab; border-color: #ffabab; }
+        @media (max-width: 768px) { .beta-form { grid-template-columns: 1fr; } #beta-signup { padding: 1.5rem; } }
         @media (max-width: 768px) { .nav { display: none; } .hero-title { font-size: 2.5rem; } .hero-subtitle { font-size: 1.2rem; } }
         .floating-element { position: absolute; opacity: 0.1; animation: float 6s ease-in-out infinite; }
         .floating-element:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
@@ -64,6 +76,7 @@
                 <nav class="nav">
                     <a href="/" class="nav-link">Home</a>
                     <a href="/docs" class="nav-link">Documentation</a>
+                    {% if beta_csrf %}<a href="#beta-signup" class="nav-link">AIWAF Cloud Beta</a>{% endif %}
                 </nav>
             </div>
         </div>
@@ -75,10 +88,30 @@
             <p class="hero-subtitle">Application middleware with request controls, route policies, and optional anomaly detection</p>
             <a href="/docs" class="cta-button">Get Started</a>
             <a href="/docs/architecture" class="cta-button">Understand the Architecture</a>
+            {% if beta_csrf %}<a href="#beta-signup" class="cta-button">Join the AIWAF Cloud beta</a>{% endif %}
         </div>
     </section>
 
     <div class="container">
+        {% if beta_csrf %}<section id="beta-signup" class="content-section" aria-labelledby="beta-heading">
+            <h2 id="beta-heading" class="beta-heading">Sign up for the AIWAF Cloud beta</h2>
+            <p>Help shape AIWAF Cloud. Tell us about your team and how you protect your applications today.</p>
+            {% for message in get_flashed_messages(category_filter=['beta_success']) %}
+            <div class="info-box" role="status">{{ message }}</div>
+            {% endfor %}
+            {% if beta_error %}<div class="info-box beta-error" role="alert">{{ beta_error }}</div>{% endif %}
+            {% set values = beta_values or {} %}
+            <form class="beta-form" method="post" action="{{ url_for('beta.signup') }}">
+                <input type="hidden" name="csrf_token" value="{{ beta_csrf }}">
+                <div><label for="beta-name">Name</label><input id="beta-name" name="name" autocomplete="name" maxlength="120" value="{{ values.get('name', '') }}" required></div>
+                <div><label for="beta-email">Email</label><input id="beta-email" name="email" type="email" autocomplete="email" maxlength="254" value="{{ values.get('email', '') }}" required></div>
+                <div class="beta-wide"><label for="beta-company">Company</label><input id="beta-company" name="company" autocomplete="organization" maxlength="160" value="{{ values.get('company', '') }}" required></div>
+                <div class="beta-wide"><label for="beta-security">What do you use for security today?</label><textarea id="beta-security" name="current_security" rows="4" maxlength="2000" placeholder="For example, a WAF, cloud security tools, application middleware, or no tools yet" required>{{ values.get('current_security', '') }}</textarea></div>
+                <div class="beta-trap" aria-hidden="true"><label for="beta-website">Leave this field empty</label><input id="beta-website" name="website" tabindex="-1" autocomplete="off"></div>
+                <label class="beta-wide beta-consent"><input type="checkbox" name="consent" value="yes" required><span>I agree to be contacted by AIWAF about the AIWAF Cloud beta using the information I provide.</span></label>
+                <div class="beta-wide"><button type="submit" class="cta-button">Join the AIWAF Cloud beta</button></div>
+            </form>
+        </section>{% endif %}
         <div class="content-section">
             <div class="info-box">
                 <strong>One repository for Python, Node.js, Java, and Rust/WASM.</strong><br>

@@ -104,15 +104,15 @@
 <h1 class="page-title">AIWAF Python</h1>
 {% include '_docs_source.html' %}
 <p class="architecture-link"><a href="/docs/architecture">How AIWAF works: system architecture</a></p>
-<p>Python package version <code>1.0.8</code> lives in <code>py/aiwaf/</code>. Install a framework extra for Django, Flask, or FastAPI. The package metadata declares Python 3.8 or newer; the selected framework and scientific dependencies may require a newer interpreter.</p>
+<p>Python package version <code>1.1.2</code> lives in <code>py/aiwaf/</code>. Install a framework extra for Django, Flask, or FastAPI. The package metadata declares Python 3.10 or newer; the selected framework and scientific dependencies may require a newer interpreter.</p>
 <h2>Packages in the monorepo</h2>
 <p>Each package is versioned and released independently.</p>
 <div class="table-wrap"><table><thead><tr><th>Runtime</th><th>Package</th><th>Repository version</th><th>Primary use</th></tr></thead><tbody>
-<tr><td>Python</td><td><a href="https://pypi.org/project/aiwaf/"><code>aiwaf</code></a></td><td><code>1.0.8</code></td><td>Django, Flask, and FastAPI protection</td></tr>
-<tr><td>Node.js</td><td><a href="https://www.npmjs.com/package/aiwaf"><code>aiwaf</code></a></td><td><code>1.0.2</code></td><td>Express and Node framework middleware</td></tr>
-<tr><td>Rust/Python</td><td><a href="https://pypi.org/project/aiwaf-rust/"><code>aiwaf-rust</code></a></td><td><code>0.2.1</code></td><td>Native Python acceleration and JSON model inference</td></tr>
-<tr><td>WebAssembly</td><td><a href="https://www.npmjs.com/package/aiwaf-wasm"><code>aiwaf-wasm</code></a></td><td><code>0.2.1</code></td><td>Rust detection and model primitives for JavaScript</td></tr>
-<tr><td>Java</td><td><code>io.github.aiwaf-project:aiwaf-java</code></td><td><code>1.3.0</code></td><td>Spring MVC and Jakarta Servlet protection</td></tr>
+<tr><td>Python</td><td><a href="https://pypi.org/project/aiwaf/"><code>aiwaf</code></a></td><td><code>1.1.2</code></td><td>Django, Flask, and FastAPI protection</td></tr>
+<tr><td>Node.js</td><td><a href="https://www.npmjs.com/package/aiwaf"><code>aiwaf</code></a></td><td><code>1.1.2</code></td><td>Express and Node framework middleware</td></tr>
+<tr><td>Rust/Python</td><td><a href="https://pypi.org/project/aiwaf-rust/"><code>aiwaf-rust</code></a></td><td><code>0.2.2</code></td><td>Native Python acceleration and JSON model inference</td></tr>
+<tr><td>WebAssembly</td><td><a href="https://www.npmjs.com/package/aiwaf-wasm"><code>aiwaf-wasm</code></a></td><td><code>0.2.2</code></td><td>Rust detection and model primitives for JavaScript</td></tr>
+<tr><td>Java</td><td><code>io.github.aiwaf-project:aiwaf-java</code></td><td><code>1.3.3</code></td><td>Spring MVC and Jakarta Servlet protection</td></tr>
 </tbody></table></div>
 <p>Supported framework integrations include Django, Flask, FastAPI, Express, Fastify, Hapi, Koa, NestJS, Next.js API routes, AdonisJS, Sails.js, Spring MVC, and Jakarta Servlet.</p>
 <h2>Repository layout</h2>
@@ -153,6 +153,7 @@
 <li><a href="/docs/python/adapters">Framework adapters</a></li>
 <li><a href="/docs/python/operations">Operations and migration</a></li>
 </ul>
+<section class="section" id="native-csv-updates"><h2>Current native CSV and training behavior</h2><p>Python 1.1.2 with <code>aiwaf-rust&gt;=0.2.2</code> automatically selects supported native capabilities after installation and worker restart, unless disabled. CSV runtime updates use locked atomic mutations; training supports direct CSV/gzip streaming and retained Rust feature/model processing. Framework hooks and route discovery remain Python.</p><p>See <a href="/docs/configuration#native-csv-settings">configuration and rate/logging options</a>, <a href="/docs/python/operations#native-csv-operations">training and deployment commands</a>, and <a href="/docs/python/architecture#native-csv-pipeline">execution and storage boundaries</a>. CSV blacklist persistence does not automatically share every rate counter. FastAPI trained models need explicit reload or application restart.</p></section>
 </main>
     </div>
 </div>

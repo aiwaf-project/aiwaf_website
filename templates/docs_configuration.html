@@ -105,7 +105,7 @@ AIWAF(app, middlewares=['all'],
 <p>Default exemptions differ. Django includes administrative/login paths; Flask includes health, crawler, static and asset paths. Private-address behavior also differs from an explicit trusted-client whitelist. Review <a href="https://github.com/aiwaf-project/aiwaf/blob/main/py/aiwaf/core/defaults.py">Python default exemption lists</a> and <a href="/docs/architecture#how-route-policies-become-decisions">the policy lifecycle</a> before interpreting a successful local request as a public-client test.</p>
 <p>Configure forwarding-header handling with the actual deployment topology. Java exposes <code>trustedProxyCidrs</code> and <code>maxForwardedForEntries</code>. Python and Node extraction use adapter-specific rules; these Java options are not portable knobs. Have the outer proxy overwrite untrusted client forwarding headers, and compare observed client addresses with the intended public client.</p>
 <h2 id="state">Multiple workers and storage</h2>
-<p>Persistent blacklist files, model storage, logs, and rate counters have separate ownership. A CSV blacklist does not share every in-memory counter. Flask/FastAPI use separate rate-cache settings; install the Redis client required by the selected backend. Flask can fall back to a process-local cache if Redis initialization fails. Verify repeated requests across workers and inspect backend diagnostics.</p>
+<p>Persistent blacklist files, model storage, logs, and rate counters have separate ownership. A CSV blacklist does not share every in-memory counter. Flask/FastAPI use separate rate-cache settings; install the Redis client required by the selected backend. Flask rejects invalid Redis configuration at initialization. Python rate-cache failures produce generic HTTP 503 responses, and FastAPI does not silently select a process-local cache. Verify repeated requests across workers and inspect backend diagnostics.</p>
 <p>Node accepts a shared <code>cache</code> implementation; its fallback is process-local. Java Redis shares enforcement state within <code>storageKeyPrefix</code>, supports standalone mode, and defaults to <code>fail_closed</code>. Use the same namespace only for intentionally shared policy/state, and review schema compatibility before mixed-version deployments.</p>
 <h2 id="defaults">Source default tables</h2>
 <p>The Python table includes every leaf returned by the shared manager. The Node table includes normalized options, not every raw option consumed by individual modules (for example cache/WASM settings). The Java table includes public AiwafConfig field initializers. Disabled middleware can leave a setting inactive. These tables are a source snapshot, not your effective live configuration.</p>
@@ -117,6 +117,22 @@ AIWAF(app, middlewares=['all'],
 <li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/js/lib/settingsCompat.js">Node options and alias resolution</a>; <a href="https://github.com/aiwaf-project/aiwaf/blob/main/js/lib/wafMiddleware.js">Node middleware consumers</a>.</li>
 <li><a href="https://github.com/aiwaf-project/aiwaf/blob/main/java/src/main/java/com/aiwaf/core/AiwafConfig.java">Java typed fields</a>; <a href="https://github.com/aiwaf-project/aiwaf/blob/main/java/src/main/java/com/aiwaf/spring/SpringAiwafConfig.java">Spring properties</a>; <a href="https://github.com/aiwaf-project/aiwaf/blob/main/java/src/main/java/com/aiwaf/core/AiwafConfigCompatCore.java">Java environment mappings</a>.</li>
 </ul>
+<section class="section" id="native-csv-settings"><h2>Native CSV settings</h2>
+<div class="table-wrap"><table><thead><tr><th>Setting</th><th>Default and scope</th></tr></thead><tbody>
+<tr><td><code>AIWAF_USE_RUST</code>, <code>AIWAF_RUST_CSV</code></td><td>Enabled by default for supported Flask/Django native CSV dispatch. Set either application setting to <code>False</code> to disable it. FastAPI training also honors these application options.</td></tr>
+<tr><td><code>AIWAF_RUST_CSV=false</code> environment variable</td><td>Disables shared native dispatch outside Flask/Django application contexts. Configured framework settings take precedence over this environment fallback.</td></tr>
+<tr><td><code>AIWAF_CSV_REQUEST_CACHE</code></td><td>Flask defaults to <code>True</code>. Reuses exemptions within a request while rechecking file metadata/configuration; does not cache rate mutations or blacklist expiry decisions.</td></tr>
+<tr><td><code>AIWAF_CSV_LOG_FSYNC</code></td><td>Flask CSV logging defaults to <code>False</code>. <code>True</code> synchronizes each row to disk. Changed policy-state writes still synchronize.</td></tr>
+<tr><td><code>AIWAF_RUST_ISO_DATES=1</code></td><td>Optional environment flag for native ISO timestamp parsing. Python's faster C ISO parser remains the default.</td></tr>
+<tr><td><code>AIWAF_RATE_CACHE_BACKEND='csv'</code></td><td>Explicit Flask selection of persistent shared rate buckets. Memory remains the default. Requires native support; unavailable/disabled native support returns HTTP 503.</td></tr>
+<tr><td><code>AIWAF_RATE_CSV_PATH</code></td><td>Optional Flask path; defaults to <code>rate_buckets.csv</code> under <code>AIWAF_DATA_DIR</code>.</td></tr>
+</tbody></table></div>
+<pre><code class="language-python"># Set before AIWAF(app).
+app.config.update(AIWAF_USE_CSV=True, AIWAF_USE_RUST=True,
+                  AIWAF_RUST_CSV=True, AIWAF_CSV_LOG_FSYNC=False)
+# Optional, costlier than process memory: shared CSV rate counters.
+app.config['AIWAF_RATE_CACHE_BACKEND'] = 'csv'</code></pre>
+<p>CSV buckets trim the request window, consume a request, evaluate thresholds, and persist TTL under one native transaction. Rewriting and syncing on every request can cost more than Redis or memory. A CSV blacklist alone does not select this rate backend.</p></section>
 </main>
 </div></div>
 </body>

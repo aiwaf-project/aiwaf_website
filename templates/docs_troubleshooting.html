@@ -85,7 +85,7 @@ curl -i https://aiwaf.org/health</code></pre>
 <p>Private clients, health paths, static paths, or route annotations may be exempt. Local curl success alone does not demonstrate protection for public clients. To exercise header validation, use a non-exempt route and a client context matching deployment; include representative User-Agent/Accept headers and browser-standard headers such as Accept-Language/Accept-Encoding in the normal case. Plain curl requests can be rejected by the website's header policy; use a browser or matching headers to check protected documentation. The website explicitly exempts /health for liveness probes. Configure a small staging threshold and test below, at, and above the boundary. Do not disable protection globally to resolve a single route.</p>
 <h2>Client IP or multi-worker counters look wrong</h2>
 <p>Inspect address extraction for your adapter and the actual forwarding-header chain. Have the trusted outer proxy overwrite client-supplied headers. Java has explicit trusted proxy CIDRs; Python/Node resolution follows their own rules.</p>
-<p>File persistence is separate from a shared rate cache. Redis configuration must resolve to an active shared backend. In Flask, Redis initialization can fall back to memory; test enforcement across two workers and examine initialization logs. Use the same rate-key prefix for workers sharing one service, and distinct prefixes for unrelated services.</p>
+<p>File persistence is separate from a shared rate cache. Redis configuration must resolve to an active shared backend. Flask rejects invalid Redis configuration at initialization; runtime Redis rate-cache failures return HTTP 503; test enforcement across two workers and examine initialization logs. Use the same rate-key prefix for workers sharing one service, and distinct prefixes for unrelated services.</p>
 <h2>Training produces no usable model</h2>
 <p>Verify that the trainer reads the actual log path/format, logs include response observations, minimum sample thresholds are met, and the output model is written where runtime inference loads it. Representative normal traffic is needed; forced training does not repair missing or malformed inputs. Inspect trainer/model help for the installed adapter:</p>
 <pre><code class="language-bash">aiwaf flask train --help
@@ -96,6 +96,12 @@ python manage.py detect_and_train --help</code></pre>
 <h2>Verification before publishing documentation</h2>
 <p>Render every page; check internal links, fragment anchors, setup redirects, and unknown-page behavior. Then test code samples with the installed runtime in a clean staging environment, including a normal request and an intentional rejection. Finally test the public URLs after deployment. These are separate checks.</p>
 <p>See <a href="/docs/configuration">configuration</a>, <a href="/docs/migration">migration</a>, and the runtime operations pages for the exact settings and supported tools.</p>
+<section class="section" id="native-csv-diagnostics"><h2>Rust and CSV diagnostics</h2>
+<pre><code class="language-bash">python -c "import sys, aiwaf_rust; print(sys.executable); print(aiwaf_rust.__file__)"
+python scripts/check_native_csv_runtime.py</code></pre>
+<p>If installation succeeds but behavior stays on Python, check the application's interpreter, worker restart, extension capabilities, and <code>AIWAF_USE_RUST</code>/<code>AIWAF_RUST_CSV</code>. Framework settings take precedence over the standalone environment flag. Unicode/custom parser paths may deliberately use Python; ISO parsing does so by default because it measured faster.</p>
+<p>A PHP probe returning 404 may be reaching an unprotected application. Verify the deployed WSGI import is the protected app (the website uses <code>from app import app as application</code>), inspect registered request hooks, and check route/IP exemptions. A path missing from the route table is not automatically blocked: keyword, rate, and anomaly policies decide whether to deny it.</p>
+<p>For Windows log-directory deletion failures, stop requests and close cached CSV log writers first. For HTTP 503 from rate limiting, check Redis availability or required native CSV capabilities. A freshly trained FastAPI model needs an explicit reload or application restart.</p></section>
 </main>
 </div></div>
 </body>

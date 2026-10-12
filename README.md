@@ -30,6 +30,16 @@ python app.py
 
 Open http://localhost:5000. Set SECRET_KEY in the environment or a local .env file. app.py loads aiwaf_config.py before initializing protection and stores AIWAF data under aiwaf_data and request logs under logs. Flask-SQLAlchemy initializes a local SQLite URI; the primary runner does not use the alternate runner's MySQL analytics models.
 
+The homepage includes an AIWAF Cloud beta signup form for name, email, company, and
+current security tools. The primary `app.py` runner creates `beta_signups` using
+its existing database connection; SQLite stores it in `instance/aiwaf_temp.db`.
+Deploy the updated code and reload the WSGI application to create the table.
+Keep a stable, private `SECRET_KEY` across workers and back up the instance
+database so registrations survive deployments. Duplicate email addresses retain
+their original submission. The form collects consent and saves registrations;
+email invitations are not sent automatically. The alternate `simple_app.py`
+runner does not initialize this form.
+
 ## Generate routes
 
 Run in this checkout with the same virtual environment used by the server:

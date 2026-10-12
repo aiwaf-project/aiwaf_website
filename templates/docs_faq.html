@@ -89,13 +89,13 @@
 <h2>Is PHP included?</h2>
 <p>The current monorepo has no PHP implementation or PHP release workflow. Existing PHP pages are retained as legacy reference and are not current setup guidance.</p>
 <h2>Is Rust required for Python?</h2>
-<p>No. Install <code>aiwaf[rust]</code> for native acceleration. Installed capabilities are selected automatically, with Python fallback when unavailable. Version 1.0.8 requires <code>aiwaf-rust&gt;=0.2.1</code> for this extra.</p>
+<p>No. Install <code>aiwaf[rust]</code> for native acceleration; Python 1.1.2 requires <code>aiwaf-rust&gt;=0.2.2</code> for this extra. Capabilities are selected automatically after installation and worker restart unless disabled. Python handles framework hooks and unsupported paths. Explicit Flask CSV rate buckets require native support and return 503 if it is unavailable. See <a href="/docs/configuration#native-csv-settings">native CSV configuration</a>.</p>
 <h2>Can I reuse old pickle or joblib models?</h2>
 <p>Current Python model persistence uses JSON. Regenerate executable object artifacts through the current trainer. Java supports Python Rust-model JSON state and restricted legacy signed Java artifacts. JavaScript model implementations remain language-native; do not assume every runtime can exchange models.</p>
 <h2>Does an in-memory backend share protection across workers?</h2>
 <p>In-memory state is process-local. Configure shared storage where consistent multi-worker enforcement is required. Java 1.3.0 supports standalone Redis with atomic enforcement, failure policies, bounded waits, and schema compatibility checks.</p>
 <h2>What are the hardware requirements?</h2>
-<p>AIWAF does not prescribe the previously listed RAM, AVX2, or disk requirements. Use a runtime compatible with the package dependencies and size the deployment for traffic, logging, training, and model workloads. Java targets Java 17; Python metadata declares 3.8 or newer, with newer requirements possible from selected dependencies.</p>
+<p>AIWAF does not prescribe the previously listed RAM, AVX2, or disk requirements. Use a runtime compatible with the package dependencies and size the deployment for traffic, logging, training, and model workloads. Java targets Java 17; the Python package requires Python 3.10 or newer. The Rust ABI3 extension separately supports Python 3.8 or newer.</p>
 <h2>How does training update protection?</h2>
 <p>Offline training parses configured logs, extracts six features, trains after volume thresholds are met, and refreshes learned keywords while excluding legitimate routes. Schedule training in your deployment; the repo does not promise a real-time external threat-intelligence feed.</p>
 <h2>How do I investigate false positives?</h2>

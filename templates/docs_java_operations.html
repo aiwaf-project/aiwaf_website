@@ -157,6 +157,7 @@ AiwafFilter aiwafFilter(AiwafEngine engine, ApplicationContext context) {
 <li>Sign model/configuration artifacts where the runtime supports HMAC verification.</li>
 <li>Run AIWAF alongside normal secure-development controls and an edge/reverse-proxy layer.</li>
 </ul>
+<section class="section" id="bounded-sql-inspection"><h2>Bounded SQL inspection</h2><p>Java SQL inspection defaults to <code>security.sql_injection_mode: "block"</code>; <code>monitor</code> records findings without denying requests and <code>off</code> disables it. <code>AIWAF_SQL_INJECTION_MODE</code> is the environment override. Inspection honors the configured body-byte limit and returns HTTP 413 when inspection exceeds its budget. Previously learned benign keywords no longer block ordinary routes. Java remains a native Java implementation.</p></section>
 </main>
 </div></div>
 {% include "_java_scarf_pixel.html" %}

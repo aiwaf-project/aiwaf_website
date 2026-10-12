@@ -112,7 +112,7 @@ python aiwaf_test.py --python-only
 pytest
 python -m benchmarks.benchmark_auto_middleware</code></pre>
 <h2>Independent releases</h2>
-<p>The next ELv2 release candidates below have not been published. Release versions and tags must match the relevant manifest.</p>
+<p>The table lists source release targets, not registry availability. Rust/Python 0.2.2 is published on PyPI; other package publication is independent. Release versions and tags must match the relevant manifest.</p>
 <div class="table-wrap"><table><thead><tr><th>Package</th><th>Manifest</th><th>Tag</th><th>Workflow</th></tr></thead><tbody>
 <tr><td>Python <code>aiwaf</code></td><td><code>pyproject.toml</code></td><td><code>python-v1.1.2</code></td><td><code>python-publish.yml</code></td></tr>
 <tr><td>npm <code>aiwaf</code></td><td><code>js/package.json</code></td><td><code>js-v1.1.2</code></td><td><code>npm-publish.yml</code></td></tr>
@@ -134,6 +134,21 @@ python -m benchmarks.benchmark_auto_middleware</code></pre>
 <li>Sign model/configuration artifacts where the runtime supports HMAC verification.</li>
 <li>Run AIWAF alongside normal secure-development controls and an edge/reverse-proxy layer.</li>
 </ul>
+<section class="section" id="native-csv-operations"><h2>Rust-backed CSV operations and training</h2>
+<p>Python 1.1.2 requires <code>aiwaf-rust&gt;=0.2.2</code> for the optional Rust extra. Install both in the application's interpreter, then reload workers. Plain <code>pip install aiwaf</code> does not install the extension. Supported capabilities are selected automatically unless disabled.</p>
+<pre><code class="language-bash">pip install "aiwaf[flask,rust]"
+# Run these repository scripts with the matching installed packages.
+python scripts/check_native_csv_runtime.py
+python scripts/check_csv_release_concurrency.py
+
+# FastAPI: import the live application and use its routes/runtime stores.
+aiwaf fast train --app app:app --log-dir aiwaf_logs --disable-ai
+aiwaf fast train --app app:app --log-dir aiwaf_logs --model-path model.json
+# Django retains its management-command workflow.
+python manage.py detect_and_train</code></pre>
+<p>FastAPI also exposes <code>aiwaf.fast.trainer.train_from_logs(app, ...)</code>. <code>--data-dir</code> selects a CSV <code>runtime_store.csv</code> directory. AI training obeys its volume threshold; <code>--force-ai</code> explicitly overrides that threshold. Training writes learned keywords and optionally a JSON model artifact. Reload the model explicitly or restart the application: existing FastAPI anomaly middleware instances do not automatically adopt the new forest.</p>
+<p>Flask, Django CSV, and FastAPI stream plain/gzip CSV directly in bounded batches, including quoted newlines and seconds/milliseconds timing fields. Supported Apache logs use batched extraction and timestamp parsing. Django preserves its legacy CSV timezone/microsecond truncation; Flask and FastAPI preserve ISO offsets. Unique route checks, per-IP aggregation, and keyword persistence are batched. Native feature handles keep the matrix, forest fitting/prediction, and anomaly statistics in Rust, without a Pandas DataFrame. Custom parsers, missing capabilities, and Unicode keyword learning retain compatibility paths.</p>
+<p>CSV access logs are written and flushed synchronously under OS locks. Cached writer handles detect rotation, replacement, and truncation. After requests stop, call the Flask logger's <code>close()</code> or <code>aiwaf.core.native_runtime.close_csv_logs()</code> before deleting temporary directories, especially on Windows. Handles also close at process shutdown. <code>AIWAF_CSV_LOG_FSYNC=True</code> adds per-row disk sync; without it, a system crash can lose recently flushed OS-buffered entries. There is no application-side logging queue.</p></section>
 </main>
 </div></div>
 {% include "_python_scarf_pixel.html" %}

@@ -76,7 +76,7 @@
 <h1 class="page-title">Rust and WebAssembly Accelerators</h1>
 {% include '_docs_source.html' %}
 <p class="architecture-link"><a href="/docs/architecture">How AIWAF works: system architecture</a></p>
-<p><code>aiwaf-rust</code> and <code>aiwaf-wasm</code> are versioned independently from the Python and Node packages. Both currently declare version <code>0.2.1</code> in the local monorepo. They share <code>rust/crates/aiwaf_core/</code>; PyO3 bindings live in <code>rust/src/lib.rs</code>, and WASM bindings in <code>rust/crates/aiwaf_wasm/</code>.</p>
+<p><code>aiwaf-rust</code> and <code>aiwaf-wasm</code> are versioned independently from the Python and Node packages. Both currently declare version <code>0.2.2</code> in the local monorepo. They share <code>rust/crates/aiwaf_core/</code>; PyO3 bindings live in <code>rust/src/lib.rs</code>, and WASM bindings in <code>rust/crates/aiwaf_wasm/</code>.</p>
 <h2>Python bindings</h2>
 <p><code>aiwaf-rust</code> exposes the shared Rust core through PyO3 and ABI3 wheels for Python 3.8 and newer.</p>
 <pre><code class="language-bash">pip install aiwaf-rust</code></pre>
@@ -160,6 +160,7 @@ cp -R ../licenses crates/aiwaf_wasm/pkg/</code></pre>
 <li><a href="/docs/rust/bindings">Binding API and scoring semantics</a></li>
 <li><a href="/docs/rust/operations">Build, tests, and packaging</a></li>
 </ul>
+<section class="section" id="native-csv-updates"><h2>Python CSV and training additions</h2><p>PyO3 now exposes locked CSV transactions, indexed snapshots, synchronous cached log writers, shared request policies, <code>TrainingCSVReader</code>, <code>NativeTrainingBatch</code>, and <code>NativeTrainingBuilder</code>. Matrix fitting/prediction can remain in Rust; Python retains datetime/epoch compatibility and framework orchestration. Native ISO parsing remains opt-in because Python measured faster.</p><p>Read the <a href="/docs/rust/bindings#csv-and-training-bindings">binding capabilities</a> and <a href="/docs/rust/operations#csv-validation">validation and performance scope</a>. Current WASM bindings do not expose the filesystem CSV implementation or retained training classes.</p></section>
 </main>
 </div></div>
 </body>

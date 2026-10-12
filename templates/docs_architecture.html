@@ -100,6 +100,7 @@
 <section class="section" id="read-the-runtime-internals"><h2>Read the runtime internals</h2>
 <ul><li><a href="/docs/python/architecture">Python: shared core, framework hooks, policy and training</a></li><li><a href="/docs/javascript/architecture">Node.js: middleware order, denial paths and finish hooks</a></li><li><a href="/docs/java/architecture">Java: engine decisions, Spring discovery and distributed state</a></li><li><a href="/docs/rust/architecture">Rust/WASM: host bindings, matchers and forest implementation</a></li></ul>
 </section>
+<section class="section" id="native-csv-execution"><h2>Current native CSV execution</h2><p>Python's optional Rust extension now handles locked CSV storage, shared policy computations, batched log ingestion, and retained feature/model processing. The Python adapter still owns framework hooks, routes, request/response objects, and orchestration. Java remains native Java; Node's WASM integration does not expose the Python CSV filesystem bindings.</p><p>See <a href="/docs/python/architecture#native-csv-pipeline">the Python execution boundary</a>, <a href="/docs/rust/bindings#csv-and-training-bindings">native capabilities</a>, and <a href="/docs/python/operations#native-csv-operations">training operations</a>. CSV persistence and distributed rate counters are separate choices.</p></section>
 </main>
 </div></div>
 </body>

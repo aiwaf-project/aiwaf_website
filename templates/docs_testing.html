@@ -306,7 +306,14 @@ python -m django test test_django_protection --settings=django_test_settings -v 
 </tbody></table></div>
 <p>Use the <a href="/docs/sandbox">Redis-enabled multi-runtime sandbox</a> for pinned GitHub source builds and cross-runtime checks. Follow the <a href="/docs/sandbox/start">first-run tutorial</a>, run <a href="/docs/sandbox/validation">SQL, TLS, outage and dependency checks</a>, and review <a href="/docs/sandbox/owasp">OWASP coverage and limits</a> before interpreting results.</p>
 <p>Continue with <a href="/docs/troubleshooting">troubleshooting</a>, <a href="/docs/configuration">configuration reference</a>, and <a href="/docs/architecture#state-ownership-explains-multi-worker-behavior">state ownership across workers</a>.</p></section>
-            </main>
+            <section class="section" id="native-csv-regressions"><h2>Native CSV and training regression checks</h2>
+<pre><code class="language-bash">python aiwaf_test.py --python-only --coverage
+python manage.py test tests.django
+python scripts/check_native_csv_runtime.py
+python scripts/check_csv_release_concurrency.py</code></pre>
+<p>Django regression tests belong in <code>tests/django</code> as Django test cases discovered by <code>manage.py test</code>. Core and Flask/FastAPI tests use their corresponding pytest suites. The release runner also checks canonical source-to-test layout, line/branch coverage, and newly uncovered callables. Passing a coverage percentage alone does not satisfy the callable baseline gate.</p>
+<p>Test native/fallback parity with explicit adapter settings or <code>native_override(False)</code>: an environment-only toggle can be overridden by already configured Django settings in a combined suite. Exercise invalid/quoted/gzip logs, duplicate keyword updates, expiry, cross-worker changes, model parity, and close/reopen after rotation. Use isolated temporary files and close writer handles before cleanup.</p></section>
+</main>
         </div>
     </div>
 

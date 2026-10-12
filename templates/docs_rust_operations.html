@@ -99,7 +99,7 @@ cp ../NOTICE crates/aiwaf_wasm/pkg/NOTICE
 cp -R ../licenses crates/aiwaf_wasm/pkg/</code></pre>
 <p>The metadata script also stages LICENSE, NOTICE, and licenses/. The explicit copy commands above produce the same assets. PowerShell can use <code>Copy-Item</code> for files and <code>Copy-Item -Recurse</code> for directories. Browser applications require a bundler that understands WebAssembly assets; initialize the WASM module before calling its exports.</p>
 <h2>Release manifests</h2>
-<p>The next Rust/Python and WASM candidates are 0.2.2 under ELv2 and have not been published.</p>
+<p>The source Rust/Python and WASM versions are 0.2.2 under ELv2. Rust/Python 0.2.2 is published on PyPI; WASM registry publication is independent.</p>
 <ul>
 <li>PyPI: <code>rust/pyproject.toml</code> and <code>rust/Cargo.toml</code>, <code>rust-v0.2.2</code>, <code>rust-publish.yml</code>.</li>
 <li>npm: <code>rust/crates/aiwaf_wasm/Cargo.toml</code>, <code>wasm-v0.2.2</code>, <code>wasm-publish.yml</code>.</li>
@@ -107,6 +107,19 @@ cp -R ../licenses crates/aiwaf_wasm/pkg/</code></pre>
 </ul>
 <h2>Verification</h2>
 <p>Confirm <code>import aiwaf_rust</code> works in the interpreter used by the application. Validate model round trips through <code>fit</code>, <code>to_json</code>, <code>from_json</code>, and <code>predict</code>. Python selects available Rust capabilities automatically and falls back when unavailable. WASM performance depends on batch size and conversion cost.</p>
+<section class="section" id="csv-validation"><h2>CSV validation and performance</h2>
+<pre><code class="language-bash"># From the monorepo root, with the matching installed extension:
+python scripts/check_native_csv_runtime.py
+python scripts/check_csv_release_concurrency.py
+python scripts/benchmark_native_training_boundary.py
+python scripts/benchmark_native_csv_training.py
+python scripts/benchmark_native_csv_workloads.py
+python scripts/benchmark_csv_request_reuse.py
+python scripts/profile_csv_logging.py</code></pre>
+<p>The preflight checks module locations, enabled flags, required capabilities, and temporary-file round trips without touching application data. Native snapshot caching and cached log handles are bounded. Closing writers matters before Windows log-directory deletion.</p>
+<p>Three alternating runs on 10,000 synthetic records measured Apache timestamp speedups of 4.57x on Windows and 3.65x on WSL. Retained features plus a 20-tree Rust fit/predict boundary measured 1.55x and 1.35x. Native ISO parsing was slower on both, so it remains optional. An offline Windows Flask IP/keyword + CSV logging workload measured 5.95 ms native versus 9.18 ms Python. These are scoped measurements, not deployed throughput or complete training speedups.</p>
+<p>Release validation includes quoting/gzip, timestamp fallback, seeded model parity, chunk equivalence, concurrent mutations, no-op writes, rotation/truncation, and writer reopening. The Linux four-process smoke check retained 160 log rows and 80 blacklist entries. Production load and the full platform/framework matrix still require deployment-specific checks.</p>
+<p>Publish the Rust dependency before Python releases requiring it. Python release CI can build the matching extension locally for tests; its publication job checks that a compatible dependency is available on PyPI. Local test wheels stay separate from Python release artifacts.</p></section>
 </main>
 </div></div>
 </body>

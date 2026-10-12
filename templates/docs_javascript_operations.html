@@ -114,6 +114,7 @@ python aiwaf_test.py --js-only
 python aiwaf_test.py --wasm-only</code></pre>
 <h2>Packaging</h2>
 <p>The package manifest is <code>js/package.json</code>; the CLI entry is <code>js/bin/aiwaf.js</code>. Release tags use <code>js-v&lt;version&gt;</code> and the <code>npm-publish.yml</code> workflow. The root README and LICENSE are staged into package artifacts by release automation.</p>
+<section class="section" id="node-release-behavior"><h2>Request parsing and cache failures</h2><p>For custom Node HTTP servers or middleware registered before a framework parser, call <code>aiwaf.bodyParser()</code> before AIWAF and before forwarding requests. It parses JSON and URL-encoded bodies, retains original forwarding bytes, and rejects oversized bodies (default 64 KiB). Fastify/Hapi integrations must enforce AIWAF after body parsing and before their proxy handler.</p><p>Redis rate-cache failures return generic HTTP 503. <code>AIWAF_RATE_CACHE_FAILURE_MODE</code> defaults to <code>'closed'</code>; explicitly choosing <code>'open'</code> allows requests during cache failures. The new filesystem CSV transactions and retained training handles are Python/PyO3 capabilities; installing WASM does not migrate Node middleware/storage to that implementation.</p></section>
 </main>
 </div></div>
 </body>

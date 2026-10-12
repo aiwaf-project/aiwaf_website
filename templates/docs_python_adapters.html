@@ -107,6 +107,7 @@ def webhook():
 <li><a href="/docs/python/setup/flask">Flask</a></li>
 <li><a href="/docs/python/setup/fastapi">FastAPI</a></li>
 </ul>
+<section class="section" id="native-csv-updates"><h2>Current native CSV and training behavior</h2><p>Python 1.1.2 with <code>aiwaf-rust&gt;=0.2.2</code> automatically selects supported native capabilities after installation and worker restart, unless disabled. CSV runtime updates use locked atomic mutations; training supports direct CSV/gzip streaming and retained Rust feature/model processing. Framework hooks and route discovery remain Python.</p><p>See <a href="/docs/configuration#native-csv-settings">configuration and rate/logging options</a>, <a href="/docs/python/operations#native-csv-operations">training and deployment commands</a>, and <a href="/docs/python/architecture#native-csv-pipeline">execution and storage boundaries</a>. CSV blacklist persistence does not automatically share every rate counter. FastAPI trained models need explicit reload or application restart.</p></section>
 </main>
 </div></div>
 {% include "_python_scarf_pixel.html" %}

@@ -21,6 +21,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///aiwaf_temp.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+from beta_signup import init_beta_signup
+beta_signups = init_beta_signup(app, db)
+
 # AIWAF Configuration - CSV Storage (no database needed!)
 app.config['AIWAF_USE_CSV'] = True
 app.config['AIWAF_DATA_DIR'] = 'aiwaf_data'  # Directory for CSV files

@@ -145,7 +145,8 @@ aiwaf flask model --help</code></pre><p>Use <a href="/docs/python/operations">Py
 <li>Sign model/configuration artifacts where the runtime supports HMAC verification.</li>
 <li>Run AIWAF alongside normal secure-development controls and an edge/reverse-proxy layer.</li>
 </ul>
-<div class="docs-checkpoint"><strong>Checkpoint</strong> You can identify the settings location, import target, registered routes, and verification step for Flask.</div><nav class="docs-pagination" aria-label="Next reading"><a href="/docs/getting_started">Choose a runtime</a><a href="/docs/python/architecture">Next: understand Python architecture</a></nav></main>
+<div class="docs-checkpoint"><strong>Checkpoint</strong> You can identify the settings location, import target, registered routes, and verification step for Flask.</div><nav class="docs-pagination" aria-label="Next reading"><a href="/docs/getting_started">Choose a runtime</a><a href="/docs/python/architecture">Next: understand Python architecture</a></nav><section class="section" id="native-csv-updates"><h2>Current native CSV and training behavior</h2><p>Python 1.1.2 with <code>aiwaf-rust&gt;=0.2.2</code> automatically selects supported native capabilities after installation and worker restart, unless disabled. CSV runtime updates use locked atomic mutations; training supports direct CSV/gzip streaming and retained Rust feature/model processing. Framework hooks and route discovery remain Python.</p><p>See <a href="/docs/configuration#native-csv-settings">configuration and rate/logging options</a>, <a href="/docs/python/operations#native-csv-operations">training and deployment commands</a>, and <a href="/docs/python/architecture#native-csv-pipeline">execution and storage boundaries</a>. CSV blacklist persistence does not automatically share every rate counter. FastAPI trained models need explicit reload or application restart.</p></section>
+</main>
 </div></div>
 {% include "_python_scarf_pixel.html" %}
 </body>

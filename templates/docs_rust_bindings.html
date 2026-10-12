@@ -159,6 +159,15 @@
         <h3>Python ↔ WASM portability</h3>
         <p>Both bindings expose JSON state from the shared Rust core. Validate the serialized feature schema and forest version before exchanging artifacts. Java supports Python Rust-model JSON state; JavaScript-native and legacy artifacts are not generally interchangeable.</p>
     </section>
+<section class="section" id="csv-and-training-bindings"><h2>PyO3 CSV and retained training capabilities</h2>
+<p>The 0.2.2 Python extension additionally exposes CSV snapshot reads/indexed lookups, locked mutations, synchronous append/close operations, shared request policies, route-plan selection, and exemption matching. These are Python binding capabilities; the current WASM API does not expose filesystem CSV transactions or the retained training classes.</p>
+<ul><li><code>TrainingCSVReader</code> reads plain/gzip CSV in bounded batches via <code>next_batch(size)</code>, preserving quoted newlines and timing units.</li>
+<li><code>NativeTrainingBatch</code> retains features; <code>feature_columns()</code> supplies the six-column order, <code>fit_predict(model)</code> builds/fits/scores in Rust and returns per-IP anomaly statistics, and <code>to_dicts()</code> supports compatibility inspection.</li>
+<li><code>NativeTrainingBuilder.add_batch(...)</code> retains incremental feature state; <code>finish()</code> returns a native batch.</li>
+<li><code>extract_native_training_features</code> prepares a native feature batch from normalized records and route eligibility.</li>
+<li><code>training_date_parts</code> parses supported Apache/ISO parts; Python preserves datetime/epoch semantics and unsupported forms. Native ISO use is opt-in.</li>
+<li><code>csv_log_append</code> locks/flushes a row; <code>csv_log_close(path=None)</code> releases cached handles. Policy mutations remain separate transactions.</li></ul>
+<p>Use the framework adapters and <code>core/training_pipeline.py</code> for normal application integration. Low-level bindings expect the established schemas, units, and argument order; check capabilities before using them with older extensions.</p></section>
 </main>
 </div></div>
 </body>

@@ -105,6 +105,10 @@ aiwaf init --framework django --settings project.settings</code></pre>
 <h2>Rollback and release notes</h2>
 <p>Restore compatible code, configuration, state, and model artifacts together. Avoid reverting code while leaving a newer incompatible state schema. Repeat public-client and shared-worker checks after reload.</p>
 <p>See the <a href="https://github.com/aiwaf-project/aiwaf/blob/main/CHANGELOG.md">upstream changelog</a>, <a href="/docs/python/operations">Python operations</a>, <a href="/docs/javascript/operations">Node operations</a>, and <a href="/docs/java/operations">Java operations</a> for runtime commands.</p>
+<section class="section" id="python-112-native-csv"><h2>Python 1.1.2 and Rust 0.2.2 migration</h2>
+<ol><li>Back up policy CSV files, logs, route manifests, and JSON model artifacts.</li><li>Install matching Python/framework and Rust extras in the interpreter used by WSGI/ASGI; restart workers after installation.</li><li>Run <code>scripts/check_native_csv_runtime.py</code> from the source checkout in the deployment environment.</li><li>Verify allowed routes, blocked probes, external policy updates, CSV logging, and rate-cache behavior across workers. CSV rate buckets are explicit, not selected by CSV blacklist storage.</li><li>Train with representative logs. CSV/gzip ingestion now streams directly; custom parsers retain their compatibility path. Reload FastAPI anomaly middleware or restart after producing a new model.</li></ol>
+<p>Native policy updates are atomic under filesystem locks. Keep compatible schemas in rolling upgrades; older Python writers on Windows do not provide equivalent cross-process locking. Avoid concurrent whole-file replacement. Model schemas, status mapping, timestamp semantics, and seconds/milliseconds units must remain compatible.</p>
+<p>Redis configuration errors no longer silently select process memory in Flask. Runtime Redis rate-cache failures return generic HTTP 503 in Python. Check Redis connectivity/configuration before rollout. Native CSV rate buckets also return 503 when native support is unavailable.</p></section>
 </main>
 </div></div>
 </body>
