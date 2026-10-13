@@ -63,7 +63,11 @@ console.log(JSON.stringify(Object.entries(defaults).map(([k,v]) => [k,
     revision = subprocess.check_output(
         ["git", "-c", f"safe.directory={repo.as_posix()}", "-C", str(repo), "rev-parse", "HEAD"], text=True
     ).strip()
-    content = f'<p>Source snapshot: Python {python_version}, Node.js {node_version}, Java {java_version}; commit <code>{revision}</code>. These are source defaults, not a registry availability check. Runtime configuration and route policies can change effective values.</p>\n'
+    dirty = subprocess.check_output(
+        ["git", "-c", f"safe.directory={repo.as_posix()}", "-C", str(repo), "status", "--porcelain"], text=True
+    ).strip()
+    source_label = "working tree based on commit" if dirty else "commit"
+    content = f'<p>Source snapshot: Python {python_version}, Node.js {node_version}, Java {java_version}; {source_label} <code>{revision}</code>. These are legacy configuration defaults, not the separate lowercase native pipeline profile or a registry availability check. Runtime configuration and route policies can change effective values.</p>\n'
     content += '<h3>Python nested configuration defaults</h3>\n' + table(flatten(defaults))
     content += '<h3>Node.js normalized option defaults</h3>\n' + table(node_rows)
     content += '<h3>Java AiwafConfig field defaults</h3>\n<p>Java expressions are shown as declared in source. Collection constructors describe initial values; constants are resolved by the Java implementation.</p>\n' + table(java_rows)
