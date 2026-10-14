@@ -108,7 +108,7 @@ class DocumentationRoutesTests(unittest.TestCase):
     def test_reference_pages_include_key_diagnostics(self):
         cases = {
             "/docs/configuration": (b"AIWAF_RATE_CACHE_BACKEND", b"storageRedisFailureMode", b"WINDOW_SEC"),
-            "/docs/migration": (b"npm install aiwaf", b"aiwaf blacklist migrate", b"JSON"),
+            "/docs/migration": (b"npm install aiwaf", b"aiwaf blocklist migrate", b"JSON"),
             "/docs/troubleshooting": (b"--app app:app", b"documentation.py", b"/docs/python/setup/django"),
         }
         for path, expected in cases.items():

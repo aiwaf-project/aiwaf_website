@@ -128,7 +128,7 @@ app.listen(3000);</code></pre><h3>How this registration works</h3><p>The JSON bo
 <h2>Operate the installed package</h2>
 <pre><code class="language-bash">npx aiwaf --help
 npx aiwaf status
-npx aiwaf list blacklist
+npx aiwaf list blocklist
 npx aiwaf model info</code></pre>
 <p>For offline training from a source checkout:</p>
 <pre><code class="language-bash">cd aiwaf/js
@@ -140,7 +140,7 @@ AIWAF_ACCESS_LOG=/path/to/access.log npm run train</code></pre>
 <li><a href="/docs/javascript/operations">Node.js operations</a></li>
 <li><a href="/docs/javascript/architecture">Architecture and route policies</a></li>
 </ul>
-<div class="docs-checkpoint"><strong>Checkpoint</strong> You can locate the adapter registration, start this application, and inspect normal and rejected requests.</div><nav class="docs-pagination" aria-label="Next reading"><a href="/docs/getting_started">Choose a runtime</a><a href="/docs/javascript/architecture">Next: understand Node architecture</a></nav><section class="section" id="native-node-setup"><h2>Native Express setup</h2><p><strong>Native mode:</strong> Node source candidate <code>aiwaf 1.1.4</code> declares <code>aiwaf-wasm ^0.2.4</code>. Explicit native registration validates <code>NativeRequestPipeline</code> at startup; missing or incompatible support is an error. There is no JavaScript policy fallback for this engine. Installing the dependency does not switch an existing legacy middleware chain.</p><pre><code class="language-javascript">const express = require(&#x27;express&#x27;);
+<div class="docs-checkpoint"><strong>Checkpoint</strong> You can locate the adapter registration, start this application, and inspect normal and rejected requests.</div><nav class="docs-pagination" aria-label="Next reading"><a href="/docs/getting_started">Choose a runtime</a><a href="/docs/javascript/architecture">Next: understand Node architecture</a></nav><section class="section" id="native-node-setup"><h2>Native Express setup</h2><p><strong>Native mode:</strong> Node source candidate <code>aiwaf 1.1.5</code> declares <code>aiwaf-wasm ^0.2.5</code>. Explicit native registration validates <code>NativeRequestPipeline</code> at startup; missing or incompatible support is an error. There is no JavaScript policy fallback for this engine. Installing the dependency does not switch an existing legacy middleware chain.</p><pre><code class="language-javascript">const express = require(&#x27;express&#x27;);
 const aiwaf = require(&#x27;aiwaf&#x27;);
 
 async function main() {

@@ -68,7 +68,7 @@ Spring Boot auto-configuration registers the AIWAF filter and discovers live MVC
 
 Read /docs/configuration for defaults, option types, adapter differences, and precedence. Inspect enabled middleware and exemption policies. Test a normal public request, an intentionally blocked request, a rate-limit boundary, and the intended exempt health endpoint. Record the response and reason from logs. Test client IP resolution through your real proxy chain.
 
-Use shared state when workers must enforce one policy. Verify which state the selected backend shares: a persisted blacklist does not automatically share rate counters. Java Redis 1.3 supports standalone mode and explicit failure policy; review namespace/schema compatibility before a rolling upgrade.
+Use shared state when workers must enforce one policy. Verify which state the selected backend shares: a persisted blocklist does not automatically share rate counters. Java Redis 1.3 supports standalone mode and explicit failure policy; review namespace/schema compatibility before a rolling upgrade.
 
 ## Collect, train, and reload
 

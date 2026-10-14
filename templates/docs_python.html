@@ -109,9 +109,9 @@
 <h2>Packages in the monorepo</h2>
 <p>Each package is versioned and released independently.</p>
 <div class="table-wrap"><table><thead><tr><th>Runtime</th><th>Package</th><th>Repository version</th><th>Primary use</th></tr></thead><tbody>
-<tr><td>Python</td><td><a href="https://pypi.org/project/aiwaf/"><code>aiwaf</code></a></td><td><code>1.1.7</code></td><td>Django, Flask, and FastAPI protection</td></tr>
+<tr><td>Python</td><td><a href="https://pypi.org/project/aiwaf/"><code>aiwaf</code></a></td><td><code>1.1.8</code></td><td>Django, Flask, and FastAPI protection</td></tr>
 <tr><td>Node.js</td><td><a href="https://www.npmjs.com/package/aiwaf"><code>aiwaf</code></a></td><td><code>1.1.4</code></td><td>Express and Node framework middleware</td></tr>
-<tr><td>Rust/Python</td><td><a href="https://pypi.org/project/aiwaf-rust/"><code>aiwaf-rust</code></a></td><td><code>0.2.6</code></td><td>Native Python acceleration and JSON model inference</td></tr>
+<tr><td>Rust/Python</td><td><a href="https://pypi.org/project/aiwaf-rust/"><code>aiwaf-rust</code></a></td><td><code>0.2.7</code></td><td>Native Python acceleration and JSON model inference</td></tr>
 <tr><td>WebAssembly</td><td><a href="https://www.npmjs.com/package/aiwaf-wasm"><code>aiwaf-wasm</code></a></td><td><code>0.2.4</code></td><td>Rust detection and model primitives for JavaScript</td></tr>
 <tr><td>Java</td><td><code>io.github.aiwaf-project:aiwaf-java</code></td><td><code>1.3.4</code></td><td>Spring MVC and Jakarta Servlet protection</td></tr>
 </tbody></table></div>
@@ -131,7 +131,7 @@
 └── LICENSE                         Canonical Elastic License 2.0 (see NOTICE)</code></pre>
 <h2>Request controls</h2>
 <ul>
-<li>IP blacklist, exemption, reputation, expiry, and progressive-block handling</li>
+<li>IP blocklist, exemption, reputation, expiry, and progressive-block handling</li>
 <li>Sliding-window rate limiting and flood detection</li>
 <li>Header, method, request-size, content-type, and parameter validation</li>
 <li>Static and learned malicious keyword detection</li>
@@ -154,7 +154,7 @@
 <li><a href="/docs/python/adapters">Framework adapters</a></li>
 <li><a href="/docs/python/operations">Operations and migration</a></li>
 </ul>
-<section class="section" id="native-csv-updates"><h2>Rust-owned CSV request pipeline</h2><p><strong>Release candidate:</strong> this page documents Python <code>1.1.7</code> and Rust/Python <code>0.2.6</code> in the current source checkout. Source versions do not establish registry availability. Python 1.1.7 requires <code>aiwaf-rust&gt;=0.2.6</code>; framework dependencies remain extras.</p><p>Install the explicit native adapter <strong>instead of</strong> the existing AIWAF middleware chain. Installing the required Rust dependency does not automatically switch existing applications to this pipeline. Legacy adapters remain available for custom stores and hooks; their configuration and fallback behavior are separate.</p><p>Rust owns the native CSV pipeline configuration, enforcement order, SQL and keyword inspection, geo/blacklist decisions, rate buckets, form timing, UUID scores, anomaly history/inference, keyword learning, and CSV logging. Python supplies framework routes, authentication facts, GeoIP lookup, bounded request buffering, and response construction. Training and management still have Python interfaces.</p><p>Continue with <a href="/docs/python/architecture#native-csv-pipeline">the request lifecycle</a>, <a href="/docs/configuration#native-pipeline-profile">the native profile</a>, <a href="/docs/migration#python-113-native-pipeline">migration</a>, and <a href="/docs/python/operations#native-pipeline-performance">performance and deployment</a>.</p></section>
+<section class="section" id="native-csv-updates"><h2>Rust-owned CSV request pipeline</h2><p><strong>Release candidate:</strong> this page documents Python <code>1.1.8</code> and Rust/Python <code>0.2.7</code> in the current source checkout. Source versions do not establish registry availability. Python 1.1.8 requires <code>aiwaf-rust&gt;=0.2.7</code>; framework dependencies remain extras.</p><p>Install the explicit native adapter <strong>instead of</strong> the existing AIWAF middleware chain. Installing the required Rust dependency does not automatically switch existing applications to this pipeline. Legacy adapters remain available for custom stores and hooks; their configuration and fallback behavior are separate.</p><p>Rust owns the native CSV pipeline configuration, enforcement order, SQL and keyword inspection, geo/blocklist decisions, rate buckets, form timing, UUID scores, anomaly history/inference, keyword learning, and CSV logging. Python supplies framework routes, authentication facts, GeoIP lookup, bounded request buffering, and response construction. Training and management still have Python interfaces.</p><p>Continue with <a href="/docs/python/architecture#native-csv-pipeline">the request lifecycle</a>, <a href="/docs/configuration#native-pipeline-profile">the native profile</a>, <a href="/docs/migration#python-113-native-pipeline">migration</a>, and <a href="/docs/python/operations#native-pipeline-performance">performance and deployment</a>.</p></section>
 {% include '_python_csv_storage.html' %}
 </main>
     </div>

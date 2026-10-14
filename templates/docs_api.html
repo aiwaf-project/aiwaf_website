@@ -85,7 +85,7 @@
 aiwaf --help
 
 # Explicit Flask policy commands
-aiwaf flask blacklist migrate
+aiwaf flask blocklist migrate
 aiwaf flask status
 
 # Django management commands
@@ -105,8 +105,8 @@ aiwaf fastapi --help</code></pre>
 
 AIWAF_ACCESS_LOG=/path/to/access.log npm run train
 npm run aiwaf -- status
-npm run aiwaf -- list blacklist
-npm run aiwaf -- add blacklist 203.0.113.9 &quot;manual block&quot;
+npm run aiwaf -- list blocklist
+npm run aiwaf -- add blocklist 203.0.113.9 &quot;manual block&quot;
 npm run aiwaf -- add ip-exemption 203.0.113.10 &quot;trusted monitor&quot;
 npm run aiwaf -- geo summary
 npm run aiwaf -- model info
@@ -129,7 +129,7 @@ aiwaf-cli model status --path model.json</code></pre>
 <li><a href="/docs/rust/bindings">Rust/Python and WASM functions</a></li>
 </ul>
 <h2>Website endpoints</h2>
-<p>This Flask documentation application defines its own <code>/health</code>, <code>/aiwaf/status</code>, <code>/aiwaf/whitelist</code>, <code>/aiwaf/blacklist</code>, and <code>/aiwaf/keywords</code> routes. Those are website-specific handlers, not a portable AIWAF API. Their implementation does not provide the bearer-token authentication previously described here.</p>
+<p>This Flask documentation application defines its own <code>/health</code>, <code>/aiwaf/status</code>, <code>/aiwaf/allowlist</code>, <code>/aiwaf/blocklist</code>, and <code>/aiwaf/keywords</code> routes. Those are website-specific handlers, not a portable AIWAF API. Their implementation does not provide the bearer-token authentication previously described here.</p>
 </main>
         </div>
     </div>

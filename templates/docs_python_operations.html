@@ -87,7 +87,7 @@
 aiwaf --help
 
 # Explicit Flask policy commands
-aiwaf flask blacklist migrate
+aiwaf flask blocklist migrate
 aiwaf flask status
 
 # Django management commands
@@ -102,10 +102,10 @@ aiwaf django aiwaf_list --all
 aiwaf flask --help
 aiwaf fastapi --help</code></pre>
 <p>Bare commands select the single installed supported framework. When several frameworks are installed, use an explicit prefix: <code>aiwaf flask ...</code>, <code>aiwaf fastapi ...</code>, or <code>aiwaf django &lt;management-command&gt; ...</code>. <code>fast</code> remains a FastAPI alias. <code>aiwaf init</code> accepts <code>--framework</code> and <code>--app</code> for route discovery; these flags do not choose the adapter for bare commands. FastAPI training has its own <code>--app</code> option. Django uses its management-command names; bare <code>status</code> is not a Django management command.</p>
-<h2>Blacklist migration</h2>
-<p>Version 1.0.7 introduced weighted reputation, progressively longer temporary blocks, expiration, and richer blacklist metadata. Existing blacklist data has compatibility handling; <code>aiwaf blacklist migrate</code> performs backend-aware migration. Legacy CSV schemas are detected and imported permanent blocks are converted safely. Review existing entries and back up runtime state before migration.</p>
+<h2>Blocklist migration</h2>
+<p>Version 1.0.7 introduced weighted reputation, progressively longer temporary blocks, expiration, and richer blocklist metadata. Existing blocklist data has compatibility handling; <code>aiwaf blocklist migrate</code> performs backend-aware migration. Legacy CSV schemas are detected and imported permanent blocks are converted safely. Review existing entries and back up runtime state before migration.</p>
 <h2>Model storage</h2>
-<p>Persisted Python models use JSON state. Pickle, joblib, and executable Python-object formats are unsupported. Regenerate old model artifacts through the current trainer. Python 1.1.7 installs its required <code>aiwaf-rust&gt;=0.2.6</code> dependency. Legacy adapters select supported native operations while retaining their compatibility paths; the complete native pipeline requires an explicit adapter and has no Python policy fallback.</p>
+<p>Persisted Python models use JSON state. Pickle, joblib, and executable Python-object formats are unsupported. Regenerate old model artifacts through the current trainer. Python 1.1.8 installs its required <code>aiwaf-rust&gt;=0.2.7</code> dependency. Legacy adapters select supported native operations while retaining their compatibility paths; the complete native pipeline requires an explicit adapter and has no Python policy fallback.</p>
 <h2>Local development and verification</h2>
 <p>Run from the monorepo root:</p>
 <pre><code class="language-bash">python -m pip install -e &quot;.[django,flask,fastapi,rust]&quot;
@@ -115,13 +115,13 @@ python aiwaf_test.py --python-only
 pytest
 python -m benchmarks.benchmark_auto_middleware</code></pre>
 <h2>Independent releases</h2>
-<p>The table lists source release targets, not registry availability. Python 1.1.7 and Rust/Python 0.2.6 are local source targets; registry publication is independent. Release versions and tags must match the relevant manifest.</p>
+<p>The table lists source release targets, not registry availability. Python 1.1.8 and Rust/Python 0.2.7 are local source targets; registry publication is independent. Release versions and tags must match the relevant manifest.</p>
 <div class="table-wrap"><table><thead><tr><th>Package</th><th>Manifest</th><th>Tag</th><th>Workflow</th></tr></thead><tbody>
-<tr><td>Python <code>aiwaf</code></td><td><code>pyproject.toml</code></td><td><code>python-v1.1.7</code></td><td><code>python-publish.yml</code></td></tr>
-<tr><td>npm <code>aiwaf</code></td><td><code>js/package.json</code></td><td><code>js-v1.1.4</code></td><td><code>npm-publish.yml</code></td></tr>
-<tr><td>PyPI <code>aiwaf-rust</code></td><td><code>rust/pyproject.toml</code> + <code>rust/Cargo.toml</code></td><td><code>rust-v0.2.6</code></td><td><code>rust-publish.yml</code></td></tr>
-<tr><td>npm <code>aiwaf-wasm</code></td><td><code>rust/crates/aiwaf_wasm/Cargo.toml</code></td><td><code>wasm-v0.2.4</code></td><td><code>wasm-publish.yml</code></td></tr>
-<tr><td>Maven <code>aiwaf-java</code></td><td><code>java/pom.xml</code></td><td><code>java-v1.3.4</code></td><td><code>java-publish.yml</code></td></tr>
+<tr><td>Python <code>aiwaf</code></td><td><code>pyproject.toml</code></td><td><code>python-v1.1.8</code></td><td><code>python-publish.yml</code></td></tr>
+<tr><td>npm <code>aiwaf</code></td><td><code>js/package.json</code></td><td><code>js-v1.1.5</code></td><td><code>npm-publish.yml</code></td></tr>
+<tr><td>PyPI <code>aiwaf-rust</code></td><td><code>rust/pyproject.toml</code> + <code>rust/Cargo.toml</code></td><td><code>rust-v0.2.7</code></td><td><code>rust-publish.yml</code></td></tr>
+<tr><td>npm <code>aiwaf-wasm</code></td><td><code>rust/crates/aiwaf_wasm/Cargo.toml</code></td><td><code>wasm-v0.2.5</code></td><td><code>wasm-publish.yml</code></td></tr>
+<tr><td>Maven <code>aiwaf-java</code></td><td><code>java/pom.xml</code></td><td><code>java-v1.3.5</code></td><td><code>java-publish.yml</code></td></tr>
 </tbody></table></div>
 <p>Python and Rust publish to PyPI with trusted publishing. The npm workflows use npm trusted publishing and stage packages for approval. Configure the trusted publisher with organization <code>aiwaf-project</code>, repository <code>aiwaf</code>, the exact workflow filename, and the environment used by that workflow.</p>
 <p>Java publishing uses the protected <code>maven-publish</code> environment plus <code>GPG_PRIVATE_KEY</code>, <code>GPG_PASSPHRASE</code>, <code>CENTRAL_TOKEN_USERNAME</code>, and <code>CENTRAL_TOKEN_PASSWORD</code>. The workflow verifies the tag, runs tests, signs the POM and all three JARs, uploads the deployment bundle, and waits for Maven Central publication.</p>
@@ -130,7 +130,7 @@ python -m benchmarks.benchmark_auto_middleware</code></pre>
 <ul>
 <li>Configure the application to trust forwarding headers only from known proxy CIDRs.</li>
 <li>Configure the outermost proxy to overwrite client-supplied forwarding headers.</li>
-<li>Use Redis, a database, or another shared backend when multiple workers must share rate-limit, blacklist, or exemption state.</li>
+<li>Use Redis, a database, or another shared backend when multiple workers must share rate-limit, blocklist, or exemption state.</li>
 <li>Keep health checks, static assets, and trusted webhook routes explicitly scoped instead of disabling protection globally.</li>
 <li>Start anomaly detection in observe-only or conservative mode and tune it with representative normal traffic.</li>
 <li>Rotate logs and exclude secrets, authorization headers, cookies, and personal data.</li>
@@ -138,7 +138,7 @@ python -m benchmarks.benchmark_auto_middleware</code></pre>
 <li>Run AIWAF alongside normal secure-development controls and an edge/reverse-proxy layer.</li>
 </ul>
 <section class="section" id="native-csv-operations"><h2>Rust-backed CSV operations and training</h2>
-<p>Python 1.1.7 requires <code>aiwaf-rust&gt;=0.2.6</code> as a base dependency. Framework extras select Django, Flask or FastAPI. The optional <code>rust</code> extra remains an installation alias. Legacy capability selection is automatic unless disabled; the new complete pipeline requires the explicit adapter.</p>
+<p>Python 1.1.8 requires <code>aiwaf-rust&gt;=0.2.7</code> as a base dependency. Framework extras select Django, Flask or FastAPI. The optional <code>rust</code> extra remains an installation alias. Legacy capability selection is automatic unless disabled; the new complete pipeline requires the explicit adapter.</p>
 <pre><code class="language-bash">pip install "aiwaf[flask,rust]"
 # Run these repository scripts with the matching installed packages.
 python scripts/check_native_csv_runtime.py
@@ -149,16 +149,16 @@ aiwaf fastapi train --app app:app --log-dir aiwaf_logs --disable-ai
 aiwaf fastapi train --app app:app --log-dir aiwaf_logs --model-path model.json
 # Django retains its management-command workflow.
 python manage.py detect_and_train</code></pre>
-<p>FastAPI also exposes <code>aiwaf.fast.trainer.train_from_logs(app, ...)</code>. <code>--data-dir</code> selects the shared policy CSV directory and imports an existing legacy <code>runtime_store.csv</code> once. Training writes shared keyword and blacklist files; keyword frequencies are retained in auxiliary runtime metadata. AI training obeys its volume threshold; <code>--force-ai</code> explicitly overrides that threshold. Training optionally writes a JSON model artifact. Reload the model explicitly or restart the application: existing FastAPI anomaly middleware instances do not automatically adopt the new forest.</p>
+<p>FastAPI also exposes <code>aiwaf.fast.trainer.train_from_logs(app, ...)</code>. <code>--data-dir</code> selects the shared policy CSV directory and imports an existing legacy <code>runtime_store.csv</code> once. Training writes shared keyword and blocklist files; keyword frequencies are retained in auxiliary runtime metadata. AI training obeys its volume threshold; <code>--force-ai</code> explicitly overrides that threshold. Training optionally writes a JSON model artifact. Reload the model explicitly or restart the application: existing FastAPI anomaly middleware instances do not automatically adopt the new forest.</p>
 <p>Flask, Django CSV, and FastAPI stream plain/gzip CSV directly in bounded batches, including quoted newlines and seconds/milliseconds timing fields. Supported Apache logs use batched extraction and timestamp parsing. Django preserves its legacy CSV timezone/microsecond truncation; Flask and FastAPI preserve ISO offsets. Unique route checks, per-IP aggregation, and keyword persistence are batched. Native feature handles keep the matrix, forest fitting/prediction, and anomaly statistics in Rust, without a Pandas DataFrame. Custom parsers, missing capabilities, and Unicode keyword learning retain compatibility paths.</p>
 <p>CSV access logs are written and flushed synchronously under OS locks. Cached writer handles detect rotation, replacement, and truncation. After requests stop, call the Flask logger's <code>close()</code> or <code>aiwaf.core.native_runtime.close_csv_logs()</code> before deleting temporary directories, especially on Windows. Handles also close at process shutdown. <code>AIWAF_CSV_LOG_FSYNC=True</code> adds per-row disk sync; without it, a system crash can lose recently flushed OS-buffered entries. There is no application-side logging queue.</p></section>
-<section class="section" id="native-pipeline-performance"><h2>Native pipeline performance and deployment</h2><p><strong>Release candidate:</strong> this page documents Python <code>1.1.7</code> and Rust/Python <code>0.2.6</code> in the current source checkout. Source versions do not establish registry availability. Python 1.1.7 requires <code>aiwaf-rust&gt;=0.2.6</code>; framework dependencies remain extras.</p>
-<p>Matched WSL Linux measurements used all eight stages, immediate CSV logging, 1,000 blacklist entries, 80% GET / 20% JSON POST (30 fields), and one concurrent client. Three alternating 300-request runs per framework/mode used a seeded 100-tree Rust forest and 200 initial history records per client when AI was enabled. GeoIP reflects a local fixture.</p>
+<section class="section" id="native-pipeline-performance"><h2>Native pipeline performance and deployment</h2><p><strong>Release candidate:</strong> this page documents Python <code>1.1.8</code> and Rust/Python <code>0.2.7</code> in the current source checkout. Source versions do not establish registry availability. Python 1.1.8 requires <code>aiwaf-rust&gt;=0.2.7</code>; framework dependencies remain extras.</p>
+<p>Matched WSL Linux measurements used all eight stages, immediate CSV logging, 1,000 blocklist entries, 80% GET / 20% JSON POST (30 fields), and one concurrent client. Three alternating 300-request runs per framework/mode used a seeded 100-tree Rust forest and 200 initial history records per client when AI was enabled. GeoIP reflects a local fixture.</p>
 <div class="table-wrap"><table><thead><tr><th>Framework</th><th>CSV timing, AI off</th><th>Memory timing, AI off</th><th>CSV timing, AI on</th><th>Memory timing, AI on</th></tr></thead><tbody><tr><td>Flask</td><td>3.74 ms</td><td>0.83 ms</td><td>3.66 ms</td><td>0.97 ms</td></tr><tr><td>Django</td><td>3.67 ms</td><td>0.91 ms</td><td>4.02 ms</td><td>0.83 ms</td></tr><tr><td>FastAPI</td><td>3.78 ms</td><td>0.78 ms</td><td>3.70 ms</td><td>0.92 ms</td></tr></tbody></table></div>
 <p>These are <strong>added server processing latency</strong>: median of per-run mean protected times minus the corresponding framework-only baseline. They are not total request latency, network latency or production throughput. Memory reduced measured overhead by 73–79% versus persistent CSV timing, with different persistence and worker-sharing semantics. All 13,500 measured requests returned 200; protected PHP/SQL probes returned 403.</p>
 <p>Reproduce from the monorepo with <code>scripts/benchmark_release_http.py --pipeline</code>; add <code>--honeypot-backend memory</code> for memory mode. Include a framework-only baseline using the same handler, workload and server. Compare your production filesystem, worker count and real GeoIP/model workload before setting latency expectations.</p>
 <h3>Model and worker lifecycle</h3><p>Pass a trained Rust IsolationForest as <code>model=</code>, or use Django's <code>AIWAF_CSV_PIPELINE_MODEL</code>. Load a new snapshot with <code>pipeline.native.set_model(model)</code> where you hold the engine reference, or reload workers. Native initialization does not automatically train or load the legacy adapter's model artifact. The runtime's <code>diagnostics()</code> reports model activation and state counts.</p>
-<h3>Release order</h3><p>Publish <code>aiwaf-rust 0.2.6</code> before <code>aiwaf 1.1.7</code>. Native wheels target Linux x86_64/aarch64, musl x86_64, macOS x86_64/arm64 and Windows x86_64. Windows and WSL builds were checked locally; all remaining wheel targets must pass release CI. Local validation passed eight test groups and ten independent Windows native API smoke checks. These local checks do not replace platform CI.</p><p>Continue with <a href="/docs/python/architecture#native-csv-pipeline">the request lifecycle</a>, <a href="/docs/configuration#native-pipeline-profile">the native profile</a>, <a href="/docs/migration#python-113-native-pipeline">migration</a>, and <a href="/docs/python/operations#native-pipeline-performance">performance and deployment</a>.</p></section>
+<h3>Release order</h3><p>Publish <code>aiwaf-rust 0.2.7</code> before <code>aiwaf 1.1.8</code>. Native wheels target Linux x86_64/aarch64, musl x86_64, macOS x86_64/arm64 and Windows x86_64. Windows and WSL builds were checked locally; all remaining wheel targets must pass release CI. Local validation passed eight test groups and ten independent Windows native API smoke checks. These local checks do not replace platform CI.</p><p>Continue with <a href="/docs/python/architecture#native-csv-pipeline">the request lifecycle</a>, <a href="/docs/configuration#native-pipeline-profile">the native profile</a>, <a href="/docs/migration#python-113-native-pipeline">migration</a>, and <a href="/docs/python/operations#native-pipeline-performance">performance and deployment</a>.</p></section>
 {% include '_python_csv_storage.html' %}
 <section class="section" id="python-114-operations"><h2>Python 1.1.4 CSV migration checks (historical)</h2><p>This source release adds installed-framework CLI detection, the explicit <code>fastapi</code> alias, reuse of existing Flask data directories, and shared policy CSV startup migration. It keeps <code>aiwaf-rust&gt;=0.2.3</code>; these changes require no new native API.</p><pre><code class="language-bash"># Show the deployed interpreter's installed versions.
 python -m pip show aiwaf aiwaf-rust

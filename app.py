@@ -222,67 +222,75 @@ def aiwaf_status():
     except Exception as e:
         return jsonify({'error': str(e), 'protection_enabled': False}), 500
 
+@app.route('/aiwaf/allowlist', methods=['GET', 'POST'])
 @app.route('/aiwaf/whitelist', methods=['GET', 'POST'])
-def aiwaf_whitelist():
-    """Manage IP whitelist"""
+def aiwaf_allowlist():
+    """Manage IP allowlist"""
     if request.method == 'POST':
         try:
-            from aiwaf.flask.storage import add_ip_whitelist
+            from aiwaf.flask.storage import add_ip_allowlist
             ip = request.json.get('ip')
             if ip:
-                add_ip_whitelist(ip)
-                return jsonify({'success': True, 'message': f'IP {ip} added to whitelist'})
+                add_ip_allowlist(ip)
+                return jsonify({'success': True, 'message': f'IP {ip} added to allowlist'})
             else:
                 return jsonify({'success': False, 'message': 'IP address required'}), 400
         except Exception as e:
             return jsonify({'success': False, 'message': str(e)}), 500
     
-    # GET request - return current whitelist
+    # GET request - return current allowlist
     try:
         data_dir = app.config.get('AIWAF_DATA_DIR', 'aiwaf_data')
-        whitelist_file = os.path.join(data_dir, 'whitelist.csv')
-        whitelist = []
+        allowlist_file = os.path.join(data_dir, 'whitelist.csv')
+        allowlist = []
         
-        if os.path.exists(whitelist_file):
+        if os.path.exists(allowlist_file):
             import csv
-            with open(whitelist_file, 'r') as f:
+            with open(allowlist_file, 'r') as f:
                 reader = csv.DictReader(f)
-                whitelist = list(reader)
+                allowlist = list(reader)
         
-        return jsonify({'whitelist': whitelist})
+        payload = {'allowlist': allowlist}
+        if request.path.endswith('/whitelist'):
+            payload['whitelist'] = allowlist
+        return jsonify(payload)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/aiwaf/blocklist', methods=['GET', 'POST'])
 @app.route('/aiwaf/blacklist', methods=['GET', 'POST'])
-def aiwaf_blacklist():
-    """Manage IP blacklist"""
+def aiwaf_blocklist():
+    """Manage IP blocklist"""
     if request.method == 'POST':
         try:
-            from aiwaf.flask.storage import add_ip_blacklist
+            from aiwaf.flask.storage import add_ip_blocklist
             ip = request.json.get('ip')
             reason = request.json.get('reason', 'Manual block')
             
             if ip:
-                add_ip_blacklist(ip, reason=reason)
-                return jsonify({'success': True, 'message': f'IP {ip} added to blacklist'})
+                add_ip_blocklist(ip, reason=reason)
+                return jsonify({'success': True, 'message': f'IP {ip} added to blocklist'})
             else:
                 return jsonify({'success': False, 'message': 'IP address required'}), 400
         except Exception as e:
             return jsonify({'success': False, 'message': str(e)}), 500
     
-    # GET request - return current blacklist
+    # GET request - return current blocklist
     try:
         data_dir = app.config.get('AIWAF_DATA_DIR', 'aiwaf_data')
-        blacklist_file = os.path.join(data_dir, 'blacklist.csv')
-        blacklist = []
+        blocklist_file = os.path.join(data_dir, 'blacklist.csv')
+        blocklist = []
         
-        if os.path.exists(blacklist_file):
+        if os.path.exists(blocklist_file):
             import csv
-            with open(blacklist_file, 'r') as f:
+            with open(blocklist_file, 'r') as f:
                 reader = csv.DictReader(f)
-                blacklist = list(reader)
+                blocklist = list(reader)
         
-        return jsonify({'blacklist': blacklist})
+        payload = {'blocklist': blocklist}
+        if request.path.endswith('/blacklist'):
+            payload['blacklist'] = blocklist
+        return jsonify(payload)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

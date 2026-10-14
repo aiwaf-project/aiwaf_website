@@ -1,5 +1,6 @@
 <section class="section">
 <h2>Shared Python CSV storage</h2>
+<p>List APIs and command help now use <strong>blocklist</strong> and <strong>allowlist</strong>. Earlier import/method/command spellings remain compatibility aliases. Existing CSV filenames and Django model identity are retained so upgrades preserve stored blocks and exemptions; use the package storage constants rather than constructing filenames.</p>
 <p>Python <code>1.1.4</code> standardizes Flask, FastAPI, Django CSV mode, and the explicit native pipeline on <code>blacklist.csv</code>, <code>whitelist.csv</code>, <code>keywords.csv</code>, <code>geo_blocked_countries.csv</code>, and <code>path_exemptions.csv</code>. Keyword frequencies and non-policy runtime history are retained in <code>runtime_metadata.csv</code>. Memory, JSON-file, database, and Django ORM modes keep their existing storage behavior.</p>
 <div class="table-wrap"><table><thead><tr><th>Integration</th><th>CSV directory configuration</th></tr></thead><tbody>
 <tr><td>Legacy Flask</td><td>Set <code>app.config['AIWAF_USE_CSV'] = True</code> and <code>app.config['AIWAF_DATA_DIR']</code> before initializing AIWAF.</td></tr>
@@ -12,7 +13,7 @@
 </section>
 <section class="section" id="flask-fastapi-native-honeypot-cache">
 <h2>Flask and FastAPI native honeypot cache</h2>
-<p>Python <code>1.1.7</code> with <code>aiwaf-rust 0.2.6</code> adds opt-in Redis and supplied-cache timing to both native adapters. CSV remains their default. Rust retains timing rules and exemptions; only timestamp I/O uses the cache.</p>
+<p>Python <code>1.1.8</code> with <code>aiwaf-rust 0.2.7</code> adds opt-in Redis and supplied-cache timing to both native adapters. CSV remains their default. Rust retains timing rules and exemptions; only timestamp I/O uses the cache.</p>
 <pre><code class="language-python">import os
 profile = {
     "data_dir": "aiwaf_data",
@@ -31,7 +32,7 @@ NativeAIWAF(app, config=profile)
 </section>
 <section class="section" id="django-native-honeypot-cache">
 <h2>Django native honeypot cache</h2>
-<p>Python <code>1.1.7</code> with <code>aiwaf-rust 0.2.6</code> defaults Django native honeypot timing to Django's configured cache. Set <code>honeypot_cache_alias</code> in <code>AIWAF_CSV_PIPELINE</code> to select an alias; it defaults to <code>default</code>. Rust calls a small Python cache adapter for timestamp I/O and retains timing decisions, logical expiry and exemptions. Other policy CSVs and rate-limit configuration are unchanged.</p>
+<p>Python <code>1.1.8</code> with <code>aiwaf-rust 0.2.7</code> defaults Django native honeypot timing to Django's configured cache. Set <code>honeypot_cache_alias</code> in <code>AIWAF_CSV_PIPELINE</code> to select an alias; it defaults to <code>default</code>. Rust calls a small Python cache adapter for timestamp I/O and retains timing decisions, logical expiry and exemptions. Other policy CSVs and rate-limit configuration are unchanged.</p>
 <pre><code class="language-python">AIWAF_CSV_PIPELINE = {
     "data_dir": "aiwaf_data",
     "honeypot_cache_alias": "default",
@@ -44,6 +45,6 @@ NativeAIWAF(app, config=profile)
 <section class="section">
 <h2>Training replay protection</h2>
 <p>Python <code>1.1.6</code> with <code>aiwaf-rust 0.2.5</code> uses Rust-owned receipts in Flask, FastAPI, and Django. Reusing requests already handled by training cannot extend or recreate a block. Fresh requests must independently satisfy enforcement rules; models and keyword learning can still reuse historical logs.</p>
-<p>Keep <code>training_evidence.json</code> across expiry, manual unblocking, log rotation, and restarts. It lives in the policy data directory unless <code>AIWAF_TRAINING_STATE_DIR</code> selects another durable directory. Trainers sharing a blacklist must share that directory. Receipts start with this release and cannot reconstruct decisions made by older versions. Missing native support and corrupt state stop training visibly. Block and receipt writes are separate, so a crash between them can require recovery.</p>
+<p>Keep <code>training_evidence.json</code> across expiry, manual unblocking, log rotation, and restarts. It lives in the policy data directory unless <code>AIWAF_TRAINING_STATE_DIR</code> selects another durable directory. Trainers sharing a blocklist must share that directory. Receipts start with this release and cannot reconstruct decisions made by older versions. Missing native support and corrupt state stop training visibly. Block and receipt writes are separate, so a crash between them can require recovery.</p>
 <p>Flask CLI listing now filters expired entries without rewriting an older snapshot over blocks concurrently added or refreshed by a trainer. The CLI displays the canonical <code>added_date</code>, with the older <code>timestamp</code> as a fallback. This listing fix and training replay protection address different causes of block changes. A first temporary block defaults to 900 seconds; later reputation decisions can increase its duration. Check the stored expiry rather than assuming every block lasts 24 hours.</p>
 </section>

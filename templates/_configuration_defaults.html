@@ -15,7 +15,7 @@
 <tr><td><code>rate_limiting.window_seconds</code></td><td><code>int</code></td><td><code>10</code></td></tr>
 <tr><td><code>rate_limiting.flood_threshold</code></td><td><code>int</code></td><td><code>40</code></td></tr>
 <tr><td><code>rate_limiting.key_mode</code></td><td><code>str</code></td><td><code>&quot;ip_path&quot;</code></td></tr>
-<tr><td><code>rate_limiting.soft_block_blacklist</code></td><td><code>bool</code></td><td><code>false</code></td></tr>
+<tr><td><code>rate_limiting.soft_block_blocklist</code></td><td><code>bool</code></td><td><code>false</code></td></tr>
 <tr><td><code>rate_limiting.cache_backend</code></td><td><code>str</code></td><td><code>&quot;memory&quot;</code></td></tr>
 <tr><td><code>rate_limiting.redis_url</code></td><td><code>null or string</code></td><td><code>null</code></td></tr>
 <tr><td><code>rate_limiting.cache_key_prefix</code></td><td><code>str</code></td><td><code>&quot;aiwaf:rate:&quot;</code></td></tr>
@@ -35,10 +35,10 @@
 <tr><td><code>logging_middleware.enabled</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
 <tr><td><code>logging_middleware.log_dir</code></td><td><code>str</code></td><td><code>&quot;aiwaf_logs&quot;</code></td></tr>
 <tr><td><code>logging_middleware.log_format</code></td><td><code>str</code></td><td><code>&quot;combined&quot;</code></td></tr>
-<tr><td><code>blacklist.default_block_duration</code></td><td><code>int</code></td><td><code>3600</code></td></tr>
-<tr><td><code>blacklist.permanent_block_threshold</code></td><td><code>int</code></td><td><code>5</code></td></tr>
-<tr><td><code>blacklist.auto_unblock_enabled</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
-<tr><td><code>blacklist.cleanup_interval</code></td><td><code>int</code></td><td><code>3600</code></td></tr>
+<tr><td><code>blocklist.default_block_duration</code></td><td><code>int</code></td><td><code>3600</code></td></tr>
+<tr><td><code>blocklist.permanent_block_threshold</code></td><td><code>int</code></td><td><code>5</code></td></tr>
+<tr><td><code>blocklist.auto_unblock_enabled</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
+<tr><td><code>blocklist.cleanup_interval</code></td><td><code>int</code></td><td><code>3600</code></td></tr>
 <tr><td><code>exemptions.private_ips_exempted</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
 <tr><td><code>exemptions.localhost_exempted</code></td><td><code>bool</code></td><td><code>true</code></td></tr>
 <tr><td><code>exemptions.auto_exempt_patterns</code></td><td><code>list</code></td><td><code>[&quot;127.0.0.1&quot;, &quot;::1&quot;, &quot;192.168.*.*&quot;, &quot;10.*.*.*&quot;, &quot;172.16.*.*&quot;]</code></td></tr>

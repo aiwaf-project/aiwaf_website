@@ -90,7 +90,7 @@
 <h2>Is PHP included?</h2>
 <p>The current monorepo has no PHP implementation or PHP release workflow. Existing PHP pages are retained as legacy reference and are not current setup guidance.</p>
 <h2>Is Rust required for Python?</h2>
-<p>Python 1.1.7 requires <code>aiwaf-rust&gt;=0.2.6</code>; installation brings in the Rust runtime. The complete native CSV pipeline still requires an explicit adapter. Legacy integrations do not automatically switch to it. Python retains framework transport, route/authentication facts, GeoIP and management interfaces. See <a href="/docs/python/architecture#native-csv-pipeline">the native architecture</a>.</p>
+<p>Python 1.1.8 requires <code>aiwaf-rust&gt;=0.2.7</code>; installation brings in the Rust runtime. The complete native CSV pipeline still requires an explicit adapter. Legacy integrations do not automatically switch to it. Python retains framework transport, route/authentication facts, GeoIP and management interfaces. See <a href="/docs/python/architecture#native-csv-pipeline">the native architecture</a>.</p>
 <h2>Can I reuse old pickle or joblib models?</h2>
 <p>Current Python model persistence uses JSON. Regenerate executable object artifacts through the current trainer. Java supports Python Rust-model JSON state and restricted legacy signed Java artifacts. JavaScript model implementations remain language-native; do not assume every runtime can exchange models.</p>
 <h2>Does an in-memory backend share protection across workers?</h2>

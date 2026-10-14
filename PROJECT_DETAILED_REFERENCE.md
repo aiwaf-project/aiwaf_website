@@ -40,7 +40,7 @@ Node settingsCompat resolves supported aliases, legacy AIWAF_SETTINGS, recognize
 
 ## State ownership
 
-Configuration defines policy. Runtime storage contains mutable blacklist/exemption/keyword state; counters and recent history may use a separate cache. Model artifacts are another lifecycle, written by training and loaded for inference. Persisting one store does not make every worker share every other store.
+Configuration defines policy. Runtime storage contains mutable blocklist/exemption/keyword state; counters and recent history may use a separate cache. Model artifacts are another lifecycle, written by training and loaded for inference. Persisting one store does not make every worker share every other store.
 
 Python Flask/FastAPI can use a shared rate cache. Node accepts a shared cache instead of its process-local fallback. Java's scoped per-engine storage context and Redis backend support distributed rate, timing, UUID, and anomaly history. Java 1.3 bounds Redis connection/pool waits and supports fail-open or fail-closed policy, with standalone Redis and state-schema guards.
 

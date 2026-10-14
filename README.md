@@ -76,7 +76,7 @@ For new documentation, choose the reader's goal first. Tutorials need complete f
 - /docs/tutorial/installation: a six-step first protected app tutorial with complete app and verification files.
 - /docs/architecture: request lifecycle, policy, state, response observations, and training.
 - /docs/configuration: runtime configuration, types, defaults, and precedence.
-- /docs/migration: upgrades, npm package rename, blacklist and model migration.
+- /docs/migration: upgrades, npm package rename, blocklist and model migration.
 - /docs/troubleshooting: import targets, manifests, block responses, training, and website routing.
 - /docs/python/setup/flask, /docs/python/setup/django, /docs/python/setup/fastapi: Python guides.
 - /docs/javascript, /docs/java, /docs/rust: other maintained runtimes.

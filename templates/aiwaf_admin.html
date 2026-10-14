@@ -40,10 +40,10 @@
                 <!-- Navigation -->
                 <ul class="nav nav-tabs" id="adminTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="whitelist-tab" data-bs-toggle="tab" data-bs-target="#whitelist" type="button">Whitelist</button>
+                        <button class="nav-link active" id="allowlist-tab" data-bs-toggle="tab" data-bs-target="#allowlist" type="button">Allowlist</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="blacklist-tab" data-bs-toggle="tab" data-bs-target="#blacklist" type="button">Blacklist</button>
+                        <button class="nav-link" id="blocklist-tab" data-bs-toggle="tab" data-bs-target="#blocklist" type="button">Blocklist</button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="keywords-tab" data-bs-toggle="tab" data-bs-target="#keywords" type="button">Keywords</button>
@@ -51,45 +51,45 @@
                 </ul>
 
                 <div class="tab-content mt-3" id="adminTabContent">
-                    <!-- Whitelist Tab -->
-                    <div class="tab-pane fade show active" id="whitelist" role="tabpanel">
+                    <!-- Allowlist Tab -->
+                    <div class="tab-pane fade show active" id="allowlist" role="tabpanel">
                         <div class="card">
                             <div class="card-header">
-                                <h6>IP Whitelist Management</h6>
+                                <h6>IP Allowlist Management</h6>
                             </div>
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div class="col-md-8">
-                                        <input type="text" class="form-control" id="whitelist-ip" placeholder="Enter IP address (e.g., 192.168.1.100)">
+                                        <input type="text" class="form-control" id="allowlist-ip" placeholder="Enter IP address (e.g., 192.168.1.100)">
                                     </div>
                                     <div class="col-md-4">
-                                        <button class="btn btn-success" onclick="addToWhitelist()">Add to Whitelist</button>
+                                        <button class="btn btn-success" onclick="addToAllowlist()">Add to Allowlist</button>
                                     </div>
                                 </div>
-                                <div id="whitelist-list">Loading...</div>
+                                <div id="allowlist-list">Loading...</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Blacklist Tab -->
-                    <div class="tab-pane fade" id="blacklist" role="tabpanel">
+                    <!-- Blocklist Tab -->
+                    <div class="tab-pane fade" id="blocklist" role="tabpanel">
                         <div class="card">
                             <div class="card-header">
-                                <h6>IP Blacklist Management</h6>
+                                <h6>IP Blocklist Management</h6>
                             </div>
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control" id="blacklist-ip" placeholder="IP address">
+                                        <input type="text" class="form-control" id="blocklist-ip" placeholder="IP address">
                                     </div>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control" id="blacklist-reason" placeholder="Reason">
+                                        <input type="text" class="form-control" id="blocklist-reason" placeholder="Reason">
                                     </div>
                                     <div class="col-md-4">
-                                        <button class="btn btn-danger" onclick="addToBlacklist()">Add to Blacklist</button>
+                                        <button class="btn btn-danger" onclick="addToBlocklist()">Add to Blocklist</button>
                                     </div>
                                 </div>
-                                <div id="blacklist-list">Loading...</div>
+                                <div id="blocklist-list">Loading...</div>
                             </div>
                         </div>
                     </div>
@@ -128,8 +128,8 @@
         // Load status and lists on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadStatus();
-            loadWhitelist();
-            loadBlacklist();
+            loadAllowlist();
+            loadBlocklist();
             loadKeywords();
         });
 
@@ -157,35 +157,35 @@
                 });
         }
 
-        function loadWhitelist() {
-            fetch('/aiwaf/whitelist')
+        function loadAllowlist() {
+            fetch('/aiwaf/allowlist')
                 .then(response => response.json())
                 .then(data => {
-                    const list = document.getElementById('whitelist-list');
-                    if (data.whitelist && data.whitelist.length > 0) {
-                        list.innerHTML = data.whitelist.map(item => 
+                    const list = document.getElementById('allowlist-list');
+                    if (data.allowlist && data.allowlist.length > 0) {
+                        list.innerHTML = data.allowlist.map(item =>
                             `<span class="badge bg-success me-2 mb-2">${item.ip}</span>`
                         ).join('');
                     } else {
-                        list.innerHTML = '<em>No whitelisted IPs</em>';
+                        list.innerHTML = '<em>No allowlisted IPs</em>';
                     }
                 });
         }
 
-        function loadBlacklist() {
-            fetch('/aiwaf/blacklist')
+        function loadBlocklist() {
+            fetch('/aiwaf/blocklist')
                 .then(response => response.json())
                 .then(data => {
-                    const list = document.getElementById('blacklist-list');
-                    if (data.blacklist && data.blacklist.length > 0) {
-                        list.innerHTML = data.blacklist.map(item => 
+                    const list = document.getElementById('blocklist-list');
+                    if (data.blocklist && data.blocklist.length > 0) {
+                        list.innerHTML = data.blocklist.map(item =>
                             `<div class="alert alert-danger py-2 mb-2">
                                 <strong>${item.ip}</strong> - ${item.reason}
                                 <small class="text-muted d-block">${item.added_date}</small>
                             </div>`
                         ).join('');
                     } else {
-                        list.innerHTML = '<em>No blacklisted IPs</em>';
+                        list.innerHTML = '<em>No blocklisted IPs</em>';
                     }
                 });
         }
@@ -205,11 +205,11 @@
                 });
         }
 
-        function addToWhitelist() {
-            const ip = document.getElementById('whitelist-ip').value;
+        function addToAllowlist() {
+            const ip = document.getElementById('allowlist-ip').value;
             if (!ip) return;
 
-            fetch('/aiwaf/whitelist', {
+            fetch('/aiwaf/allowlist', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ip: ip})
@@ -217,20 +217,20 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById('whitelist-ip').value = '';
-                    loadWhitelist();
+                    document.getElementById('allowlist-ip').value = '';
+                    loadAllowlist();
                 } else {
                     alert('Error: ' + data.message);
                 }
             });
         }
 
-        function addToBlacklist() {
-            const ip = document.getElementById('blacklist-ip').value;
-            const reason = document.getElementById('blacklist-reason').value;
+        function addToBlocklist() {
+            const ip = document.getElementById('blocklist-ip').value;
+            const reason = document.getElementById('blocklist-reason').value;
             if (!ip) return;
 
-            fetch('/aiwaf/blacklist', {
+            fetch('/aiwaf/blocklist', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ip: ip, reason: reason || 'Manual block'})
@@ -238,9 +238,9 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById('blacklist-ip').value = '';
-                    document.getElementById('blacklist-reason').value = '';
-                    loadBlacklist();
+                    document.getElementById('blocklist-ip').value = '';
+                    document.getElementById('blocklist-reason').value = '';
+                    loadBlocklist();
                 } else {
                     alert('Error: ' + data.message);
                 }
