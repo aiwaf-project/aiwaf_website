@@ -10,6 +10,37 @@
 <p>Startup imports legacy runtime CSV data once, preserving block expiry and metadata. Original sources remain intact; backups and completion markers support recovery and prevent removed entries from returning on restart. Existing canonical policy wins conflicts. Stop old workers before upgrading and use the same absolute directory for the application and CLI. See <a href="/docs/migration#python-shared-policy-csv">migration paths and recovery</a>.</p>
 <p>Flask management searches existing project <code>aiwaf_data</code> and <code>.aiwaf/data</code> before user/package directories. Explicit <code>AIWAF_DATA_DIR</code> or <code>--data-dir</code> takes priority. The five policy files use UTF-8 across Python and Rust. Sharing these files does not make memory rate buckets, model history, or optional memory form timing distributed.</p>
 </section>
+<section class="section" id="flask-fastapi-native-honeypot-cache">
+<h2>Flask and FastAPI native honeypot cache</h2>
+<p>Python <code>1.1.7</code> with <code>aiwaf-rust 0.2.6</code> adds opt-in Redis and supplied-cache timing to both native adapters. CSV remains their default. Rust retains timing rules and exemptions; only timestamp I/O uses the cache.</p>
+<pre><code class="language-python">import os
+profile = {
+    "data_dir": "aiwaf_data",
+    "honeypot_backend": "redis",
+    "honeypot_redis_url": os.environ["AIWAF_REDIS_URL"],
+    "honeypot_cache_namespace": "myapp:honeypot:v1",
+}
+# Flask:
+from aiwaf.flask.csv_pipeline import NativeAIWAF
+NativeAIWAF(app, config=profile)
+# FastAPI alternative:
+# from aiwaf.fast.csv_pipeline import NativeAIWAFMiddleware
+# app.add_middleware(NativeAIWAFMiddleware, config=profile)</code></pre>
+<p>For Flask-Caching or a compatible custom object, use <code>honeypot_backend="cache"</code> and pass <code>honeypot_cache=cache</code> to the native adapter. It must provide synchronous <code>get(key)</code> and <code>set(key, value, timeout=seconds)</code>, preserve the timestamp/expiry pair, honor TTL and propagate errors. A false write result means failure; silent/no-op backends are unsuitable. Local caches remain worker-local. Use a shared backend and the same namespace across workers; isolate unrelated applications with different namespaces.</p>
+<p>Records have a 300-second TTL. Missing/evicted timestamps allow the timing check, while cache errors and invalid records return generic HTTP 503. Expired-page POSTs return 409 until a new GET or TTL expiry; old snapshots are not deleted. FastAPI runs cache-backed native checks in its worker thread pool so synchronous cache I/O does not block the event loop. Other policy stores and legacy middleware behavior are unchanged.</p>
+</section>
+<section class="section" id="django-native-honeypot-cache">
+<h2>Django native honeypot cache</h2>
+<p>Python <code>1.1.7</code> with <code>aiwaf-rust 0.2.6</code> defaults Django native honeypot timing to Django's configured cache. Set <code>honeypot_cache_alias</code> in <code>AIWAF_CSV_PIPELINE</code> to select an alias; it defaults to <code>default</code>. Rust calls a small Python cache adapter for timestamp I/O and retains timing decisions, logical expiry and exemptions. Other policy CSVs and rate-limit configuration are unchanged.</p>
+<pre><code class="language-python">AIWAF_CSV_PIPELINE = {
+    "data_dir": "aiwaf_data",
+    "honeypot_cache_alias": "default",
+}
+# Configure CACHES["default"] with a shared backend for multiple workers.</code></pre>
+<p>Redis or Memcached can share timestamps across workers. LocMemCache is supported with a startup warning; it remains worker-local. DummyCache is rejected when honeypot protection is enabled. Cache errors, failed writes and invalid records produce generic HTTP 503; known ignored-cache-error modes are rejected.</p>
+<p>Entries use a 300-second TTL. Expired-page POSTs return 409 until a new GET or TTL expiry. No eager deletion occurs, so an old POST cannot erase a concurrent refresh. A missing or evicted timestamp allows the POST timing check, as before; cache failure is not treated as a miss. Backends do not transfer existing timestamps. Install the matching Rust extension and restart workers together.</p>
+<p>Explicit <code>honeypot_backend="csv"</code> retains filesystem timing; <code>"memory"</code> uses Rust's per-engine map. Flask, FastAPI and direct native construction keep CSV as the default. See <a href="https://github.com/aiwaf-project/aiwaf#django-native-honeypot-cache">the Django cache documentation</a>.</p>
+</section>
 <section class="section">
 <h2>Training replay protection</h2>
 <p>Python <code>1.1.6</code> with <code>aiwaf-rust 0.2.5</code> uses Rust-owned receipts in Flask, FastAPI, and Django. Reusing requests already handled by training cannot extend or recreate a block. Fresh requests must independently satisfy enforcement rules; models and keyword learning can still reuse historical logs.</p>
