@@ -80,6 +80,7 @@
 <main class="content">
 <h1 class="page-title">Sails.js Setup</h1>
 {% include '_docs_source.html' %}
+{% include '_node_release_support.html' %}
 <p class="architecture-link"><a href="/docs/architecture">How AIWAF works: system architecture</a></p>
 <p class="docs-lead">Protect a Sails application, confirm the adapter runs before its handler, and decide how routes and state should be managed.</p><div class="docs-callout"><strong>Before you begin</strong><p>An existing Sails application with a working route. The code extends its HTTP middleware configuration rather than creating a standalone server. Use a Node.js version supported by your framework and dependency lockfile. For an existing application, confirm that its ordinary routes work before integrating AIWAF.</p></div><h2>1. Install the adapter and dependencies</h2>
 <pre><code class="language-bash">npm install aiwaf</code></pre>
@@ -129,7 +130,8 @@ AIWAF_ACCESS_LOG=/path/to/access.log npm run train</code></pre>
 <li><a href="/docs/javascript/operations">Node.js operations</a></li>
 <li><a href="/docs/javascript/architecture">Architecture and route policies</a></li>
 </ul>
-<div class="docs-checkpoint"><strong>Checkpoint</strong> You can locate the adapter registration, start this application, and inspect normal and rejected requests.</div><nav class="docs-pagination" aria-label="Next reading"><a href="/docs/getting_started">Choose a runtime</a><a href="/docs/javascript/architecture">Next: understand Node architecture</a></nav></main>
+<div class="docs-checkpoint"><strong>Checkpoint</strong> You can locate the adapter registration, start this application, and inspect normal and rejected requests.</div><nav class="docs-pagination" aria-label="Next reading"><a href="/docs/getting_started">Choose a runtime</a><a href="/docs/javascript/architecture">Next: understand Node architecture</a></nav><section class="section" id="native-node-setup"><h2>Select the native WASM engine</h2><p><strong>Native mode:</strong> Node source candidate <code>aiwaf 1.1.4</code> declares <code>aiwaf-wasm ^0.2.4</code>. Explicit native registration validates <code>NativeRequestPipeline</code> at startup; missing or incompatible support is an error. There is no JavaScript policy fallback for this engine. Installing the dependency does not switch an existing legacy middleware chain.</p><p>Select this adapter with <code>{ AIWAF_NATIVE_PIPELINE: { dataDir: "aiwaf_native_data", profile: { min_form_time: 1.0 } } }</code>. This is a separate lowercase profile: do not mix legacy constructor options, PATH_RULES, cache or custom stores. Fastify/Hapi await startup during registration. Koa/Adonis/Next wrappers expose .ready and Nest exposes static .ready; await it before serving, and close the resolved native handle after responses complete. Bounded framework body parsing must precede parsed-body checks.</p><p>Read <a href="/docs/javascript/architecture#native-request-engine">the native lifecycle</a>, <a href="/docs/configuration#node-native-profile">configuration</a>, <a href="/docs/javascript/operations#native-node-operations">deployment and measurements</a>, and <a href="/docs/migration#node-native-migration">migration</a>.</p></section>
+</main>
 </div></div>
 </body>
 </html>

@@ -73,11 +73,11 @@
 <h1 class="page-title">Spring MVC and Spring Boot Setup</h1>
 {% include '_docs_source.html' %}
 <p class="architecture-link"><a href="/docs/architecture">How AIWAF works: system architecture</a></p>
-<p class="docs-lead">Integrate native Java enforcement into Spring and verify how the adapter observes requests and responses.</p><div class="docs-callout"><strong>Before you begin</strong><p>You need Java 17+, Maven, and an existing Spring Boot or Spring MVC servlet application compatible with Spring Framework 7 and Jakarta Servlet 6.1. These are integration snippets, not a standalone generated application. First confirm that an ordinary endpoint runs without AIWAF.</p></div><h2>1. Add the Java dependency</h2><p class="code-filename">pom.xml / dependencies</p><p>Java source version <code>1.3.0</code> is declared in <code>java/pom.xml</code>. It targets Java 17, Spring Framework 7.0, and Jakarta Servlet 6.1, and runs natively without Rust. Use the Maven dependency below once this version is published to Maven Central; source builds are available from the monorepo.</p>
+<p class="docs-lead">Integrate native Java enforcement into Spring and verify how the adapter observes requests and responses.</p><div class="docs-callout"><strong>Before you begin</strong><p>You need Java 17+, Maven, and an existing Spring Boot or Spring MVC servlet application compatible with Spring Framework 7 and Jakarta Servlet 6.1. These are integration snippets, not a standalone generated application. First confirm that an ordinary endpoint runs without AIWAF.</p></div><h2>1. Add the Java dependency</h2><p class="code-filename">pom.xml / dependencies</p><p>Java source version <code>1.3.4</code> is declared in <code>java/pom.xml</code>. It targets Java 17, Spring Framework 7.0, and Jakarta Servlet 6.1, and runs natively without Rust. Use the Maven dependency below once this version is published to Maven Central; source builds are available from the monorepo.</p>
 <pre><code class="language-xml">&lt;dependency&gt;
   &lt;groupId&gt;io.github.aiwaf-project&lt;/groupId&gt;
   &lt;artifactId&gt;aiwaf-java&lt;/artifactId&gt;
-  &lt;version&gt;1.3.0&lt;/version&gt;
+  &lt;version&gt;1.3.4&lt;/version&gt;
 &lt;/dependency&gt;</code></pre><h3>Build from source when needed</h3><p>If the required version is unavailable in your registry, install the reviewed monorepo source in your local Maven repository:</p><pre><code class="language-bash">git clone https://github.com/aiwaf-project/aiwaf.git
 cd aiwaf/java
 mvn -Dgpg.skip=true install</code></pre><p>Return to your application checkout afterward. Match its dependency version to the version built from java/pom.xml.</p>
@@ -110,7 +110,7 @@ AiwafFilter aiwafFilter(AiwafEngine engine, ApplicationContext context) {
 <p>Committed, streaming, and asynchronous responses are recorded but are not replaced after bytes have been sent.</p>
 <p>UUID protection uses Python-compatible weighted signals: malformed input, valid UUID requests that resolve to <code>404</code>, and successful requests that decay the score. UUID-valued query parameters and <code>{uuid}</code> route variables are supported. <code>SpringUuidModelLookup</code> optionally discovers UUID primary keys and unique UUID properties through the JPA metamodel; omit it when the application does not use JPA.</p>
 <p>Generate a route manifest from the live Spring application rather than supplying controller methods manually:</p>
-<pre><code class="language-bash">java -cp &quot;your-app.jar:aiwaf-java-1.3.0.jar&quot; \
+<pre><code class="language-bash">java -cp &quot;your-app.jar:aiwaf-java-1.3.4.jar&quot; \
   com.aiwaf.cli.AiwafConsole init \
   --app com.example.Application \
   --output .aiwaf/paths.json</code></pre>

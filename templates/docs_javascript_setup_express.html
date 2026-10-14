@@ -80,6 +80,7 @@
 <main class="content">
 <h1 class="page-title">Express Setup</h1>
 {% include '_docs_source.html' %}
+{% include '_node_release_support.html' %}
 <p class="architecture-link"><a href="/docs/architecture">How AIWAF works: system architecture</a></p>
 <p class="docs-lead">Protect an Express application, confirm the adapter runs before its handler, and decide how routes and state should be managed.</p><div class="docs-callout"><strong>Before you begin</strong><p>A fresh CommonJS application. The example uses Express 4, matching the upstream adapter test dependency. Use a Node.js version supported by your framework and dependency lockfile. For an existing application, confirm that its ordinary routes work before integrating AIWAF.</p></div><h2>1. Install the adapter and dependencies</h2>
 <pre><code class="language-bash">npm install express@4 aiwaf</code></pre>
@@ -139,7 +140,25 @@ AIWAF_ACCESS_LOG=/path/to/access.log npm run train</code></pre>
 <li><a href="/docs/javascript/operations">Node.js operations</a></li>
 <li><a href="/docs/javascript/architecture">Architecture and route policies</a></li>
 </ul>
-<div class="docs-checkpoint"><strong>Checkpoint</strong> You can locate the adapter registration, start this application, and inspect normal and rejected requests.</div><nav class="docs-pagination" aria-label="Next reading"><a href="/docs/getting_started">Choose a runtime</a><a href="/docs/javascript/architecture">Next: understand Node architecture</a></nav></main>
+<div class="docs-checkpoint"><strong>Checkpoint</strong> You can locate the adapter registration, start this application, and inspect normal and rejected requests.</div><nav class="docs-pagination" aria-label="Next reading"><a href="/docs/getting_started">Choose a runtime</a><a href="/docs/javascript/architecture">Next: understand Node architecture</a></nav><section class="section" id="native-node-setup"><h2>Native Express setup</h2><p><strong>Native mode:</strong> Node source candidate <code>aiwaf 1.1.4</code> declares <code>aiwaf-wasm ^0.2.4</code>. Explicit native registration validates <code>NativeRequestPipeline</code> at startup; missing or incompatible support is an error. There is no JavaScript policy fallback for this engine. Installing the dependency does not switch an existing legacy middleware chain.</p><pre><code class="language-javascript">const express = require(&#x27;express&#x27;);
+const aiwaf = require(&#x27;aiwaf&#x27;);
+
+async function main() {
+  const app = express();
+  app.use(express.json({ limit: &#x27;64kb&#x27; }));
+  app.use(express.urlencoded({ extended: false, limit: &#x27;64kb&#x27; }));
+  const firewall = await aiwaf.native({
+    dataDir: &#x27;aiwaf_native_data&#x27;,
+    profile: { min_form_time: 1.0, rate_key_mode: &#x27;ip_path&#x27; },
+    authenticated: req =&gt; Boolean(req.user),
+    routeExists: req =&gt; req.path === &#x27;/api/ok&#x27;
+  });
+  app.use(firewall);
+  app.get(&#x27;/api/ok&#x27;, (_req, res) =&gt; res.json({ ok: true }));
+  app.listen(3000);
+}
+main().catch(console.error);</code></pre><p>Install this instead of the legacy AIWAF chain. Put bounded JSON/form parsers and any route metadata before the firewall. Configure Express trust proxy for your actual proxy; the native adapter uses req.ip and does not directly trust X-Forwarded-For. Supply synchronous countryLookup(req), authenticated(req) and routeExists(req) facts when needed.</p><p>Read <a href="/docs/javascript/architecture#native-request-engine">the native lifecycle</a>, <a href="/docs/configuration#node-native-profile">configuration</a>, <a href="/docs/javascript/operations#native-node-operations">deployment and measurements</a>, and <a href="/docs/migration#node-native-migration">migration</a>.</p></section>
+</main>
 </div></div>
 </body>
 </html>

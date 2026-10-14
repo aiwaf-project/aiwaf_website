@@ -1,0 +1,18 @@
+<section class="section" id="release-2026-10-13">
+<h2>October 2026 release upgrade</h2>
+<p>The prepared source versions are Python <code>1.1.6</code>, Rust/Python <code>0.2.5</code>, Node.js <code>1.1.4</code>, WASM <code>0.2.4</code>, and Java <code>1.3.4</code>. These are source targets; verify registry availability before installing. Python requires <code>aiwaf-rust&gt;=0.2.5</code>, including the <code>TrainingEvidence</code> API. Node offline training requires the matching WASM receipt API.</p>
+<ol>
+<li>Back up policies, logs, models, and training evidence. Use the same absolute data and evidence directories for application workers and CLI trainers.</li>
+<li>Install the matching native companion before upgrading its host package: Rust before Python, WASM before Node. Preserve <code>training_evidence.json</code> and <code>node_training_evidence.json</code> across expiry, unblocking, restarts, and log rotation.</li>
+<li>Stop older file writers and restart all workers on the new code. Mixing old unlocked writers with new writers can still lose updates.</li>
+<li>In staging, train twice on identical logs, then verify handled evidence does not recreate a removed or expired block. Add genuinely fresh requests and confirm they must independently satisfy the enforcement threshold.</li>
+<li>Verify that listing and expiry checks preserve concurrently refreshed blocks and unrelated IPs. Check the raw expiry and backend location if entries disappear unexpectedly.</li>
+</ol>
+<h3>Java CSV and file storage</h3>
+<p>Java <code>1.3.4</code> reloads current storage under a shared JVM and OS sidecar lock for each operation. Reads filter expiry without rewriting disk; mutations preserve other instances' updates and report persistence failures. This adds file I/O. Java model training still does not add blacklist entries. Rate buckets and other per-engine memory state retain their existing isolation.</p>
+<h3>Lock recovery</h3>
+<p>Python training uses an OS file lock; Java CSV/file OS locks also release on process exit. Keep their stable sidecar lock files in place while workers run. Node uses lock directories for training and legacy CSV mutations; a crash can leave them behind. Confirm the owning process has stopped before removing a Node lock directory. Do not delete training receipts to clear a lock: doing so loses handled-evidence history.</p>
+<h3>Release checks</h3>
+<p>Local validation passed 247 Node tests across 67 suites with the coverage gate, 215 Java tests with 3 skips, and 38 Rust/WASM native tests. After the native dependency bump, 11 affected Python packaging tests passed through the appropriate Django and pytest runners. These checks do not replace full release CI, dependency audits, signing, or operating-system wheel builds. Build Linux/macOS Rust wheels using the release matrix; the local bundle contains a Windows x86-64 wheel.</p>
+<p>For release maintainers: publish the WASM companion, refresh the Node lockfile from the registry to record its actual integrity, then run <code>npm ci</code> and the native integration checks. Do not substitute an older native dependency to satisfy a stale packaging test. See the <a href="https://github.com/aiwaf-project/aiwaf/blob/main/docs/releases/2026-10-13.md">release notes</a>.</p>
+</section>
