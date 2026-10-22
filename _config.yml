@@ -1,0 +1,11 @@
+title: AIWAF Documentation
+url: https://aiwaf.org
+baseurl: ""
+source: site
+destination: _site
+encoding: utf-8
+strict_front_matter: true
+liquid:
+  error_mode: strict
+exclude:
+  - README.md

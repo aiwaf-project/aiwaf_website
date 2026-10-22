@@ -1,0 +1,118 @@
+---
+layout: null
+permalink: "/docs/troubleshooting/"
+title: "AIWAF Troubleshooting | CLI, Routes, Training, and Verification"
+description: "Diagnose AIWAF import targets, missing routes, website errors, proxy addresses, shared counters, and training failures."
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ page.title | escape }}</title>
+    <meta name="description" content="{{ page.description | escape }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ page.title | escape }}">
+    <meta property="og:description" content="{{ page.description | escape }}">
+    <meta property="og:url" content="{{ page.url | absolute_url }}">
+    <meta property="og:image" content="{{ '/static/aiwaf-logo.png' | absolute_url }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page.title | escape }}">
+    <meta name="twitter:description" content="{{ page.description | escape }}">
+    <meta name="twitter:image" content="{{ '/static/aiwaf-logo.png' | absolute_url }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site.url | append: site.baseurl }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#5b2a86,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: .8rem; margin-top: .8rem; }
+        .stats { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .stats .k { color: #4ecdc4; font-size: .82rem; }
+        .stats .v { font-size: 1.2rem; font-weight: 800; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: .8rem; }
+        .module-card { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .8rem; }
+        .module-card h4 { color: #4ecdc4; margin-bottom: .45rem; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="{{ '/static/docs-current.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/static/brand.css' | relative_url }}">
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><a class="brand-logo" href="{{ '/' | relative_url }}" aria-label="AIWAF home"><img src="{{ '/static/aiwaf-logo.png' | relative_url }}" alt="AIWAF" width="2172" height="724"></a>
+{% include _docs_search.html %}<nav class="nav"><a href="{{ '/' | relative_url }}" class="nav-link">Home</a><a href="{{ '/docs' | relative_url }}" class="nav-link">Documentation</a></nav></div></div></header>
+
+<div class="container"><div class="main-content">
+<aside class="sidebar"><h3 class="sidebar-title">Documentation</h3><ul class="sidebar-nav"><li><a href="{{ '/docs' | relative_url }}">Runtime guides</a></li><li><a href="{{ '/docs/architecture' | relative_url }}">Architecture</a></li><li><a href="{{ '/docs/configuration' | relative_url }}">Configuration</a></li><li><a href="{{ '/docs/migration' | relative_url }}">Migration</a></li><li><a href="{{ '/docs/troubleshooting' | relative_url }}">Troubleshooting</a></li></ul></aside>
+<main class="content">
+<h1 class="page-title">Troubleshooting and Verification</h1>
+{% include _docs_source.html %}
+<h2>CLI rejects --app app.py</h2>
+<p><code>--app</code> takes a Python import target, not a filename. For <code>app.py</code> containing <code>app = Flask(__name__)</code>, run from its directory:</p>
+<pre><code class="language-bash">aiwaf init --framework flask --app app:app</code></pre>
+<p>For a factory use <code>app:create_app</code>. For Django use <code>--framework django --settings project.settings</code>. Install dependencies and load the application's configuration in the same environment; discovery imports the live application.</p>
+<h2>Manifest has only / and static routes</h2>
+<p>Confirm the imported file is your intended application, all blueprints/routers are registered, and the app factory finishes before discovery:</p>
+<pre><code class="language-bash">python -c "import app; print(app.__file__); print(*sorted(r.rule for r in app.app.url_map.iter_rules()), sep='\n')"</code></pre>
+<p>This diagnostic is for a Flask module-level app. Regenerate the manifest after registering additional routes. An unimported blueprint cannot appear in the live route table.</p>
+<h2>Website setup page returns 404</h2>
+<p>This documentation website is built with Jekyll and served as static files on GitHub Pages. Setup landing pages and short URLs use static redirect pages. Unknown pages use <code>404.html</code>.</p>
+<ol><li>Run the Jekyll build and check its output for missing includes or Liquid errors.</li><li>Set the repository Pages source to GitHub Actions and inspect the Pages workflow for build or deployment failures.</li><li>For a project site, verify that the deployed URL prefix matches <code>baseurl</code>. Navigation, assets, and browser search must use that prefix.</li><li>Check that the latest successful workflow deployed the intended commit.</li></ol>
+<pre><code class="language-bash">bundle exec jekyll build
+python scripts/check_site.py
+bundle exec jekyll serve</code></pre>
+<p>The website has no application workers, database, signup endpoint, or runtime health endpoint. SDK protection checks belong to your application and the runnable examples.</p>
+<h2>Normal traffic is blocked, or test traffic is never blocked</h2>
+<p>Compare response details and logs with the selected middleware, route plan, client IP, headers, and block/reputation state. A 403 may come from AIWAF or a proxy; avoid attributing it without evidence. Rate throttling can have different status semantics from a deterministic block.</p>
+<p>Private clients, health paths, static paths, or route annotations may be exempt. Local curl success alone does not demonstrate protection for public clients. To exercise header validation, use a non-exempt route and a client context matching deployment; include representative User-Agent/Accept headers and browser-standard headers such as Accept-Language/Accept-Encoding in the normal case. The static documentation website does not run AIWAF middleware; exercise these checks against your protected application. Configure a small staging threshold and test below, at, and above the boundary. Do not disable protection globally to resolve a single route.</p>
+<h2>Client IP or multi-worker counters look wrong</h2>
+<p>Inspect address extraction for your adapter and the actual forwarding-header chain. Have the trusted outer proxy overwrite client-supplied headers. Java has explicit trusted proxy CIDRs; Python/Node resolution follows their own rules.</p>
+<p>File persistence is separate from a shared rate cache. Redis configuration must resolve to an active shared backend. Flask rejects invalid Redis configuration at initialization; runtime Redis rate-cache failures return HTTP 503; test enforcement across two workers and examine initialization logs. Use the same rate-key prefix for workers sharing one service, and distinct prefixes for unrelated services.</p>
+<h2>Training produces no usable model</h2>
+<p>Verify that the trainer reads the actual log path/format, logs include response observations, minimum sample thresholds are met, and the output model is written where runtime inference loads it. Representative normal traffic is needed; forced training does not repair missing or malformed inputs. Inspect trainer/model help for the installed adapter:</p>
+<pre><code class="language-bash">aiwaf flask train --help
+aiwaf flask model --help
+# Django uses its management commands:
+python manage.py detect_and_train --help</code></pre>
+<p>Python requires JSON model state. Regenerate legacy executable artifacts rather than renaming their extension. Verify model load diagnostics after deployment/reload. Models with different feature schemas or native formats need a supported conversion path or retraining.</p>
+<h2>Verification before publishing documentation</h2>
+<p>Render every page; check internal links, fragment anchors, setup redirects, and unknown-page behavior. Then test code samples with the installed runtime in a clean staging environment, including a normal request and an intentional rejection. Finally test the public URLs after deployment. These are separate checks.</p>
+<p>See <a href="{{ '/docs/configuration' | relative_url }}">configuration</a>, <a href="{{ '/docs/migration' | relative_url }}">migration</a>, and the runtime operations pages for the exact settings and supported tools.</p>
+<section class="section" id="native-csv-diagnostics"><h2>Rust and CSV diagnostics</h2><p>The explicit native pipeline fails startup if native API/schema/profile validation fails. Check for <code>NativeCSVPipeline</code> support in the deployed interpreter. Installing Rust does not switch a legacy chain to the new adapter. Unknown keys and legacy uppercase settings are invalid in the native profile; Rust-disable compatibility flags do not supply a fallback.</p>
+<pre><code class="language-bash">python -c "import sys, aiwaf_rust; print(sys.executable); print(aiwaf_rust.__file__)"
+python scripts/check_native_csv_runtime.py</code></pre>
+<p>For retained legacy integrations, if installation succeeds but behavior stays on Python, check the application's interpreter, worker restart, extension capabilities, and <code>AIWAF_USE_RUST</code>/<code>AIWAF_RUST_CSV</code>. Framework settings take precedence over the standalone environment flag. Unicode/custom parser paths may deliberately use Python; ISO parsing does so by default because it measured faster.</p>
+<p>A PHP probe returning 404 may be reaching an unprotected application. Verify the deployed WSGI import is the protected app (for example, <code>from app import app as application</code>), inspect registered request hooks, and check route/IP exemptions. A path missing from the route table is not automatically blocked: keyword, rate, and anomaly policies decide whether to deny it.</p>
+<p>For Windows log-directory deletion failures, stop requests and close cached CSV log writers first. For HTTP 503 from rate limiting, check Redis availability or required native CSV capabilities. A freshly trained FastAPI model needs an explicit reload or application restart.</p></section>
+<section class="section" id="csv-upgrade-diagnostics"><h2>Existing CSV data is missing from the CLI</h2><p>First compare the application's data directory with the directory printed by the CLI. A command launched from another working directory may select a different store. Pin the same absolute <code>AIWAF_DATA_DIR</code>, or use <code>aiwaf flask --data-dir /absolute/path/aiwaf_data status</code>. Python 1.1.4 fixes project and user-directory discovery and imports the older runtime format at startup.</p><p>For a legacy custom <code>storage.file_path</code>, <code>/path/custom.csv</code> maps to <code>/path/custom/</code>; a file named <code>runtime_store.csv</code> maps to its parent. The original file remains as a backup source. Policies now live in the shared files; <code>runtime_metadata.csv</code> retains frequencies and runtime history. Do not delete migration markers to make an old source active again: that can restore deliberately removed entries.</p><p>If startup reports an invalid legacy header, JSON value, or expiry, repair that source and retry after stopping old workers. See <a href="{{ '/docs/migration#python-shared-policy-csv' | relative_url }}">the migration guide</a> for conflict handling and rollback.</p></section>
+<section class="section" id="node-upgrade-diagnostics"><h2>Node dependency and native startup issues</h2><p>Reproduce the committed dependency tree with <code>npm ci</code> and run the full <code>npm audit</code>. The current source fixes the earlier Jest/Fastify/NestJS advisory chains; an older lockfile can still install vulnerable versions. A deprecation notice or a blocked optional postinstall is not itself an audit result.</p><p>If native mode cannot find <code>NativeRequestPipeline</code>, inspect the installed <code>aiwaf-wasm</code> package, await the adapter's initialization, and verify that it matches the source API. Keep native profile options separate from legacy constructor options. Node's native event files are distinct from the Python policy schemas and legacy Node stores.</p><p>Jest's <code>Must use import to load ES Module</code> error can indicate a mismatch between the test dependency tree, Node version, and transform configuration. The repository uses patched NestJS 11 and a targeted cookie transform on Node 22. Retain that configuration when reproducing the source tests. See <a href="{{ '/docs/javascript/operations#node-dependency-security' | relative_url }}">the tested dependency setup</a>.</p></section>
+{% include _release_upgrade.html %}
+</main>
+</div></div>
+</body>
+</html>

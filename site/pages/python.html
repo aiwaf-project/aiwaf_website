@@ -1,0 +1,170 @@
+---
+layout: null
+permalink: "/docs/python/"
+title: "AIWAF Python Deep Dive | Architecture and Operations"
+description: "Comprehensive Python reference for AIWAF covering architecture, adapters, storage, training lifecycle, and runtime behavior."
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ page.title | escape }}</title>
+    <meta name="description" content="{{ page.description | escape }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ page.title | escape }}">
+    <meta property="og:description" content="{{ page.description | escape }}">
+    <meta property="og:url" content="{{ page.url | absolute_url }}">
+    <meta property="og:image" content="{{ '/static/aiwaf-logo.png' | absolute_url }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page.title | escape }}">
+    <meta name="twitter:description" content="{{ page.description | escape }}">
+    <meta name="twitter:image" content="{{ '/static/aiwaf-logo.png' | absolute_url }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site.url | append: site.baseurl }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; overflow-x: hidden; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16, 16, 30, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientShift 3s ease-in-out infinite; }
+        @keyframes gradientShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; padding: .5rem 1rem; border-radius: 50px; transition: all .3s ease; }
+        .nav-link:hover { color: #4ecdc4; transform: translateY(-2px); }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; color: #4ecdc4; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem 1rem; border-radius: 10px; display: block; transition: all .3s ease; }
+        .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(78,205,196,.2); color: #4ecdc4; transform: translateX(5px); }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 3rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#1d3557,#2a9d8f); color: #fff; padding: .5rem 1rem; border-radius: 25px; font-weight: 600; display: inline-block; margin-bottom: 1.2rem; }
+        .page-title { font-size: 3rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
+        .meta-card { background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 1rem; }
+        .meta-key { color: #4ecdc4; font-size: .82rem; text-transform: uppercase; letter-spacing: .08em; }
+        .meta-val { font-size: 1.05rem; font-weight: 700; margin-top: .35rem; }
+        .section-title { color: #ff6b6b; margin: 1.7rem 0 .8rem; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1rem; margin: 1.2rem 0; }
+        .feature-card { background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 1.2rem; }
+        .feature-card h4 { color: #4ecdc4; margin-bottom: .35rem; }
+        .doc-card { background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 1.4rem; margin-top: 1rem; }
+        .doc-card a { color: #4ecdc4; text-decoration: none; font-weight: 600; }
+        .doc-card a:hover { text-decoration: underline; }
+        ul { padding-left: 1.2rem; }
+        li { margin-bottom: .4rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="{{ '/static/docs-current.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/static/brand.css' | relative_url }}">
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <a class="brand-logo" href="{{ '/' | relative_url }}" aria-label="AIWAF home"><img src="{{ '/static/aiwaf-logo.png' | relative_url }}" alt="AIWAF" width="2172" height="724"></a>
+{% include _docs_search.html %}
+            <nav class="nav">
+                <a href="{{ '/' | relative_url }}" class="nav-link">Home</a>
+                <a href="{{ '/docs' | relative_url }}" class="nav-link">Documentation</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <h3 class="sidebar-title">Python Docs</h3>
+            <ul class="sidebar-nav">
+                <li><a href="{{ '/docs/python' | relative_url }}" class="active">Overview</a></li>
+                <li><a href="{{ '/docs/python/setup' | relative_url }}">Setup Guide</a>
+            <ul class="sidebar-subnav" style="list-style-type: none; padding-left: 1rem; margin-top: 0.5rem;">
+                <li><a href="{{ '/docs/python/setup/django' | relative_url }}">Django</a></li>
+                <li><a href="{{ '/docs/python/setup/flask' | relative_url }}">Flask</a></li>
+                <li><a href="{{ '/docs/python/setup/fastapi' | relative_url }}">FastAPI</a></li>
+            </ul>
+</li>
+                <li><a href="{{ '/docs/python/architecture' | relative_url }}">Architecture</a></li>
+                <li><a href="{{ '/docs/python/adapters' | relative_url }}">Adapters</a></li>
+                <li><a href="{{ '/docs/python/operations' | relative_url }}">Operations</a></li>
+            </ul>
+            <div style="margin-top: 2rem; padding: 1rem; background: rgba(78,205,196,.1); border-radius: 10px;">
+                <small>Python-first technical reference with multi-framework internals.</small>
+                <div style="margin-top: 0.7rem;">
+                    <a href="https://pypi.org/project/aiwaf/" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">PyPI Package</a><br>
+                    <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub Repository</a>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content">
+<h1 class="page-title">AIWAF Python</h1>
+{% include _docs_source.html %}
+<p class="architecture-link"><a href="{{ '/docs/architecture' | relative_url }}">How AIWAF works: system architecture</a></p>
+<p>Python release candidate <code>1.1.4</code> lives in <code>py/aiwaf/</code>. Install a framework extra for Django, Flask, or FastAPI. The package installs its required <code>aiwaf-rust&gt;=0.2.3</code> runtime. The package metadata declares Python 3.10 or newer; the selected framework and scientific dependencies may require a newer interpreter.</p>
+<h2>Packages in the monorepo</h2>
+<p>Each package is versioned and released independently.</p>
+<div class="table-wrap"><table><thead><tr><th>Runtime</th><th>Package</th><th>Repository version</th><th>Primary use</th></tr></thead><tbody>
+<tr><td>Python</td><td><a href="https://pypi.org/project/aiwaf/"><code>aiwaf</code></a></td><td><code>1.1.8</code></td><td>Django, Flask, and FastAPI protection</td></tr>
+<tr><td>Node.js</td><td><a href="https://www.npmjs.com/package/aiwaf"><code>aiwaf</code></a></td><td><code>1.1.4</code></td><td>Express and Node framework middleware</td></tr>
+<tr><td>Rust/Python</td><td><a href="https://pypi.org/project/aiwaf-rust/"><code>aiwaf-rust</code></a></td><td><code>0.2.7</code></td><td>Native Python acceleration and JSON model inference</td></tr>
+<tr><td>WebAssembly</td><td><a href="https://www.npmjs.com/package/aiwaf-wasm"><code>aiwaf-wasm</code></a></td><td><code>0.2.4</code></td><td>Rust detection and model primitives for JavaScript</td></tr>
+<tr><td>Java</td><td><code>io.github.aiwaf-project:aiwaf-java</code></td><td><code>1.3.4</code></td><td>Spring MVC and Jakarta Servlet protection</td></tr>
+</tbody></table></div>
+<p>Supported framework integrations include Django, Flask, FastAPI, Express, Fastify, Hapi, Koa, NestJS, Next.js API routes, AdonisJS, Sails.js, Spring MVC, and Jakarta Servlet.</p>
+<h2>Repository layout</h2>
+<pre><code class="language-text">.
+├── py/aiwaf/                       Python package and adapters
+├── js/                             Node.js package and adapters
+├── rust/                           Rust core and Python bindings
+│   └── crates/aiwaf_wasm/          WebAssembly bindings
+├── java/                           Java 17 package
+├── tests/                          Python integration and parity tests
+├── benchmarks/                     Python middleware benchmarks
+├── examples/                       Focused Python examples
+├── .github/workflows/              Tests, security checks, and releases
+├── README.md                       Canonical project documentation
+└── LICENSE                         Canonical Elastic License 2.0 (see NOTICE)</code></pre>
+<h2>Request controls</h2>
+<ul>
+<li>IP blocklist, exemption, reputation, expiry, and progressive-block handling</li>
+<li>Sliding-window rate limiting and flood detection</li>
+<li>Header, method, request-size, content-type, and parameter validation</li>
+<li>Static and learned malicious keyword detection</li>
+<li>Honeypot field and form-timing checks</li>
+<li>UUID probing and tamper detection</li>
+<li>GeoIP allow/block policies using the bundled MMDB data</li>
+<li>Route manifests, path-specific overrides, and decorator/annotation exemptions</li>
+<li>Memory, file, CSV, SQLite, database, and cache-backed runtime state, depending on the runtime</li>
+<li>Structured request logging and offline training</li>
+<li>Six-feature anomaly models with Rust, JavaScript, and Java implementations</li>
+<li>Optional Rust acceleration for Python and optional WebAssembly acceleration for Node.js</li>
+</ul>
+<p>The runtimes share policy intent and training feature names, but their framework adapters and model implementations remain language-native. Model artifacts are not generally interchangeable across languages.</p>
+<h2>Continue</h2>
+<ul>
+<li><a href="{{ '/docs/python/setup/django' | relative_url }}">Django setup</a></li>
+<li><a href="{{ '/docs/python/setup/flask' | relative_url }}">Flask setup</a></li>
+<li><a href="{{ '/docs/python/setup/fastapi' | relative_url }}">FastAPI setup</a></li>
+<li><a href="{{ '/docs/python/architecture' | relative_url }}">Architecture and training</a></li>
+<li><a href="{{ '/docs/python/adapters' | relative_url }}">Framework adapters</a></li>
+<li><a href="{{ '/docs/python/operations' | relative_url }}">Operations and migration</a></li>
+</ul>
+<section class="section" id="native-csv-updates"><h2>Rust-owned CSV request pipeline</h2><p><strong>Release candidate:</strong> this page documents Python <code>1.1.8</code> and Rust/Python <code>0.2.7</code> in the current source checkout. Source versions do not establish registry availability. Python 1.1.8 requires <code>aiwaf-rust&gt;=0.2.7</code>; framework dependencies remain extras.</p><p>Install the explicit native adapter <strong>instead of</strong> the existing AIWAF middleware chain. Installing the required Rust dependency does not automatically switch existing applications to this pipeline. Legacy adapters remain available for custom stores and hooks; their configuration and fallback behavior are separate.</p><p>Rust owns the native CSV pipeline configuration, enforcement order, SQL and keyword inspection, geo/blocklist decisions, rate buckets, form timing, UUID scores, anomaly history/inference, keyword learning, and CSV logging. Python supplies framework routes, authentication facts, GeoIP lookup, bounded request buffering, and response construction. Training and management still have Python interfaces.</p><p>Continue with <a href="{{ '/docs/python/architecture#native-csv-pipeline' | relative_url }}">the request lifecycle</a>, <a href="{{ '/docs/configuration#native-pipeline-profile' | relative_url }}">the native profile</a>, <a href="{{ '/docs/migration#python-113-native-pipeline' | relative_url }}">migration</a>, and <a href="{{ '/docs/python/operations#native-pipeline-performance' | relative_url }}">performance and deployment</a>.</p></section>
+{% include _python_csv_storage.html %}
+</main>
+    </div>
+</div>
+{% include _python_scarf_pixel.html %}
+</body>
+</html>

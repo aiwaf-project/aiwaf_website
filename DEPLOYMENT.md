@@ -1,77 +1,51 @@
-# Deploy the documentation website
+# GitHub Pages deployment
 
-The primary application is app.py, exported as application by wsgi.py. It uses AIWAF CSV state in aiwaf_data, request logs in logs, and a local SQLite URI initialized through Flask-SQLAlchemy. MySQL analytics and SSH tunneling belong to simple_app.py; they are not required by the primary WSGI application. /health reports liveness, not database or Redis readiness.
+The site uses Jekyll 4.4 and Ruby 3.3 in GitHub Actions. Only site/ is read as website source; _site/ is the generated output. Python is used for maintenance and output checks, not for serving the website.
 
-## Install and start
+1. Push the changes to main.
+2. In the repository, open Settings > Pages > Build and deployment, and select **GitHub Actions** as the source.
+3. Run or wait for the Deploy Jekyll to GitHub Pages workflow. It builds, verifies, uploads _site, and deploys through the github-pages environment. The successful deployment provides the public URL.
 
-Use a Python environment compatible with requirements.txt. Several pinned numerical dependencies require a newer interpreter than AIWAF's own minimum; runtime.txt records this website's requested runtime.
+The workflow reads the public origin and base path from actions/configure-pages. This supports both a project URL such as https://aayushgauba.github.io/aiwaf_website/ and a custom domain. Configure a custom domain in Settings > Pages and update its DNS; this checkout does not change DNS or repository settings.
 
-~~~bash
-python -m venv venv
-source venv/bin/activate
-python -m pip install -r requirements.txt
-export SECRET_KEY='replace-with-a-generated-secret'
-export PORT=8080
-gunicorn --config gunicorn.conf.py wsgi:application
-~~~
+## Use aiwaf.org
 
-Run from the repository root. gunicorn.conf.py uses two sync workers, a 30-second timeout, stdout/stderr logging, and PORT (default 8080). Its /dev/shm worker temporary directory is intended for Linux deployments. Set a suitable worker_tmp_dir if your host lacks it. python wsgi.py and python app.py start Flask's development server; use the WSGI export for hosting.
+The intended production domain is **aiwaf.org**, matching `_config.yml` (`url: https://aiwaf.org`, `baseurl: ""`). In this repository's Settings > Pages, set Custom domain to `aiwaf.org` and save it before changing DNS.
 
-app.py reads SECRET_KEY, PORT, and SITE_URL (default https://aiwaf.org). Set SITE_URL to the public staging domain when applicable; trailing slashes are normalized. Configure AIWAF through app.config before AIWAF(app), including aiwaf_config.py. The primary app does not consume DB_USER, DB_PASSWORD, DB_HOST, or DATABASE_URL. The .env.example file also contains settings for the alternate runner; select only the settings your runner uses.
+At the domain's DNS provider, replace the existing apex (`@`) website record pointing to PythonAnywhere with these four A records:
 
-## DigitalOcean App Platform
+| Type | Host | Value |
+| --- | --- | --- |
+| A | @ | 185.199.108.153 |
+| A | @ | 185.199.109.153 |
+| A | @ | 185.199.110.153 |
+| A | @ | 185.199.111.153 |
 
-Use .do/app.yaml with the actual website repository and branch. Its run command is Gunicorn with gunicorn.conf.py and wsgi:application; its health check is /health. Set SECRET_KEY as a platform secret and PORT to the service port. Procfile uses the same Gunicorn entrypoint.
+If `www.aiwaf.org` is also wanted, set `CNAME www` to `aayushgauba.github.io`. Preserve unrelated DNS records, including email records. Once GitHub's DNS check and certificate provisioning complete, enable Enforce HTTPS in Pages settings.
 
-Provide writable locations for runtime state and logs. Ephemeral filesystem state may disappear during replacement or redeployment. Persist state outside the disposable application filesystem when it must survive. CSV files alone do not make rate-limit counters shared across workers: configure and verify a shared rate cache separately. The Flask rate cache can fall back to memory if Redis initialization fails, so test behavior across workers rather than assuming that setting a URL is enough.
+The Actions deployment obtains `https://aiwaf.org` and the empty base path from Pages after the custom domain is configured. A repository named `aayushgauba.github.io` is not required. A `CNAME` file is not used by this custom Actions workflow; the domain must be configured in repository settings. See [GitHub's custom domain instructions](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
 
-## Hosted WSGI, including PythonAnywhere
+For local preview:
 
-Select the website virtual environment in the host's web application settings. In the host's WSGI configuration, add the checkout to sys.path and import the export:
+```sh
+bundle install
+bundle exec jekyll serve
+```
 
-~~~python
-import sys
+Open http://localhost:4000. For a standalone build and check:
 
-checkout = '/home/YOUR_USERNAME/aiwaf_website'
-if checkout not in sys.path:
-    sys.path.insert(0, checkout)
-from wsgi import application
-~~~
+```sh
+bundle exec jekyll build
+python scripts/check_site.py
+```
 
-Replace the username and checkout path. Ensure the worker can read templates/static files and write runtime state. The host controls its WSGI process; do not launch Gunicorn from the host's WSGI file. Reload the web application after updating source or dependencies.
+Check a project-site prefix before deployment:
 
-Before reloading, check imports in the same virtual environment and checkout:
+```sh
+bundle exec jekyll build --baseurl /aiwaf_website
+python scripts/check_site.py --baseurl /aiwaf_website
+```
 
-~~~bash
-python -c "from wsgi import application; print(application.url_map)"
-aiwaf init --framework flask --app app:app
-~~~
+_config.yml supplies the default origin https://aiwaf.org and an empty baseurl. Change these for other static hosts; GitHub Actions overrides both from the Pages configuration. Upload only _site/ if using another host, and configure 404.html as the error document. Directory index serving is required for /docs/.../ URLs. Redirect aliases are HTML redirect pages, since GitHub Pages does not run a backend.
 
-Importing wsgi starts the actual application's initialization. This can create runtime state and expose missing dependencies; documentation-only tests intentionally do not perform this check.
-
-## Verify after deployment
-
-~~~bash
-curl -i https://aiwaf.org/health
-# Match the site's header policy when probing protected documentation.
-probe_docs() {
-  curl -A 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130.0.0.0 Safari/537.36' \
-    -H 'Accept: text/html' -H 'Accept-Language: en-US' -H 'Accept-Encoding: identity' "$@"
-}
-probe_docs -i https://aiwaf.org/docs/python/setup
-probe_docs -i https://aiwaf.org/python/setup/django
-probe_docs -fL https://aiwaf.org/docs/python/setup/django
-probe_docs -f https://aiwaf.org/docs/configuration
-probe_docs -f https://aiwaf.org/docs/migration
-probe_docs -f https://aiwaf.org/docs/troubleshooting
-~~~
-
-The explicit /health exemption permits plain health probes. Protected documentation can reject curl default headers; use the browser-style probe or a browser for those pages. Expect /health to return 200; the setup landing and short URL to redirect to the canonical Django guide; and the final pages to return 200. Replace the domain for staging. Unknown documentation pages should return 404. Inspect canonical tags and sitemap locations for the deployed domain.
-
-The sitemap and robots routes also have explicit AIWAF route exemptions in app.py, alongside the optional config file's path exemptions. After deployment, verify GET and HEAD return 200 for /sitemap.xml and /robots.txt without browser headers. The sitemap must return application/xml and parse as XML, not an HTML error or challenge. If Search Console still reports an earlier failed fetch, inspect its last-read time and request a new fetch/resubmit the sitemap after verifying the deployed endpoint. A successful local or public probe does not prove that Google's actual crawler IP can reach it; check server/proxy logs for its failed request if the error recurs.
-
-A 500 requires the server error log/traceback: verify that documentation.py and the templates are deployed together, that the active worker imports the expected checkout, and that the host was reloaded. A 403 can originate from AIWAF or an upstream proxy; inspect response details and logs before changing policy. See /docs/troubleshooting for package and route diagnostics.
-
-## Rollback
-
-Keep the previous code revision, dependency versions, configuration, and backups of writable state/model files. Restore compatible code and state together, then reload workers and repeat the HTTP checks. A successful template test does not establish that production has been updated.
+No application server, database, secrets, WSGI worker, or beta registration service is required. Existing local runtime data is outside the site source and is not published. The build workflow is ready to deploy once pushed; local changes alone do not publish a deployment.

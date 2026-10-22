@@ -1,0 +1,173 @@
+---
+layout: null
+permalink: "/docs/java/setup/servlet/"
+title: "AIWAF Java Servlet Setup Guide | Core Integration"
+description: "End-to-end setup guide for aiwaf-java with Servlet integration."
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title | escape }}</title>
+    <meta name="description" content="{{ page.description | escape }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ page.title | escape }}">
+    <meta property="og:description" content="{{ page.description | escape }}">
+    <meta property="og:url" content="{{ page.url | absolute_url }}">
+    <meta property="og:image" content="{{ '/static/aiwaf-logo.png' | absolute_url }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page.title | escape }}">
+    <meta name="twitter:description" content="{{ page.description | escape }}">
+    <meta name="twitter:image" content="{{ '/static/aiwaf-logo.png' | absolute_url }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site.url | append: site.baseurl }}"}</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#2d6a4f,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.09); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        pre { background: rgba(0,0,0,.5); border: 1px solid rgba(78,205,196,.3); border-radius: 10px; padding: .85rem; overflow-x: auto; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="{{ '/static/docs-current.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/static/brand.css' | relative_url }}">
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><a class="brand-logo" href="{{ '/' | relative_url }}" aria-label="AIWAF home"><img src="{{ '/static/aiwaf-logo.png' | relative_url }}" alt="AIWAF" width="2172" height="724"></a>
+{% include _docs_search.html %}<nav class="nav"><a href="{{ '/' | relative_url }}" class="nav-link">Home</a><a href="{{ '/docs' | relative_url }}" class="nav-link">Documentation</a></nav></div></div></header>
+
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">Java Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="{{ '/docs/java' | relative_url }}">Overview</a></li>
+        <li><a href="{{ '/docs/java/setup' | relative_url }}">Setup Guide</a>
+            <ul style="list-style-type: none; padding-left: 1rem; margin-top: 0.5rem;">
+                <li><a href="{{ '/docs/java/setup/servlet' | relative_url }}" class="active">Servlet (Core)</a></li>
+                <li><a href="{{ '/docs/java/setup/spring' | relative_url }}" class="">Spring Boot</a></li>
+            </ul>
+</li>
+        <li><a href="{{ '/docs/java/architecture' | relative_url }}">Architecture</a></li>
+        <li><a href="{{ '/docs/java/operations' | relative_url }}">Operations</a></li>
+    </ul>
+</aside>
+<main class="content">
+<h1 class="page-title">Jakarta Servlet Setup</h1>
+{% include _docs_source.html %}
+<p class="architecture-link"><a href="{{ '/docs/architecture' | relative_url }}">How AIWAF works: system architecture</a></p>
+<p class="docs-lead">Integrate native Java enforcement into Jakarta Servlet and verify how the adapter observes requests and responses.</p><div class="docs-callout"><strong>Before you begin</strong><p>You need Java 17+, Maven, and an existing Jakarta Servlet 6.1 application and a compatible container. These are integration snippets, not a standalone generated application. First confirm that an ordinary endpoint runs without AIWAF.</p></div><h2>1. Add the Java dependency</h2><p class="code-filename">pom.xml / dependencies</p><p>Java source version <code>1.3.5</code> is declared in <code>java/pom.xml</code>. It targets Java 17, Spring Framework 7.0, and Jakarta Servlet 6.1, and runs natively without Rust. Use the Maven dependency below once this version is published to Maven Central; source builds are available from the monorepo.</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;io.github.aiwaf-project&lt;/groupId&gt;
+  &lt;artifactId&gt;aiwaf-java&lt;/artifactId&gt;
+  &lt;version&gt;1.3.5&lt;/version&gt;
+&lt;/dependency&gt;</code></pre><h3>Build from source when needed</h3><p>If the required version is unavailable in your registry, install the reviewed monorepo source in your local Maven repository:</p><pre><code class="language-bash">git clone https://github.com/aiwaf-project/aiwaf.git
+cd aiwaf/java
+mvn -Dgpg.skip=true install</code></pre><p>Return to your application checkout afterward. Match its dependency version to the version built from java/pom.xml.</p>
+<h2>2. Understand the engine boundary</h2><p>The following code belongs inside application initialization/request handling, not at the top level of a Java source file. It illustrates the core API; the filter shown next performs this adapter work for Servlet requests.</p>
+<p>Use the two-stage API when the integration can observe the handler response. Deterministic controls run before the application; anomaly scoring then receives the actual status and elapsed time.</p>
+<pre><code class="language-java">import com.aiwaf.core.AiwafConfig;
+import com.aiwaf.core.AiwafDecision;
+import com.aiwaf.core.AiwafEngine;
+import com.aiwaf.core.AiwafRequest;
+
+import java.util.Map;
+import java.util.Set;
+
+AiwafConfig config = new AiwafConfig();
+config.rateLimitEnabled = true;
+config.rateLimitMax = 20;
+config.rateLimitWindowSeconds = 10;
+
+AiwafEngine engine = new AiwafEngine(config);
+AiwafRequest request = new AiwafRequest(
+    &quot;GET&quot;,
+    &quot;/api/profile&quot;,
+    &quot;203.0.113.10&quot;,
+    &quot;US&quot;,
+    Map.of(&quot;User-Agent&quot;, &quot;Mozilla/5.0&quot;, &quot;Accept&quot;, &quot;application/json&quot;),
+    Map.of(),
+    System.currentTimeMillis(),
+    Set.of()
+);
+
+long started = System.currentTimeMillis();
+AiwafDecision decision = engine.evaluateBeforeResponse(request);
+if (decision.allowed()) {
+    decision = engine.evaluateAfterResponse(
+        request,
+        200,
+        System.currentTimeMillis() - started
+    );
+}</code></pre>
+<p><code>evaluate(request)</code> remains available for request-only integrations and uses provisional response values for AI features.</p>
+<h2>3. Register the Servlet filter</h2><p>During servlet-context initialization, add the filter before the handlers it protects. Import <code>com.aiwaf.servlet.AiwafServletFilter</code> in the class that owns this initialization. Keep the container's existing initialization and filter ordering.</p>
+<pre><code class="language-java">AiwafConfig config = new AiwafConfig();
+AiwafEngine engine = new AiwafEngine(config);
+
+servletContext
+    .addFilter(&quot;aiwaf&quot;, new AiwafServletFilter(engine))
+    .addMappingForUrlPatterns(null, false, &quot;/*&quot;);</code></pre>
+<p>The generic servlet filter uses request-time evaluation. Spring applications should prefer <code>AiwafFilter</code> for handler metadata and post-response scoring.</p>
+<h2>Configuration and operations</h2>
+<div class="table-wrap"><table><thead><tr><th>Area</th><th>Main <code>AiwafConfig</code> fields</th></tr></thead><tbody>
+<tr><td>Rate limiting</td><td><code>rateLimitEnabled</code>, <code>rateLimitScope</code>, <code>rateLimitWindowSeconds</code>, <code>rateLimitMax</code>, <code>rateLimitFloodThreshold</code></td></tr>
+<tr><td>Headers</td><td><code>headerValidationEnabled</code>, <code>requiredHeadersByMethod</code>, <code>minHeaderQualityScore</code>, size/count limits</td></tr>
+<tr><td>Request</td><td>body, parameter, method, and content-type limits</td></tr>
+<tr><td>Proxies</td><td><code>trustedProxyCidrs</code>, <code>maxForwardedForEntries</code></td></tr>
+<tr><td>Exemptions</td><td><code>exemptIps</code>, <code>exemptPaths</code>, <code>autoExemptPathPrefixes</code></td></tr>
+<tr><td>GeoIP</td><td><code>geoBlockEnabled</code>, <code>geoAllowedCountries</code>, <code>geoBlockedCountries</code>, <code>geoIpDatabasePath</code>, cache limits</td></tr>
+<tr><td>Route manifest</td><td><code>pathManifestEnabled</code>, <code>pathManifestPath</code>, <code>pathRules</code></td></tr>
+<tr><td>UUID checks</td><td><code>uuidTamperEnabled</code>, <code>uuidScoreWindowSeconds</code>, <code>uuidScoreBlockThreshold</code>, signal weights, <code>uuidParameterNames</code></td></tr>
+<tr><td>AI</td><td><code>aiEnabled</code>, <code>aiModelPath</code>, <code>aiAnomalyScoreThreshold</code></td></tr>
+<tr><td>Storage</td><td><code>storageBackend</code>, <code>storageFilePath</code>, <code>storageRedisUrl</code>, <code>storageKeyPrefix</code>, <code>storageRedisFailureMode</code>, Redis timeout and pool limits</td></tr>
+<tr><td>Telemetry</td><td><code>observabilityEnabled</code></td></tr>
+</tbody></table></div>
+<p>GeoIP uses the bundled MMDB through the native Java reader; it does not require the external <code>mmdblookup</code> executable. A valid <code>X-Country</code> value is accepted only from a peer in <code>trustedProxyCidrs</code>; otherwise AIWAF resolves the client address itself. Default blocklist calls use Python-compatible reputation scoring and temporary escalation (15 minutes, 1 hour, then 24 hours). Use <code>BlocklistManager.blockPermanent(ip, reason)</code> for an explicit permanent administrative block.</p>
+<p><code>storageBackend="redis"</code> makes rate-limit buckets, honeypot timing, weighted UUID scores, recent-request anomaly state, blocklist data, exemptions, geo policy, and learned keywords visible to every application instance using the same key prefix. Redis enforcement updates use atomic server-side scripts. Memory, file, CSV, and SQLite engines keep request state isolated per <code>AiwafEngine</code>; constructing another engine no longer replaces an existing engine's stores. The static <code>RuntimeStorage</code> and <code>BlocklistManager</code> methods remain compatibility facades for command-line and administrative code.</p>
+<p>The Java 1.3 Redis backend supports <strong>standalone Redis only</strong>. Sentinel and Cluster configurations are rejected during validation instead of silently operating with incomplete semantics. <code>fail_closed</code> is the default: an unavailable Redis instance prevents startup or raises a request-path storage failure, which results in the application denying availability rather than bypassing protection. <code>fail_open</code> permits startup and returns non-blocking enforcement fallbacks while Redis is unavailable; failed mutations return <code>false</code> at the <code>StorageBackend</code> boundary. Connection, socket, pool size, and pool wait limits are bounded and configurable. <code>RedisStorage.diagnostics()</code> reports operation/failure counts, latency, and live pool utilization.</p>
+<p>Redis keys include a state-schema version, and each base key prefix has an atomic compatibility marker. Releases using the same schema can share state during a rolling upgrade. A runtime with an incompatible schema refuses the namespace—even in <code>fail_open</code> mode. Use a unique key prefix per application and environment; deploy an incompatible schema with a new prefix, migrate deliberately, then retire the old namespace. Serialized persistent values remain JSON within a schema version.</p>
+<p>New Java models use the Python-aligned six-feature schema and are written as safe JSON containing the Python <code>aiwaf_rust.IsolationForest</code> state. Python can restore Java-generated forest state, and Java can load Python Rust-model artifacts. Existing signed Java binary artifacts, including nine-feature models, remain readable through the restricted legacy loader. Scikit-learn object artifacts are intentionally unsupported.</p>
+<p>Java operational commands mirror the common Python workflow:</p>
+<pre><code class="language-bash">aiwaf-cli status
+aiwaf-cli diagnose --model model.json
+aiwaf-cli blocked
+aiwaf-cli unblock 203.0.113.10
+aiwaf-cli clear
+aiwaf-cli train --events events.json --out model.json --backend java
+aiwaf-cli replay --cases replay.json
+aiwaf-cli model status --path model.json
+aiwaf-cli logs --dir aiwaf_logs</code></pre>
+<p>Build Java from the repository root:</p>
+<pre><code class="language-bash">cd java
+mvn test
+mvn -Dgpg.skip=true package</code></pre>
+<p>The build produces the main, source, and Javadoc JARs under <code>java/target/</code>. The main JAR embeds the root license as <code>META-INF/LICENSE</code>. FastR training is optional and falls back to the Java trainer when R or <code>jsonlite</code> is unavailable.</p>
+<h2>Verify the deployed adapter</h2><ol><li>Build the existing application with <code>mvn test</code> and its normal packaging command. Resolve framework/Servlet compatibility errors before starting the server.</li><li>Start the application with its existing launcher and request a known non-exempt handler through a browser.</li><li>Inspect the enabled policy, observed client IP, response status, and duration. Private-address exemptions can affect local tests.</li><li>Exercise a deliberate block or rate boundary on a staging route, and confirm the handler response is not returned for the rejected request.</li><li>For distributed deployments, repeat across instances and verify the selected namespace, backend, and failure policy.</li></ol><p>A successful normal request proves reachability. It does not prove that every middleware is selected or that a trained model is loaded. Use the <a href="{{ '/docs/java/architecture' | relative_url }}">Java architecture guide</a> to understand request-only versus response-aware decisions.</p><div class="docs-checkpoint"><strong>Checkpoint</strong> You can locate the dependency, initialization/filter registration, configuration file, and operational verification for this adapter.</div><nav class="docs-pagination" aria-label="Next reading"><a href="{{ '/docs/getting_started' | relative_url }}">Choose a runtime</a><a href="{{ '/docs/java/architecture' | relative_url }}">Next: understand Java architecture</a></nav></main>
+</div></div>
+{% include _java_scarf_pixel.html %}
+</body>
+</html>

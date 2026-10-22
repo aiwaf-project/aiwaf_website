@@ -143,8 +143,7 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
-# mkdocs documentation
-/site
+# Jekyll source lives in site/ and is tracked.
 
 # mypy
 .mypy_cache/
@@ -219,3 +218,11 @@ Thumbs.db
 Desktop.ini
 *.swp
 *.swo
+
+# Jekyll build output and local Bundler state
+_site/
+.jekyll-cache/
+.jekyll-metadata
+.bundle/
+vendor/
+_config.pages.json

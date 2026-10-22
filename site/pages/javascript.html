@@ -1,0 +1,190 @@
+---
+layout: null
+permalink: "/docs/javascript/"
+title: "AIWAF Documentation"
+description: "Comprehensive Node.js reference for aiwaf covering middleware pipeline, framework adapters, and core runtime behavior."
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ page.title | escape }}</title>
+    <meta name="description" content="{{ page.description | escape }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ page.title | escape }}">
+    <meta property="og:description" content="{{ page.description | escape }}">
+    <meta property="og:url" content="{{ page.url | absolute_url }}">
+    <meta property="og:image" content="{{ '/static/aiwaf-logo.png' | absolute_url }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page.title | escape }}">
+    <meta name="twitter:description" content="{{ page.description | escape }}">
+    <meta name="twitter:image" content="{{ '/static/aiwaf-logo.png' | absolute_url }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site.url | append: site.baseurl }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; overflow-x: hidden; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16, 16, 30, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientShift 3s ease-in-out infinite; }
+        @keyframes gradientShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; padding: .5rem 1rem; border-radius: 50px; transition: all .3s ease; }
+        .nav-link:hover { color: #4ecdc4; transform: translateY(-2px); }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; color: #4ecdc4; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem 1rem; border-radius: 10px; display: block; transition: all .3s ease; }
+        .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(78,205,196,.2); color: #4ecdc4; transform: translateX(5px); }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 3rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#3b3b98,#2a9d8f); color: #fff; padding: .5rem 1rem; border-radius: 25px; font-weight: 600; display: inline-block; margin-bottom: 1.2rem; }
+        .page-title { font-size: 3rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
+        .meta-card { background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 1rem; }
+        .meta-key { color: #4ecdc4; font-size: .82rem; text-transform: uppercase; letter-spacing: .08em; }
+        .meta-val { font-size: 1.05rem; font-weight: 700; margin-top: .35rem; }
+        .section-title { color: #ff6b6b; margin: 1.7rem 0 .8rem; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1rem; margin: 1.2rem 0; }
+        .feature-card { background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 1.2rem; }
+        .feature-card h4 { color: #4ecdc4; margin-bottom: .35rem; }
+        .doc-card { background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 1.4rem; margin-top: 1rem; }
+        .doc-card a { color: #4ecdc4; text-decoration: none; font-weight: 600; }
+        .doc-card a:hover { text-decoration: underline; }
+        ul { padding-left: 1.2rem; }
+        li { margin-bottom: .4rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="{{ '/static/docs-current.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/static/brand.css' | relative_url }}">
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <a class="brand-logo" href="{{ '/' | relative_url }}" aria-label="AIWAF home"><img src="{{ '/static/aiwaf-logo.png' | relative_url }}" alt="AIWAF" width="2172" height="724"></a>
+{% include _docs_search.html %}
+            <nav class="nav">
+                <a href="{{ '/' | relative_url }}" class="nav-link">Home</a>
+                <a href="{{ '/docs' | relative_url }}" class="nav-link">Documentation</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <h3 class="sidebar-title">JavaScript Docs</h3>
+            <ul class="sidebar-nav">
+                <li><a href="{{ '/docs/javascript' | relative_url }}" class="active">Overview</a></li>
+                <li><a href="{{ '/docs/javascript/setup' | relative_url }}">Setup Guide</a>
+            <ul class="sidebar-subnav" style="list-style-type: none; padding-left: 1rem; margin-top: 0.5rem;">
+                <li><a href="{{ '/docs/javascript/setup/express' | relative_url }}">Express</a></li>
+                <li><a href="{{ '/docs/javascript/setup/fastify' | relative_url }}">Fastify</a></li>
+                <li><a href="{{ '/docs/javascript/setup/hapi' | relative_url }}">Hapi</a></li>
+                <li><a href="{{ '/docs/javascript/setup/koa' | relative_url }}">Koa</a></li>
+                <li><a href="{{ '/docs/javascript/setup/nestjs' | relative_url }}">NestJS</a></li>
+                <li><a href="{{ '/docs/javascript/setup/nextjs' | relative_url }}">Next.js</a></li>
+                <li><a href="{{ '/docs/javascript/setup/adonis' | relative_url }}">AdonisJS</a></li>
+                <li><a href="{{ '/docs/javascript/setup/sails' | relative_url }}">Sails</a></li>
+            </ul>
+</li>
+                <li><a href="{{ '/docs/javascript/architecture' | relative_url }}">Architecture</a></li>
+                <li><a href="{{ '/docs/javascript/operations' | relative_url }}">Operations</a></li>
+            </ul>
+            <div style="margin-top: 2rem; padding: 1rem; background: rgba(78,205,196,.1); border-radius: 10px;">
+                <small>Node.js middleware and plugin runtime deep dive for <code>aiwaf</code>.</small>
+                <div style="margin-top: 0.7rem;">
+                    <a href="https://www.npmjs.com/package/aiwaf" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">npm Package</a><br>
+                    <a href="https://github.com/aiwaf-project/aiwaf" target="_blank" rel="noopener noreferrer" style="color:#4ecdc4;">GitHub Repository</a>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content">
+<h1 class="page-title">AIWAF for Node.js</h1>
+{% include _docs_source.html %}
+{% include _node_release_support.html %}<section class="section" id="native-node-overview"><h2>Native request pipeline</h2><p><strong>Native mode:</strong> Node source candidate <code>aiwaf 1.1.5</code> declares <code>aiwaf-wasm ^0.2.5</code>. Explicit native registration validates <code>NativeRequestPipeline</code> at startup; missing or incompatible support is an error. There is no JavaScript policy fallback for this engine. Installing the dependency does not switch an existing legacy middleware chain.</p><p>The explicit native adapter validates configuration once, then Rust/WASM owns geo/blocklist/keyword/structured SQL decisions, rate and flood counters, honeypot timing, UUID scores, anomaly history/model inference, keyword learning and CSV formatting. Node retains framework facts, bounded body parsing, response handling and filesystem writes with cached file descriptors. Existing integrations keep their legacy middleware path.</p><p>Read <a href="{{ '/docs/javascript/architecture#native-request-engine' | relative_url }}">the native lifecycle</a>, <a href="{{ '/docs/configuration#node-native-profile' | relative_url }}">configuration</a>, <a href="{{ '/docs/javascript/operations#native-node-operations' | relative_url }}">deployment and measurements</a>, and <a href="{{ '/docs/migration#node-native-migration' | relative_url }}">migration</a>.</p></section>
+<p class="architecture-link"><a href="{{ '/docs/architecture' | relative_url }}">How AIWAF works: system architecture</a></p>
+<p>The CommonJS npm package is <code>aiwaf</code>, source candidate <code>1.1.2</code> in <code>js/package.json</code>. Install with <code>npm install aiwaf</code> and import with <code>require('aiwaf')</code>. All adapters share the monorepo and root README.</p>
+<h2>Express quick start</h2>
+<pre><code class="language-javascript">const express = require(&#x27;express&#x27;);
+const aiwaf = require(&#x27;aiwaf&#x27;);
+
+const app = express();
+app.use(express.json());
+
+app.use(aiwaf({
+  AIWAF_MIDDLEWARES: [&#x27;auto&#x27;],
+  staticKeywords: [&#x27;.php&#x27;, &#x27;.env&#x27;, &#x27;.git&#x27;],
+  WINDOW_SEC: 10,
+  MAX_REQ: 20,
+  FLOOD_REQ: 40,
+  AIWAF_HEADER_VALIDATION: true,
+  AIWAF_METHOD_POLICY_ENABLED: true,
+  AIWAF_ALLOWED_METHODS: [&#x27;GET&#x27;, &#x27;POST&#x27;, &#x27;HEAD&#x27;, &#x27;OPTIONS&#x27;]
+}));
+
+app.get(&#x27;/&#x27;, (req, res) =&gt; res.json({ protected: true }));
+app.listen(3000);</code></pre>
+<p>Attach AIWAF after the body parser when honeypot rules inspect parsed form or JSON fields.</p>
+<h2>Framework entry points</h2>
+<div class="table-wrap"><table><thead><tr><th>Framework</th><th>Entry point</th></tr></thead><tbody>
+<tr><td>Express</td><td><code>aiwaf(options)</code></td></tr>
+<tr><td>Fastify</td><td><code>fastify.register(aiwaf.fastify, options)</code></td></tr>
+<tr><td>Hapi</td><td><code>server.register({ plugin: aiwaf.hapi, options })</code></td></tr>
+<tr><td>Koa</td><td><code>app.use(aiwaf.koa(options))</code></td></tr>
+<tr><td>NestJS/Express</td><td><code>aiwaf.nest(options)</code> or the Express middleware</td></tr>
+<tr><td>NestJS/Fastify</td><td><code>app.register(aiwaf.fastify, options)</code></td></tr>
+<tr><td>Next.js API routes</td><td><code>aiwaf.next(handler, options)</code></td></tr>
+<tr><td>AdonisJS</td><td><code>aiwaf.adonis(options)</code></td></tr>
+<tr><td>Sails.js</td><td><code>aiwaf.sails(options)</code></td></tr>
+</tbody></table></div>
+<h2>Route policies</h2>
+<pre><code class="language-javascript">app.use(aiwaf({
+  AIWAF_PATH_RULES: [
+    { PREFIX: &#x27;/health/&#x27;, DISABLE: [&#x27;header_validation&#x27;, &#x27;rate_limit&#x27;] },
+    { PREFIX: &#x27;/api/public/&#x27;, RATE_LIMIT: { WINDOW: 60, MAX: 300 } }
+  ]
+}));</code></pre>
+<p>Applications can also use <code>aiwaf.exempt</code>, <code>aiwaf.exemptFrom</code>, <code>aiwaf.only</code>, and <code>aiwaf.requireProtection</code> to build route policies.</p>
+<p>Generate an Express route manifest after routes are registered:</p>
+<pre><code class="language-javascript">aiwaf.generateExpressManifest(app, &#x27;.aiwaf/paths.json&#x27;);</code></pre>
+<p>Or generate one from a route list with the CLI:</p>
+<pre><code class="language-bash">cd js
+npm run aiwaf -- manifest --framework express --routes routes.json --output .aiwaf/paths.json</code></pre>
+<h2>Configuration and acceleration</h2>
+<div class="table-wrap"><table><thead><tr><th>Area</th><th>Important options</th></tr></thead><tbody>
+<tr><td>Middleware</td><td><code>AIWAF_MIDDLEWARES</code>, <code>AIWAF_DISABLE_MIDDLEWARES</code>, <code>AIWAF_PATH_RULES</code></td></tr>
+<tr><td>Rate limiting</td><td><code>WINDOW_SEC</code>, <code>MAX_REQ</code>, <code>FLOOD_REQ</code>, <code>cache</code></td></tr>
+<tr><td>Headers</td><td><code>AIWAF_HEADER_VALIDATION</code>, <code>AIWAF_REQUIRED_HEADERS</code>, <code>AIWAF_HEADER_QUALITY_MIN_SCORE</code></td></tr>
+<tr><td>Methods</td><td><code>AIWAF_METHOD_POLICY_ENABLED</code>, <code>AIWAF_ALLOWED_METHODS</code></td></tr>
+<tr><td>Keywords</td><td><code>staticKeywords</code>, <code>AIWAF_ENABLE_KEYWORD_LEARNING</code>, <code>AIWAF_DYNAMIC_TOP_N</code></td></tr>
+<tr><td>Honeypot</td><td><code>HONEYPOT_FIELD</code>, timing settings</td></tr>
+<tr><td>GeoIP</td><td><code>AIWAF_GEO_BLOCK_ENABLED</code>, <code>AIWAF_GEO_BLOCK_COUNTRIES</code>, <code>AIWAF_GEO_ALLOW_COUNTRIES</code></td></tr>
+<tr><td>Models</td><td><code>AIWAF_MODEL_STORAGE</code>, <code>AIWAF_MODEL_PATH</code>, <code>AIWAF_MODEL_CACHE_KEY</code></td></tr>
+<tr><td>Logging</td><td><code>AIWAF_MIDDLEWARE_LOGGING</code>, <code>AIWAF_MIDDLEWARE_LOG_PATH</code>, DB/CSV options</td></tr>
+<tr><td>WASM</td><td><code>AIWAF_WASM_VALIDATION</code>, <code>AIWAF_WASM_VALIDATE_RECENT</code></td></tr>
+</tbody></table></div>
+<p>AIWAF loads <code>aiwaf-wasm</code> when available and falls back to the JavaScript implementation when WASM initialization or conversion is not worthwhile. Small, object-heavy operations can be faster in JavaScript because crossing the JS/WASM boundary and serializing objects has a fixed cost. WASM is most useful for sufficiently large feature batches and model scoring workloads.</p>
+<h2>Continue</h2>
+<ul>
+<li><a href="{{ '/docs/javascript/setup' | relative_url }}">Framework setup</a></li>
+<li><a href="{{ '/docs/javascript/architecture' | relative_url }}">Architecture</a></li>
+<li><a href="{{ '/docs/javascript/operations' | relative_url }}">Operations</a></li>
+</ul>
+</main>
+    </div>
+</div>
+</body>
+</html>

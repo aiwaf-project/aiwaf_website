@@ -1,0 +1,256 @@
+---
+layout: null
+permalink: "/docs/php/architecture/"
+title: "AIWAF PHP Architecture | Legacy Reference"
+description: "Legacy architecture reference for aiwaf-php. PHP is absent from the current AIWAF monorepo."
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title | escape }}</title>
+    <meta name="description" content="{{ page.description | escape }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ page.title | escape }}">
+    <meta property="og:description" content="{{ page.description | escape }}">
+    <meta property="og:url" content="{{ page.url | absolute_url }}">
+    <meta property="og:image" content="{{ '/static/aiwaf-logo.png' | absolute_url }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page.title | escape }}">
+    <meta name="twitter:description" content="{{ page.description | escape }}">
+    <meta name="twitter:image" content="{{ '/static/aiwaf-logo.png' | absolute_url }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site.url | append: site.baseurl }}"}</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16,16,30,.9); border-bottom: 1px solid rgba(255,255,255,.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg,#ff6b6b,#4ecdc4,#45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; }
+        .sidebar { background: rgba(16,16,30,.6); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255,255,255,.1); }
+        .sidebar-title { color: #4ecdc4; margin-bottom: 1rem; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: .5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: .5rem .9rem; border-radius: 10px; display: block; }
+        .sidebar-nav a.active, .sidebar-nav a:hover { background: rgba(78,205,196,.2); color: #4ecdc4; }
+        .content { background: rgba(16,16,30,.4); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,.1); }
+        .badge { background: linear-gradient(45deg,#5a189a,#2a9d8f); display: inline-block; padding: .5rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+        .page-title { font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section { background: rgba(0,0,0,.23); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem; margin: 1rem 0; }
+        .section h2 { color: #ff6b6b; margin-bottom: .6rem; }
+        .section h3 { color: #4ecdc4; margin: .85rem 0 .35rem; }
+        ul, ol { padding-left: 1.2rem; }
+        li { margin-bottom: .35rem; }
+        code { font-family: 'Fira Code', monospace; color: #f6c177; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="{{ '/static/docs-current.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/static/brand.css' | relative_url }}">
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-content"><a class="brand-logo" href="{{ '/' | relative_url }}" aria-label="AIWAF home"><img src="{{ '/static/aiwaf-logo.png' | relative_url }}" alt="AIWAF" width="2172" height="724"></a>
+{% include _docs_search.html %}<nav class="nav"><a href="{{ '/' | relative_url }}" class="nav-link">Home</a><a href="{{ '/docs' | relative_url }}" class="nav-link">Documentation</a></nav></div></div></header>
+
+<div class="container"><div class="main-content">
+<aside class="sidebar">
+    <h3 class="sidebar-title">PHP Docs</h3>
+    <ul class="sidebar-nav">
+        <li><a href="{{ '/docs/php' | relative_url }}">Overview</a></li>
+        <li><a href="{{ '/docs/php/setup' | relative_url }}">Setup Guide</a>
+            <ul class="sidebar-subnav" style="list-style-type: none; padding-left: 1rem; margin-top: 0.5rem;">
+                <li><a href="{{ '/docs/php/setup/plain' | relative_url }}">Plain PHP</a></li>
+                <li><a href="{{ '/docs/php/setup/laravel' | relative_url }}">Laravel</a></li>
+                <li><a href="{{ '/docs/php/setup/symfony' | relative_url }}">Symfony</a></li>
+                <li><a href="{{ '/docs/php/setup/wordpress' | relative_url }}">WordPress</a></li>
+            </ul>
+</li>
+        <li><a href="{{ '/docs/php/architecture' | relative_url }}" class="active">Architecture</a></li>
+        <li><a href="{{ '/docs/php/operations' | relative_url }}">Operations</a></li>
+    </ul>
+</aside>
+<main class="content">
+    <div class="badge">Core Design</div>
+    <h1 class="page-title">AIWAF-PHP Architecture Deep Dive</h1>
+{% include _docs_source.html %}
+<p class="architecture-link"><a href="{{ '/docs/architecture' | relative_url }}">How AIWAF works: system architecture</a></p>
+<aside class="source-note legacy-note"><strong>Legacy PHP reference.</strong> The current monorepo does not contain a PHP package or PHP release workflow. These historical examples have not been validated against the current repo. Use the current Python, Node.js, Java, or Rust/WASM guides for new integrations.</aside>
+
+    <section class="section">
+        <h2>1-4. Purpose, Snapshot, Structure, Architecture</h2>
+        <ul>
+            <li>Package: <code>aayushgauba/aiwaf</code>, Composer library, PHP <code>>=7.4</code>.</li>
+            <li>Primary runtime entry: <code>AIWAF::protect()</code>; training entry: <code>cli/detect_and_train.php</code>.</li>
+            <li>Top-level focus: <code>src/</code>, <code>src/Core/</code>, <code>src/Adapters/</code>, <code>src/RateLimit/</code>, <code>resources/</code>, <code>tests/</code>.</li>
+            <li>Design traits: defense-in-depth, exemption-first, conservative AI guardrails, flexible persistence backends.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>5. Runtime Entry And Integration Surface</h2>
+        <h3>Primary API (<code>src/AIWAF.php</code>)</h3>
+        <ul>
+            <li><code>AIWAF::protect()</code> executes per-request security controls.</li>
+            <li><code>AIWAF::setPathExistsResolver()</code> enables route-awareness for framework integrations.</li>
+            <li><code>AIWAF::setMiddlewareDecisionResolver()</code> supports custom middleware gating logic.</li>
+            <li><code>AIWAF::getLastTrainingTelemetry()</code> exposes latest trainer telemetry snapshot.</li>
+        </ul>
+        <h3>Typical Bootstrap</h3>
+        <ul>
+            <li>Load Composer autoload.</li>
+            <li>Initialize selected rate-limit adapter.</li>
+            <li>Call <code>AIWAF::protect()</code> early in front-controller lifecycle.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>6. Request Protection Flow (<code>AIWAF::protect</code>)</h2>
+        <ol>
+            <li>Build runtime config via <code>Config::toRuntimeConfig()</code>.</li>
+            <li>Configure rate limiter via <code>configureRateLimiter()</code> (auto-detects db, apcu, redis, or falls back to memory).</li>
+            <li>Resolve request identity (<code>ip</code>, <code>path</code>).</li>
+            <li>Exemption short-circuit (skips remaining checks if IP or Path is exempt via configurations or CIDR matches).</li>
+            <li>Method validation (ensures request method is allowed).</li>
+            <li>Header validation (evaluates <code>trust_legitimate_bots</code>, <code>custom_suspicious_patterns</code>, and <code>quality_threshold</code>).</li>
+            <li>Blocked-IP enforcement.</li>
+            <li>Geo policy checks (compares IP against allow/block countries).</li>
+            <li><strong>AI Anomaly Scoring:</strong> Extracts an 8-dimensional feature vector:
+                <ul>
+                    <li><code>strlen($path)</code></li>
+                    <li><code>DynamicKeywordManager::detect($path)</code></li>
+                    <li><code>0.5</code> (baseline structural complexity)</li>
+                    <li>Status code anomaly (<code>1</code> if 404/500, else <code>0</code>)</li>
+                    <li>Reserved (<code>0</code>)</li>
+                    <li>Reserved (<code>0</code>)</li>
+                    <li>Honeypot trigger (<code>isset($_POST['aiwaf_honeytrap']) ? 1 : 0</code>)</li>
+                    <li>UUID tamper check (<code>UUIDTamperProtector::isSuspicious($path) ? 1 : 0</code>)</li>
+                </ul>
+                Scores the vector against <code>forest_model.json</code>. If score exceeds threshold, it runs a <strong>post-prediction guard</strong> ensuring at least one strong signal (e.g., keyword hits &ge; 2.0 or direct honeypot/UUID triggers) before blocking.
+            </li>
+            <li>Rate-limit enforcement (checks <code>max_requests</code> per <code>window_seconds</code>).</li>
+            <li>Dynamic keyword checks.</li>
+            <li>UUID tamper checks.</li>
+            <li>Honeypot checks (evaluates <code>$_POST</code> payloads).</li>
+        </ol>
+        <p>Block responses use <code>403</code> for deny cases and <code>429</code> for rate-limit violations.</p>
+    </section>
+
+    <section class="section">
+        <h2>AST Static Analysis (<code>src/Core/ApiDetection.php</code>)</h2>
+        <p>PHP dynamically analyzes controller logic during startup using Abstract Syntax Trees to determine endpoint intent (API vs. Form vs. Auth). This is heavily utilized when native framework routes don't strictly typehint their return models.</p>
+        <ul>
+            <li><strong>Parsing:</strong> Uses <code>nikic/php-parser</code> (<code>PhpParser\ParserFactory</code>) to construct an AST directly from the controller's source file, using reflection (<code>ReflectionMethod</code>, <code>ReflectionFunction</code>) to locate the exact start and end lines of the closure or method.</li>
+            <li><strong>Traversal:</strong> A custom <code>NodeVisitorAbstract</code> traverses the statements strictly within the bounded line numbers.</li>
+            <li><strong>Call Inspection:</strong> Inspects <code>MethodCall</code>, <code>FuncCall</code>, and <code>StaticCall</code> nodes.
+                <ul>
+                    <li>Increases API confidence if it detects <code>json</code>, <code>json_encode</code>, <code>JsonResponse</code>, or <code>jsonify</code>.</li>
+                    <li>Increases Form confidence if it detects <code>view</code>, <code>render</code>, <code>redirect</code>, <code>back</code>, or <code>render_template</code>.</li>
+                </ul>
+            </li>
+            <li><strong>Object Instantiation:</strong> Inspects <code>New_</code> nodes. Instantiating <code>JsonResponse</code> yields a high API score.</li>
+            <li><strong>Payload Type:</strong> Scans for <code>post</code>, <code>all</code>, <code>input</code>, or <code>file</code> method calls on request objects to flag <code>requestBody = true</code> and classify the expected payload.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Path Generation and Auto Middleware (<code>MiddlewarePlan.php</code>)</h2>
+        <p>AIWAF for PHP includes intelligent path generation and middleware auto-negotiation to dynamically optimize the protection pipeline per endpoint:</p>
+        <ul>
+            <li><strong>Route Classification (<code>PathManifest::classifyRoute</code>):</strong> The manifest generator infers the primary intent of any given route, categorizing paths as <code>api</code>, <code>form</code>, <code>admin</code>, <code>upload</code>, <code>static</code>, or <code>auth</code>.</li>
+            <li><strong>Auto Middleware Planning:</strong> Based on the route classification, the engine automatically toggles specific middlewares on or off. For example:
+                <ul>
+                    <li><strong>API Endpoints:</strong> Disables HTML Honeypots, enforces strict JSON payload validation, and allocates a high rate-limit ceiling (120 req/min).</li>
+                    <li><strong>Form Endpoints:</strong> Enables Honeypot validation, sets strict rate limits (30 req/min), and enforces POST payload sizes.</li>
+                    <li><strong>Static Assets:</strong> Automatically disables AI Anomaly scoring, Honeypots, and Header Validation to drastically reduce CPU overhead on <code>/static/</code> or <code>.png</code> routes.</li>
+                </ul>
+            </li>
+            <li><strong>Config Sentinels:</strong> If <code>requested_middlewares</code> is set to <code>['auto']</code>, <code>MiddlewarePlan::planEnabledMiddlewares()</code> dynamically strips out unnecessary middlewares (e.g., completely unloading <code>uuid_tamper</code> if no UUIDs exist, or disabling <code>geo_block</code> if the MMDB isn't configured).</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Deep Dive: Core Functions and Methods</h2>
+        <p>A reference of the core internal functions powering the PHP AIWAF engine.</p>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Module / Class</th><th>Function / Method</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>AIWAF.php</code><br><strong>AIWAF</strong></td><td><code>protect()</code></td><td>The primary execution gate. Iterates through the resolved middleware plan, terminating the request with a 403 or 429 payload if any middleware rejects.</td></tr>
+                    <tr><td><code>PathManifest.php</code><br><strong>PathManifest</strong></td><td><code>classifyRoute($path, $methods)</code></td><td>Matches standard heuristic signatures (e.g., <code>/api/*</code> or <code>/login</code>) and combines them with AST outputs to bin the route type.</td></tr>
+                    <tr><td><code>ApiDetection.php</code><br><strong>RouteVisitor</strong></td><td><code>enterNode(Node $node)</code></td><td>Implements <code>PhpParser\NodeVisitorAbstract</code> to inspect method calls like <code>json()</code> or <code>validate()</code> to build confidence scores for API intents.</td></tr>
+                    <tr><td><code>MiddlewarePlan.php</code><br><strong>MiddlewarePlan</strong></td><td><code>resolve($path, $category)</code></td><td>Yields the final array of active middlewares. Trims expensive operations (like HTML honing) when <code>$category === 'api'</code>.</td></tr>
+                    <tr><td><code>detect_and_train.php</code><br><strong>(CLI Script)</strong></td><td><code>extractFeatures($logLine)</code></td><td>Parses a line of access logs into the 6-dimension float array needed for training the Isolation Forest.</td></tr>
+                    <tr><td><code>detect_and_train.php</code><br><strong>(CLI Script)</strong></td><td><code>calculateThresholds()</code></td><td>Evaluates historical traffic baselines to automatically tune <code>max_req</code> and <code>flood_req</code> dynamically.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>7. Core Modules Responsibility Map</h2>
+        <h3><code>src/</code></h3>
+        <ul>
+            <li><code>AIWAF.php</code>, <code>Config.php</code>, <code>Utils.php</code></li>
+            <li><code>RateLimiter.php</code>, <code>IPBlocker.php</code></li>
+            <li><code>DynamicKeywordManager.php</code>, <code>UUIDTamperProtector.php</code>, <code>HoneypotChecker.php</code></li>
+            <li><code>FeatureExtractor.php</code>, <code>IsolationForest.php</code>, <code>Logger.php</code></li>
+        </ul>
+        <h3><code>src/Core/</code></h3>
+        <ul>
+            <li><code>RuntimeConfig.php</code>, <code>HeaderValidation.php</code>, <code>GeoIP.php</code>, <code>Exemptions.php</code></li>
+            <li><code>Logs.php</code>, <code>Training.php</code>, <code>TrainingLogic.php</code></li>
+            <li><code>StorageOps.php</code>, <code>StorageCsvImpl.php</code>, <code>StorageSchema.php</code>, <code>BlocklistManager.php</code></li>
+        </ul>
+        <h3>Rate-Limit Layers</h3>
+        <ul>
+            <li>Adapters in <code>src/Adapters/</code> bridge runtime usage.</li>
+            <li>Drivers in <code>src/RateLimit/</code> provide backend-specific persistence behavior.</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>8-9. Storage, Artifacts, Training Lifecycle</h2>
+        <h3>Artifacts (default under <code>resources/</code>)</h3>
+        <ul>
+            <li><code>blocked_ips.json</code>, <code>dynamic_keywords.json</code>, <code>request_features.csv</code>, <code>forest_model.json</code>.</li>
+            <li><code>php setup.php</code> ensures required baseline files exist.</li>
+        </ul>
+        <h3>Training Pipeline (<code>AIWAF::detectAndTrain</code>)</h3>
+        <p>The training pipeline executes robust anomaly detection and keyword learning strategies via CLI (<code>php cli/detect_and_train.php</code>):</p>
+        <ul>
+            <li><strong>Source Processing:</strong> Reads from <code>AIWAF_ACCESS_LOG</code>, automatically parsing rotated and gzipped logs via <code>Logs::readRotatedLogs</code>.</li>
+            <li><strong>Feature Extraction:</strong> Capable of parallelized feature extraction via <code>FeatureExtractor::pythonFeaturesBatched</code> if Python is available (managed by <code>AIWAF_PYTHON_PARALLEL_WORKERS</code>).</li>
+            <li><strong>Training Matrix:</strong> Extracted per request for the <code>IsolationForest</code> (configured with 200 trees, 32 sample size). The matrix maps 6 dimensions:
+                <ol>
+                    <li><code>path_len</code></li>
+                    <li><code>kw_hits</code></li>
+                    <li><code>resp_time</code></li>
+                    <li><code>status_idx</code></li>
+                    <li><code>burst_count</code></li>
+                    <li><code>total_404</code></li>
+                </ol>
+            </li>
+            <li><strong>Anomaly Evaluation:</strong> Evaluates the matrix against the model using <code>AIWAF_AI_ANOMALY_THRESHOLD</code>. Identifies anomalous IPs and runs a strict conservative check: keeps burst-only traffic with no suspicious footprint unblocked. Blocks only if: average keyword hits &ge; 2.0, max 404s &ge; 10.0, average burst &ge; 15.0, or total requests &ge; 100.</li>
+            <li><strong>Keyword Learning:</strong> Extracts suspicious path segments into the dynamic keyword store, skipping paths that match <code>exempt_paths</code> or <code>known_paths</code>.</li>
+        </ul>
+        <h3>Telemetry Includes</h3>
+        <ul>
+            <li>line counts, parse failures, feature rows</li>
+            <li>keyword candidate/learned counts</li>
+            <li>anomalous/blocked IP totals and top-country summaries</li>
+        </ul>
+    </section>
+</main>
+</div></div>
+</body>
+</html>

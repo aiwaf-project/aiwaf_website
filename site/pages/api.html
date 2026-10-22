@@ -1,0 +1,155 @@
+---
+layout: null
+permalink: "/docs/api/"
+title: "AIWAF Documentation"
+description: "AIWAF security documentation and framework integration guides."
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ page.title | escape }}</title>
+    <meta name="description" content="{{ page.description | escape }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ page.title | escape }}">
+    <meta property="og:description" content="{{ page.description | escape }}">
+    <meta property="og:url" content="{{ page.url | absolute_url }}">
+    <meta property="og:image" content="{{ '/static/aiwaf-logo.png' | absolute_url }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page.title | escape }}">
+    <meta name="twitter:description" content="{{ page.description | escape }}">
+    <meta name="twitter:image" content="{{ '/static/aiwaf-logo.png' | absolute_url }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site.url | append: site.baseurl }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; overflow-x: hidden; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16, 16, 30, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); position: fixed; top: 0; width: 100%; z-index: 1000; transition: all 0.3s ease; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientShift 3s ease-in-out infinite; }
+        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; padding: 0.5rem 1rem; border-radius: 50px; transition: all 0.3s ease; }
+        .nav-link:hover { color: #4ecdc4; transform: translateY(-2px); }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; position: relative; }
+        .sidebar { background: rgba(16, 16, 30, 0.6); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; color: #4ecdc4; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: 0.5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: 0.5rem 1rem; border-radius: 10px; display: block; transition: all 0.3s ease; }
+        .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(78, 205, 196, 0.2); color: #4ecdc4; transform: translateX(5px); }
+        .content { background: rgba(16, 16, 30, 0.4); backdrop-filter: blur(10px); border-radius: 20px; padding: 3rem; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .page-title { font-size: 3rem; font-weight: 900; margin-bottom: 2rem; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .code-block { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(78, 205, 196, 0.3); border-radius: 15px; padding: 1.5rem; margin: 1rem 0; font-family: 'Fira Code', monospace; font-size: 0.9rem; overflow-x: auto; }
+        .api-section { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 2rem; margin: 2rem 0; }
+        .api-section h3 { color: #ff6b6b; margin-bottom: 1rem; }
+        .method-badge { background: #4ecdc4; color: #000; padding: 0.2rem 0.8rem; border-radius: 20px; font-weight: 600; font-size: 0.8rem; margin-right: 1rem; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="{{ '/static/docs-current.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/static/brand.css' | relative_url }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a class="brand-logo" href="{{ '/' | relative_url }}" aria-label="AIWAF home"><img src="{{ '/static/aiwaf-logo.png' | relative_url }}" alt="AIWAF" width="2172" height="724"></a>
+{% include _docs_search.html %}
+                <nav class="nav">
+                    <a href="{{ '/' | relative_url }}" class="nav-link">Home</a>
+                    <a href="{{ '/docs' | relative_url }}" class="nav-link">Documentation</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+
+    <div class="container">
+        <div class="main-content">
+            <aside class="sidebar">
+                <h3 class="sidebar-title">Documentation</h3>
+                <ul class="sidebar-nav">
+                    <li><a href="{{ '/docs/getting_started' | relative_url }}">Getting Started</a></li>
+                    <li><a href="{{ '/docs/api' | relative_url }}" class="active">API Reference</a></li>
+                    <li><a href="{{ '/docs/faq' | relative_url }}">FAQ</a></li>
+                </ul>
+            </aside>
+
+            <main class="content">
+<h1 class="page-title">Runtime and CLI Reference</h1>
+{% include _docs_source.html %}
+<p class="architecture-link"><a href="{{ '/docs/architecture' | relative_url }}">How AIWAF works: system architecture</a></p>
+<p>AIWAF exposes language-specific middleware, engine, and CLI APIs. There is no shared <code>/api/v1</code> bearer-token management service in the current repo.</p>
+<h2>Python</h2>
+<pre><code class="language-bash"># Bare help selects the single installed framework
+aiwaf --help
+
+# Explicit Flask policy commands
+aiwaf flask blocklist migrate
+aiwaf flask status
+
+# Django management commands
+python manage.py detect_and_train
+python manage.py regenerate_model
+python manage.py aiwaf_reset --keywords --confirm
+python manage.py aiwaf_logging --status
+python manage.py geo_block_country list
+
+# Explicit adapter dispatch
+aiwaf django aiwaf_list --all
+aiwaf flask --help
+aiwaf fastapi --help</code></pre>
+<p>Bare Python commands detect the single installed framework. With multiple frameworks, use the explicit prefixes above. Django keeps management-command names, and <code>fast</code> is an alias for <code>fastapi</code>. Use <code>--framework</code> and <code>--app</code> with <code>aiwaf init</code> for route discovery; FastAPI training separately uses <code>--app</code>.</p>
+<h2>Node.js</h2>
+<pre><code class="language-bash">cd js
+
+AIWAF_ACCESS_LOG=/path/to/access.log npm run train
+npm run aiwaf -- status
+npm run aiwaf -- list blocklist
+npm run aiwaf -- add blocklist 203.0.113.9 &quot;manual block&quot;
+npm run aiwaf -- add ip-exemption 203.0.113.10 &quot;trusted monitor&quot;
+npm run aiwaf -- geo summary
+npm run aiwaf -- model info
+npm run aiwaf -- export aiwaf-export.json</code></pre>
+<p>Use Redis or another shared cache for consistent rate limiting across multiple Node processes. Without shared state, the in-memory fallback is process-local.</p>
+<p>In an application with the npm package installed, use <code>npx aiwaf --help</code>; the source commands above run from <code>js/</code>.</p>
+<p>These Node CLI commands operate on legacy stores. The explicit native engine has dedicated event files and model snapshots; its state is not managed or imported automatically by the legacy CLI. See <a href="{{ '/docs/javascript/operations#native-node-operations' | relative_url }}">native operations</a>.</p>
+<h2>Java</h2>
+<pre><code class="language-bash">aiwaf-cli status
+aiwaf-cli diagnose --model model.json
+aiwaf-cli blocked
+aiwaf-cli unblock 203.0.113.10
+aiwaf-cli train --events events.json --out model.json --backend java
+aiwaf-cli model status --path model.json</code></pre>
+<h2>Adapter and binding references</h2>
+<ul>
+<li><a href="{{ '/docs/python/adapters' | relative_url }}">Python adapters</a></li>
+<li><a href="{{ '/docs/javascript' | relative_url }}">Node.js entry points</a></li>
+<li><a href="{{ '/docs/java/setup/servlet' | relative_url }}">Java engine</a></li>
+<li><a href="{{ '/docs/rust/bindings' | relative_url }}">Rust/Python and WASM functions</a></li>
+</ul>
+<h2>Website endpoints</h2>
+<p>This Flask documentation application defines its own <code>/health</code>, <code>/aiwaf/status</code>, <code>/aiwaf/allowlist</code>, <code>/aiwaf/blocklist</code>, and <code>/aiwaf/keywords</code> routes. Those are website-specific handlers, not a portable AIWAF API. Their implementation does not provide the bearer-token authentication previously described here.</p>
+</main>
+        </div>
+    </div>
+
+    <script>
+        // Header scroll effect
+        const header = document.querySelector('.header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(16, 16, 30, 0.95)';
+            } else {
+                header.style.background = 'rgba(16, 16, 30, 0.9)';
+            }
+        });
+    </script>
+</body>
+</html>

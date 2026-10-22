@@ -71,7 +71,7 @@ console.log(JSON.stringify(Object.entries(defaults).map(([k,v]) => [k,
     content += '<h3>Python nested configuration defaults</h3>\n' + table(flatten(defaults))
     content += '<h3>Node.js normalized option defaults</h3>\n' + table(node_rows)
     content += '<h3>Java AiwafConfig field defaults</h3>\n<p>Java expressions are shown as declared in source. Collection constructors describe initial values; constants are resolved by the Java implementation.</p>\n' + table(java_rows)
-    (ROOT / "templates/_configuration_defaults.html").write_text(content, encoding="utf-8")
+    (ROOT / "site/_includes/_configuration_defaults.html").write_text(content, encoding="utf-8")
     print(f"Wrote defaults: {len(list(flatten(defaults)))} Python, {len(node_rows)} Node.js, {len(java_rows)} Java settings")
 
 

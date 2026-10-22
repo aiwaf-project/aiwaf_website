@@ -9,7 +9,6 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from documentation_catalog import documentation_path
 
 
 class PageText(HTMLParser):
@@ -40,22 +39,22 @@ class PageText(HTMLParser):
 
 
 def entries():
-    for template in sorted((ROOT / "templates").glob("docs*.html")):
+    for template in sorted((ROOT / "site/pages").glob("*.html")):
         source = template.read_text(encoding="utf-8")
         for partial in ('_configuration_defaults.html', '_python_csv_storage.html', '_node_release_support.html', '_release_upgrade.html'):
-            content = (ROOT / 'templates' / partial).read_text(encoding='utf-8')
-            source = re.sub(r"\{%\s*include\s+['\"]" + re.escape(partial) + r"['\"]\s*%\}",
+            content = (ROOT / 'site/_includes' / partial).read_text(encoding='utf-8')
+            source = re.sub(r"\{%\s*include\s+" + re.escape(partial) + r"\s*%\}",
                             lambda match: content, source)
         parser = PageText()
         parser.feed(re.sub(r"\{%[\s\S]*?%\}|\{\{[\s\S]*?\}\}", "", source))
-        url = documentation_path(template.name)
+        url = json.loads(re.search(r'^permalink: (.+)$', source, re.M).group(1))
         yield {"title": " ".join(" ".join(parser.title).split()), "url": url,
                "text": " ".join(" ".join(parser.body).split())}
 
 
 if __name__ == "__main__":
     pages = list(entries())
-    (ROOT / "static/docs-search-index.json").write_text(
+    (ROOT / "site/static/docs-search-index.json").write_text(
         json.dumps(pages, ensure_ascii=True, separators=(",", ":")) + "\n", encoding="utf-8"
     )
     print(f"Indexed {len(pages)} documentation pages")

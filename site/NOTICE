@@ -1,0 +1,33 @@
+AIWAF documentation website licensing notices
+
+Copyright (c) 2026 AIWAF
+
+Original website code and documentation in this checkout are offered by AIWAF
+under the unmodified Elastic License 2.0 in LICENSE (SPDX: Elastic-2.0).
+AIWAF is the business name; these terms license only rights held by or
+licensed to its operator. Previously granted permissions are not revoked.
+
+AIWAF packages are independently distributed under their release licenses.
+The ELv2 transition for Python and Node.js AIWAF starts at version 1.1.2
+and applies to subsequent releases. Other packages have independent version
+numbers; consult the LICENSE and NOTICE included in each release.
+Previously distributed MIT copies retain MIT permissions. Examples retained
+from MIT distributions retain the applicable MIT rights; their historical
+copyright and license text is included in licenses/MIT.txt. Its inclusion
+does not offer all new website material under MIT.
+
+Dependencies and external assets retain their separate terms. Bootstrap 5.1.3
+is referenced from jsDelivr under MIT:
+https://github.com/twbs/bootstrap/blob/v5.1.3/LICENSE
+The external DigitalOcean attribution logo is a DigitalOcean brand asset;
+this license grants no independent rights in that logo or trademark.
+
+The installed AIWAF package may include IPinfo Lite data provided by IPinfo
+(https://ipinfo.io/) under CC-BY-SA-4.0:
+https://ipinfo.io/developers/ipinfo-lite
+https://creativecommons.org/licenses/by-sa/4.0/legalcode
+ELv2 restrictions do not apply to that separately licensed database.
+
+Dependencies are not relicensed by this LICENSE. mysqlclient retains its GPL
+terms, Paramiko its LGPL terms, and PyMySQL its MIT terms. Bundled distributions
+must preserve the notices and satisfy the conditions of the versions included.

@@ -1,136 +1,67 @@
 # AIWAF Documentation Website
 
-The shared logo, palette, typography, and component rules are documented in
-[STYLE_GUIDE.md](STYLE_GUIDE.md). All pages load `static/brand.css` after their
-legacy styles and use the original supplied wordmark from `static/aiwaf-logo.png`.
+A Jekyll static documentation site for [AIWAF](https://github.com/aiwaf-project/aiwaf), ready to serve on GitHub Pages. The existing documentation, branding, browser search, and code examples are preserved. The beta signup form and its server endpoints have been removed.
+
+## Build and preview
+
+Install Ruby 3.3 or newer and Bundler, then run:
+
+```sh
+bundle install
+bundle exec jekyll serve
+```
+
+Open http://localhost:4000. Build and verify without serving:
+
+```sh
+bundle exec jekyll build
+python scripts/check_site.py
+```
+
+To verify a GitHub project-site prefix:
+
+```sh
+bundle exec jekyll build --baseurl /aiwaf_website
+python scripts/check_site.py --baseurl /aiwaf_website
+```
+
+## GitHub Pages
+
+Select **GitHub Actions** under repository Settings > Pages. The Pages workflow deploys pushes to main and can also be started manually. It obtains the origin and repository path from Pages, builds Jekyll, checks the generated site, and deploys _site/. See [DEPLOYMENT.md](DEPLOYMENT.md) for custom domains and other hosts.
+
+## Source and maintenance
+
+- site/index.html: homepage.
+- site/pages/: documentation with front matter titles, descriptions, and permalinks.
+- site/_includes/ and site/_layouts/: shared content and layouts.
+- site/redirects/: legacy setup and Python URL aliases.
+- site/static/: branding, browser search, and progressive documentation tools.
+- _config.yml and Gemfile: Jekyll configuration and build dependencies.
+- examples/: independently runnable SDK tutorials and protection tests.
+
+Edit the Liquid HTML sources directly. Use relative_url for internal links and assets so repository Pages paths work. Keep runtime data, credentials, and source tooling outside site/; only that directory is published. The output checker validates internal links and fragments, assets, search freshness, sitemap coverage, code snapshots, and the absence of server files.
+
+After documentation edits, rebuild the browser search index:
+
+```sh
+python scripts/build_docs_search.py
+bundle exec jekyll build
+python scripts/check_site.py
+```
+
+Refresh the configuration reference from a local AIWAF monorepo checkout:
+
+```sh
+python scripts/build_configuration_reference.py ../aiwaf
+python scripts/build_docs_search.py
+```
+
+SDK smoke tests are separate from website checks. With the appropriate AIWAF extras installed, run python scripts/verify_flask_tutorial.py, or the examples/testing tests. CI retains those independent package checks.
+
+[COMPREHENSIVE_SETUP_GUIDE.md](COMPREHENSIVE_SETUP_GUIDE.md) covers SDK setup across runtimes; [PROJECT_DETAILED_REFERENCE.md](PROJECT_DETAILED_REFERENCE.md) maps architecture to upstream sources.
 
 ## License
 
 Original website code and documentation use the unmodified [Elastic License 2.0](LICENSE), with historical rights and separately licensed material identified in [NOTICE](NOTICE). AIWAF packages have independent release licenses: previously distributed MIT copies retain MIT permissions. This checkout's ELv2 migration does not retroactively change those releases. ELv2 permits commercial use and consulting but restricts providing substantial software functionality as a hosted or managed service. Include LICENSE, NOTICE, and licenses/ when redistributing this checkout.
 
 Python and Node.js AIWAF will use ELv2 from version **1.1.2 onward**. Other packages use independent version numbers; check the license included with each release.
-
-Flask documentation website for the [AIWAF monorepo](https://github.com/aiwaf-project/aiwaf). Python, Node.js, Java, and Rust/WASM are current runtimes; PHP pages are legacy reference. The upstream README is authoritative for package behavior and releases.
-
-## Run locally
-
-On Linux/macOS:
-
-~~~bash
-python -m venv venv
-source venv/bin/activate
-python -m pip install -r requirements.txt
-python app.py
-~~~
-
-On Windows PowerShell:
-
-~~~powershell
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-python app.py
-~~~
-
-Open http://localhost:5000. Set SECRET_KEY in the environment or a local .env file. app.py loads aiwaf_config.py before initializing protection and stores AIWAF data under aiwaf_data and request logs under logs. Flask-SQLAlchemy initializes a local SQLite URI; the primary runner does not use the alternate runner's MySQL analytics models.
-
-The homepage includes an AIWAF Cloud beta signup form for name, email, company, and
-current security tools. The primary `app.py` runner creates `beta_signups` using
-its existing database connection; SQLite stores it in `instance/aiwaf_temp.db`.
-Deploy the updated code and reload the WSGI application to create the table.
-Keep a stable, private `SECRET_KEY` across workers and back up the instance
-database so registrations survive deployments. Duplicate email addresses retain
-their original submission. The form collects consent and saves registrations;
-email invitations are not sent automatically. The alternate `simple_app.py`
-runner does not initialize this form.
-
-The signup includes an off-screen honeypot field; filled traps receive a generic
-confirmation without saving a record. To view registrations, set
-`BETA_ADMIN_USERNAME` (default `admin`) and a strong `BETA_ADMIN_PASSWORD` in the
-server environment, then reload and visit `/aiwaf/beta-signups` over HTTPS. The
-browser prompts for credentials. The read-only page shows all four fields and
-submission time, newest first, in pages of 50. It returns 404 without a configured
-password and sends `no-store`/`noindex` headers. This access control belongs to the
-beta submissions page; the existing protection-management endpoints are separate.
-
-## Generate routes
-
-Run in this checkout with the same virtual environment used by the server:
-
-~~~bash
-aiwaf init --framework flask --app app:app
-~~~
-
-The target means the app object in app.py, not a filename. Use app:create_app for a factory. The output is .aiwaf/paths.json. Regenerate after changing registered routes. This command imports the live application and requires its dependencies and configuration.
-
-## Documentation map
-
-The navigation separates tutorials (a connected learning example), topic guides (design and behavior), how-to guides (specific tasks), and reference (interfaces and defaults). This follows the organization described in [Django's documentation](https://docs.djangoproject.com/en/6.1/#how-the-documentation-is-organized).
-
-For new documentation, choose the reader's goal first. Tutorials need complete files, expected results, and checkpoints. Topic guides need request flow, policy precedence, state ownership, and runtime differences. How-to guides need prerequisites, exact file locations, commands, verification, and failure recovery. Reference pages need signatures, parameter types, defaults, return values, errors, and compatibility notes verified against the source. Link related explanations and tasks instead of repeating installation steps. Add every new page to /docs/contents and rebuild the search index.
-
-- /docs/contents: complete index organized into tutorials, topic guides, how-to guides, reference, and legacy pages.
-- /docs/testing: runnable Flask and Django protection tests, isolation, integration coverage, and CI commands. Example files live in examples/testing; the documentation workflow runs them separately from website route checks.
-- /docs: runtime setup guides and source-version matrix.
-- /docs/getting_started: learning paths and framework selection.
-- /docs/tutorial/installation: a six-step first protected app tutorial with complete app and verification files.
-- /docs/architecture: request lifecycle, policy, state, response observations, and training.
-- /docs/configuration: runtime configuration, types, defaults, and precedence.
-- /docs/migration: upgrades, npm package rename, blocklist and model migration.
-- /docs/troubleshooting: import targets, manifests, block responses, training, and website routing.
-- /docs/python/setup/flask, /docs/python/setup/django, /docs/python/setup/fastapi: Python guides.
-- /docs/javascript, /docs/java, /docs/rust: other maintained runtimes.
-- /health: HTTP liveness; /robots.txt and /sitemap.xml: crawler endpoints.
-
-The XML sitemap automatically includes the home page and every documentation template at its canonical URL. Both app runners serve it through the shared documentation blueprint; robots.txt advertises it. Set SITE_URL to the public site origin (default https://aiwaf.org). Redirect aliases, health checks, and administration endpoints are omitted. The human-readable documentation index is /docs/contents. Modification dates are omitted until reliable content dates are available, rather than reporting each request as a page update.
-
-The production app explicitly exempts sitemap.xml and robots.txt with AIWAF's route decorator, in addition to the path exemptions in aiwaf_config.py. Run `python scripts/verify_crawler_endpoints.py` with the Flask AIWAF extra, Flask-SQLAlchemy, and python-dotenv installed to verify GET/HEAD access through the real middleware with isolated runtime state.
-
-Both app.py and simple_app.py register documentation.py. Setup landing pages redirect to their default guide; short setup URLs redirect to canonical /docs URLs. simple_app.py is an alternate database/SSH-tunnel runner, not the production WSGI target.
-
-## Production and verification
-
-On a Linux host with Gunicorn:
-
-~~~bash
-gunicorn --config gunicorn.conf.py wsgi:application
-~~~
-
-See [DEPLOYMENT.md](DEPLOYMENT.md) for DigitalOcean and hosted WSGI setup. python app.py and python wsgi.py use Flask's development server.
-
-~~~bash
-python -m unittest discover -s tests -v
-~~~
-
-The documentation tests render templates and check routes and links without starting AIWAF or a database. They do not certify an installed package or live deployment. Verify the running application's /health and setup URLs after deploying.
-
-## Maintenance
-
-[COMPREHENSIVE_SETUP_GUIDE.md](COMPREHENSIVE_SETUP_GUIDE.md) covers installation and rollout across runtimes. [PROJECT_DETAILED_REFERENCE.md](PROJECT_DETAILED_REFERENCE.md) maps architecture to upstream sources. Keep these alongside the templates in version control. Runtime data, logs, .aiwaf manifests, virtual environments, local credentials, build outputs, and temporary release staging directories belong in .gitignore.
-
-Configuration tables can be refreshed from a local monorepo checkout:
-
-~~~bash
-python scripts/build_configuration_reference.py ../aiwaf
-~~~
-
-The generated tables record the manifest versions and full source commit. Review changes to defaults and examples together before publishing. Source versions do not guarantee registry availability.
-
-## Tutorial and search maintenance
-
-The first-app tutorial has six linked chapters. Complete code snapshots live in examples/tutorial; data-example blocks in the templates must match those files. The smoke test installs no packages and starts no network server; run it in an environment with the Flask AIWAF extra:
-
-~~~bash
-python scripts/verify_flask_tutorial.py
-~~~
-
-It checks live route-manifest generation, three allowed requests followed by a 429, selective/full exemptions, and JSON log creation with temporary runtime state. Documentation CI checks the published Flask package separately from route/template tests.
-
-Rebuild the search index after editing any documentation page or configuration-default include:
-
-~~~bash
-python scripts/build_docs_search.py
-python -m unittest discover -s tests -v
-~~~
-
-The index is static and searches in the browser; queries are not sent to an external search service. Code-copy controls and section navigation are progressive enhancements; the tutorial and its previous/next links work without JavaScript. The route tests also detect stale search content and mismatched code snapshots.

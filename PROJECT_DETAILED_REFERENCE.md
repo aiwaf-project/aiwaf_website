@@ -52,6 +52,6 @@ Response-aware adapters can use actual status/duration. Java evaluateBeforeRespo
 
 ## Website routing and verification
 
-The website is a separate Flask repository. documentation.py owns documentation routes. app.py and simple_app.py register the same blueprint. /docs/python/setup redirects to Django; /python/setup/django redirects to /docs/python/setup/django. A missing top-level page returns 404, while errors inside an existing template remain application errors.
+The website is a Jekyll site. Content lives in site/pages, shared includes in site/_includes, and layouts in site/_layouts. Front matter declares canonical permalinks. Static redirect pages preserve setup landing pages and short URLs.
 
-Tests in tests/test_documentation_routes.py exercise routes and template rendering without WAF/database initialization. Their success does not verify a real package installation, training lifecycle, Redis deployment, or public website. Use DEPLOYMENT.md and /docs/troubleshooting to verify those separately.
+Run bundle exec jekyll build and python scripts/check_site.py to verify navigation, assets, search, sitemap, code snapshots, and the absence of server files. GitHub Actions publishes _site to GitHub Pages. See DEPLOYMENT.md for configuration. SDK integration examples remain independently runnable and are checked separately in CI.
