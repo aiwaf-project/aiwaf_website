@@ -6,7 +6,7 @@ The site uses Jekyll 4.4 and Ruby 3.3 in GitHub Actions. Only site/ is read as w
 2. In the repository, open Settings > Pages > Build and deployment, and select **GitHub Actions** as the source.
 3. Run or wait for the Deploy Jekyll to GitHub Pages workflow. It builds, verifies, uploads _site, and deploys through the github-pages environment. The successful deployment provides the public URL.
 
-The workflow reads the public origin and base path from actions/configure-pages. This supports both a project URL such as https://aayushgauba.github.io/aiwaf_website/ and a custom domain. Configure a custom domain in Settings > Pages and update its DNS; this checkout does not change DNS or repository settings.
+The workflow reads the public origin and base path from actions/configure-pages. This supports both a project URL such as https://aiwaf-project.github.io/aiwaf_website/ and a custom domain. Configure a custom domain in Settings > Pages and update its DNS; this checkout does not change DNS or repository settings.
 
 ## Use aiwaf.org
 
@@ -21,9 +21,9 @@ At the domain's DNS provider, replace the existing apex (`@`) website record poi
 | A | @ | 185.199.110.153 |
 | A | @ | 185.199.111.153 |
 
-If `www.aiwaf.org` is also wanted, set `CNAME www` to `aayushgauba.github.io`. Preserve unrelated DNS records, including email records. Once GitHub's DNS check and certificate provisioning complete, enable Enforce HTTPS in Pages settings.
+If `www.aiwaf.org` is also wanted, set `CNAME www` to `aiwaf-project.github.io`. Preserve unrelated DNS records, including email records. Once GitHub's DNS check and certificate provisioning complete, enable Enforce HTTPS in Pages settings.
 
-The Actions deployment obtains `https://aiwaf.org` and the empty base path from Pages after the custom domain is configured. A repository named `aayushgauba.github.io` is not required. A `CNAME` file is not used by this custom Actions workflow; the domain must be configured in repository settings. See [GitHub's custom domain instructions](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
+The Actions deployment obtains `https://aiwaf.org` and the empty base path from Pages after the custom domain is configured. A repository named `aiwaf-project.github.io` is not required. A `CNAME` file is not used by this custom Actions workflow; the domain must be configured in repository settings. See [GitHub's custom domain instructions](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
 
 For local preview:
 
