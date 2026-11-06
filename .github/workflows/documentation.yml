@@ -3,11 +3,31 @@ name: Documentation checks
 on:
   push:
   pull_request:
+  workflow_dispatch:
+  schedule:
+    # Catches docs that drift when the code changes without a website pull request.
+    - cron: "23 6 * * 1"
 
 permissions:
   contents: read
 
 jobs:
+  docs-accuracy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: aiwaf-project/aiwaf
+          path: aiwaf-source
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test the documentation checkers
+        run: python -m unittest discover -s tests -p "test_check_*.py" -v
+      - name: Compare the documentation with the code
+        run: python scripts/check_docs_accuracy.py --aiwaf aiwaf-source --check-registries
+
   static-site:
     runs-on: ubuntu-latest
     steps:
@@ -16,8 +36,16 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: bundle exec jekyll build --baseurl /aiwaf_website
-      - run: python scripts/check_site.py --baseurl /aiwaf_website
+      - name: Build the site as deployed to aiwaf.org
+        env:
+          JEKYLL_ENV: production
+        run: bundle exec jekyll build
+      - name: Check the deployed build
+        run: python scripts/check_site.py
+      - name: Build the site under a project path
+        run: bundle exec jekyll build --baseurl /aiwaf_website
+      - name: Check the project path build
+        run: python scripts/check_site.py --baseurl /aiwaf_website
 
   tutorial-smoke:
     runs-on: ubuntu-latest

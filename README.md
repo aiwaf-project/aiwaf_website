@@ -47,7 +47,10 @@ After documentation edits, rebuild the browser search index:
 python scripts/build_docs_search.py
 bundle exec jekyll build
 python scripts/check_site.py
+python scripts/check_docs_accuracy.py --aiwaf ../aiwaf
 ```
+
+`check_site.py` fails on broken links, anchors and assets, a stale search index or sitemap, unclosed HTML, missing page titles, and `page.x` or `site.x` values that aren't defined. `check_docs_accuracy.py` compares the docs with an `aiwaf` checkout. It fails on page titles that are generic or duplicated, and on scripts, settings, commands and Python or Rust names that don't exist in the code. It also fails on banned claims and on mismatched version numbers. Known problems are listed in `scripts/docs_accuracy_baseline.txt`. When you fix one, remove it from that file. Don't add new entries unless the problem can't be fixed in the same pull request.
 
 Refresh the configuration reference from a local AIWAF monorepo checkout:
 
