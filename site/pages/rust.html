@@ -116,15 +116,11 @@ forest.fit([[0.1, 1.0], [0.2, 1.1], [9.0, 9.0]])
 score = forest.anomaly_score([9.0, 9.0])
 state = forest.to_json()
 restored = aiwaf_rust.IsolationForest.from_json(state)</code></pre>
-<p>For a local native build, stage the two canonical repository assets and run maturin:</p>
-<pre><code class="language-bash">cp README.md rust/README.md
-cp LICENSE rust/LICENSE
-cp NOTICE rust/NOTICE
-cp -R licenses rust/
+<p>For a local native build, run these from the monorepo root in a virtual environment:</p>
+<pre><code class="language-bash">python scripts/stage_rust_package_files.py
 python -m pip install maturin
-cd rust
-maturin develop</code></pre>
-<p>The staged files are ignored by Git. Release automation performs the same staging before building wheels and the source distribution.</p>
+maturin develop --release --locked --manifest-path rust/Cargo.toml</code></pre>
+<p>The first command copies the shared README and license files into <code>rust/</code>. The copies are ignored by Git, and release automation stages the same files before building wheels and the source distribution. Changing the Rust code? See <a href="{{ '/docs/rust/operations#proposing-rust-changes' | relative_url }}">Proposing Rust changes</a>.</p>
 <h2>WebAssembly bindings</h2>
 <p><code>aiwaf-wasm</code> exposes the shared Rust core to browsers and Node-compatible bundlers.</p>
 <pre><code class="language-javascript">import init, {
@@ -154,6 +150,7 @@ const score = forest.anomaly_score([9.0, 9.0]);</code></pre>
 <p>The WASM API includes header, URL, and content validation; keyword and route matchers; record conversion; batched feature extraction; recent-behavior analysis; and Isolation Forest lifecycle methods. Browser use requires a bundler that understands WebAssembly assets.</p>
 <p>Build and test it locally:</p>
 <pre><code class="language-bash">cargo test --manifest-path rust/Cargo.toml --locked -p aiwaf_core
+cargo test --manifest-path rust/Cargo.toml --locked -p aiwaf-wasm --lib
 cd rust/crates/aiwaf_wasm
 wasm-pack test --node
 wasm-pack build --release --target bundler

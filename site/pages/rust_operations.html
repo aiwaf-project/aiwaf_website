@@ -82,20 +82,58 @@ description: "Build, package, troubleshoot, and validate aiwaf-rust Python and W
 <h1 class="page-title">Rust Build and Packaging</h1>
 {% include _docs_source.html %}
 <p class="architecture-link"><a href="{{ '/docs/architecture' | relative_url }}">How AIWAF works: system architecture</a></p>
+<section class="section" id="proposing-rust-changes"><h2>Proposing Rust changes</h2>
+<p>Every change under <code>rust/</code> needs tests at each layer it touches, run against a build of your branch. Rust tests prove the logic is right; Python and WASM tests prove callers can use it.</p>
+<h3>Required tests</h3>
+<div class="table-wrap"><table><thead><tr><th>If your change affects</th><th>Add</th><th>Where</th></tr></thead><tbody>
+<tr><td>Logic that doesn't depend on Python</td><td>Rust unit tests, including edge cases</td><td><code>rust/crates/aiwaf_core/src/</code> or a <code>#[cfg(test)]</code> module in <code>rust/src/</code></td></tr>
+<tr><td>A function or class exposed to Python</td><td>A normal call, a bad input and one boundary edge case</td><td><code>rust/tests/test_binding_boundary.py</code></td></tr>
+<tr><td>A function exposed to WebAssembly</td><td>A binding test</td><td><code>rust/crates/aiwaf_wasm/tests/wasm_api.rs</code></td></tr>
+<tr><td>Behavior that exists in both Python and Rust</td><td>A parity test, with both languages changed in the same pull request</td><td><code>rust/tests/test_python_parity.py</code></td></tr>
+</tbody></table></div>
+<p>A new export fails the binding suite until a test names it. A parser change made in only one language fails the parity tests.</p>
+<h3>Design rules</h3>
+<ul>
+<li><strong>Put logic where it can be shared.</strong> Prefer <code>aiwaf_core</code>, which both the Python and WASM packages use. Keep PyO3 functions in <code>rust/src/</code> focused on converting values.</li>
+<li><strong>Test your branch, not a published package.</strong> Tests must never run against <code>aiwaf-rust</code> from PyPI. The test runner and CI build it from <code>rust/</code> and fail if the installed copy came from anywhere else.</li>
+<li><strong>Start bug fixes with a failing test.</strong> It should fail on the old code and pass with the fix.</li>
+<li><strong>Don't lock in known bugs.</strong> If a test exposes a bug you aren't fixing, mark it <code>xfail(strict=True)</code> with a reason, so it fails as soon as someone fixes the bug. Don't assert the wrong behavior.</li>
+</ul>
+<h3>Before opening a pull request</h3>
+<p>Run these from the monorepo root in a virtual environment. The runner rebuilds <code>aiwaf-rust</code> first.</p>
+<pre><code class="language-bash">cargo test --manifest-path rust/Cargo.toml --locked -p aiwaf_core
+cargo test --manifest-path rust/Cargo.toml --locked -p aiwaf_rust --lib
+cargo test --manifest-path rust/Cargo.toml --locked -p aiwaf-wasm --lib
+python aiwaf_test.py --python-only
+python -m pytest rust/tests -q
+(cd rust/crates/aiwaf_wasm &amp;&amp; wasm-pack test --node)</code></pre>
+<h3>What CI runs</h3>
+<div class="table-wrap"><table><thead><tr><th>Workflow</th><th>Runs when</th><th>Checks</th></tr></thead><tbody>
+<tr><td><code>rust-tests.yml</code></td><td>Rust, Python package or test files change</td><td>Rust and WASM tests, then Python bindings and adapters against a source build</td></tr>
+<tr><td><code>test.yml</code></td><td>Python, Node.js, Rust or test files change</td><td>The full monorepo suite against a source build of <code>aiwaf-rust</code></td></tr>
+</tbody></table></div>
+<p>Workflows for a first-time contributor can wait for a maintainer to approve them.</p>
+<h3>Pull request checklist</h3>
+<ul>
+<li>Tests are added for every layer in the table above, and all of the commands above pass.</li>
+<li>The description explains what changed, and whether it changes behavior for Python or Node.js users.</li>
+<li>The description says whether a new <code>aiwaf-rust</code> or <code>aiwaf-wasm</code> release is needed, and whether the minimum version in the Python or Node.js package must go up.</li>
+<li><code>CHANGELOG.md</code> is updated for changes users can notice.</li>
+</ul>
+<p>Publish <code>aiwaf-rust</code> before any Python release that requires the new version. Python release tests use a source build, so they don't prove that version is on PyPI.</p>
+</section>
 <h2>Native Python build</h2>
-<p>Run these commands in a virtual environment from the monorepo root. Stage the canonical README and LICENSE before changing directory:</p>
-<pre><code class="language-bash">cp README.md rust/README.md
-cp LICENSE rust/LICENSE
-cp NOTICE rust/NOTICE
-cp -R licenses rust/
+<p>Run these commands in a virtual environment from the monorepo root. The first command copies the shared README and license files into <code>rust/</code>, on any operating system. The copies are ignored by Git.</p>
+<pre><code class="language-bash">python scripts/stage_rust_package_files.py
 python -m pip install maturin
-cd rust
-maturin develop
-cd ..
-pytest -q rust/tests/test_python_api.py</code></pre>
-<p>PowerShell users can stage the assets with <code>Copy-Item README.md rust/README.md</code>, <code>Copy-Item LICENSE rust/LICENSE</code>, <code>Copy-Item NOTICE rust/NOTICE</code>, and <code>Copy-Item -Recurse licenses rust/</code>. These generated package-local assets are ignored by Git.</p>
+maturin develop --release --locked --manifest-path rust/Cargo.toml
+python -m pip install pytest
+python -m pytest rust/tests -q</code></pre>
+<p><code>python aiwaf_test.py</code> runs the same build for you before Python tests. Run it manually only when you use <code>pytest</code> or <code>manage.py test</code> directly.</p>
 <h2>Rust core and WASM</h2>
 <pre><code class="language-bash">cargo test --manifest-path rust/Cargo.toml --locked -p aiwaf_core
+cargo test --manifest-path rust/Cargo.toml --locked -p aiwaf_rust --lib
+cargo test --manifest-path rust/Cargo.toml --locked -p aiwaf-wasm --lib
 cd rust/crates/aiwaf_wasm
 wasm-pack test --node
 wasm-pack build --release --target bundler
@@ -106,10 +144,10 @@ cp ../NOTICE crates/aiwaf_wasm/pkg/NOTICE
 cp -R ../licenses crates/aiwaf_wasm/pkg/</code></pre>
 <p>The metadata script also stages LICENSE, NOTICE, and licenses/. The explicit copy commands above produce the same assets. PowerShell can use <code>Copy-Item</code> for files and <code>Copy-Item -Recurse</code> for directories. Browser applications require a bundler that understands WebAssembly assets; initialize the WASM module before calling its exports.</p>
 <h2>Release manifests</h2>
-<p>The Rust/Python source candidate is 0.2.3; WASM remains 0.2.2. They use independent releases under ELv2. Source versions do not establish registry availability.</p>
+<p>The Rust/Python source candidate is 0.2.7; WASM is 0.2.5. They use independent releases under ELv2. Source versions do not establish registry availability.</p>
 <ul>
-<li>PyPI: <code>rust/pyproject.toml</code> and <code>rust/Cargo.toml</code>, <code>rust-v0.2.3</code>, <code>rust-publish.yml</code>.</li>
-<li>npm: <code>rust/crates/aiwaf_wasm/Cargo.toml</code>, <code>wasm-v0.2.2</code>, <code>wasm-publish.yml</code>.</li>
+<li>PyPI: <code>rust/pyproject.toml</code> and <code>rust/Cargo.toml</code>, <code>rust-v0.2.7</code>, <code>rust-publish.yml</code>.</li>
+<li>npm: <code>rust/crates/aiwaf_wasm/Cargo.toml</code>, <code>wasm-v0.2.5</code>, <code>wasm-publish.yml</code>.</li>
 <li>PyO3 uses ABI3 wheels for Python 3.8 and newer, exporting <code>aiwaf_rust</code>.</li>
 </ul>
 <h2>Verification</h2>
@@ -126,7 +164,7 @@ python scripts/profile_csv_logging.py</code></pre>
 <p>The preflight checks module locations, enabled flags, required capabilities, and temporary-file round trips without touching application data. Native snapshot caching and cached log handles are bounded. Closing writers matters before Windows log-directory deletion.</p>
 <p>Three alternating runs on 10,000 synthetic records measured Apache timestamp speedups of 4.57x on Windows and 3.65x on WSL. Retained features plus a 20-tree Rust fit/predict boundary measured 1.55x and 1.35x. Native ISO parsing was slower on both, so it remains optional. An offline Windows Flask IP/keyword + CSV logging workload measured 5.95 ms native versus 9.18 ms Python. These are scoped measurements, not deployed throughput or complete training speedups.</p>
 <p>Release validation includes quoting/gzip, timestamp fallback, seeded model parity, chunk equivalence, concurrent mutations, no-op writes, rotation/truncation, and writer reopening. The Linux four-process smoke check retained 160 log rows and 80 blocklist entries. Production load and the full platform/framework matrix still require deployment-specific checks.</p>
-<p>Publish the Rust dependency before Python releases requiring it. Python release CI can build the matching extension locally for tests; its publication job checks that a compatible dependency is available on PyPI. Local test wheels stay separate from Python release artifacts.</p></section>
+<p>Publish the Rust dependency before Python releases requiring it. Python release CI builds the matching extension from the repository for tests, so confirm the required version is on PyPI before tagging a Python release. Local test builds stay separate from Python release artifacts.</p></section>
 <section class="section" id="native-pipeline-release"><h2>Native pipeline release and validation</h2><p><strong>Release candidate:</strong> this page documents Python <code>1.1.8</code> and Rust/Python <code>0.2.7</code> in the current source checkout. Source versions do not establish registry availability. Python 1.1.8 requires <code>aiwaf-rust&gt;=0.2.7</code>; framework dependencies remain extras.</p><p>Build/test <code>NativeCSVPipeline</code> and <code>NativePipelineRequest</code> in the installed wheel, not just the source extension. Run <code>rust/tests/test_python_api.py</code> and <code>rust/tests/test_csv_pipeline_api.py</code>. Publish the native wheels before the Python package that requires them.</p><p><a href="{{ '/docs/python/operations#native-pipeline-performance' | relative_url }}">Full benchmark method, measurements and deployment tradeoffs</a>.</p></section>
 </main>
 </div></div>

@@ -114,12 +114,14 @@ aiwaf fastapi --help</code></pre>
 <p>Persisted Python models use JSON state. Pickle, joblib, and executable Python-object formats are unsupported. Regenerate old model artifacts through the current trainer. Python 1.1.8 installs its required <code>aiwaf-rust&gt;=0.2.7</code> dependency. Legacy adapters select supported native operations while retaining their compatibility paths; the complete native pipeline requires an explicit adapter and has no Python policy fallback.</p>
 <h2>Local development and verification</h2>
 <p>Run from the monorepo root:</p>
-<pre><code class="language-bash">python -m pip install -e &quot;.[django,flask,fastapi,rust]&quot;
-python -m pip install pytest pytest-cov coverage httpx
+<pre><code class="language-bash">python scripts/stage_rust_package_files.py
+python -m pip install maturin
+maturin develop --release --locked --manifest-path rust/Cargo.toml
+python -m pip install -e &quot;.[django,flask,fastapi]&quot;
+python -m pip install pytest pytest-cov coverage httpx redis djangorestframework python-multipart
 npm ci --prefix js
-python aiwaf_test.py --python-only
-pytest
-python -m benchmarks.benchmark_auto_middleware</code></pre>
+python aiwaf_test.py --python-only</code></pre>
+<p>Build <code>aiwaf-rust</code> before installing the package so pip doesn't download it from PyPI. The test runner rebuilds it each time. See <a href="{{ '/docs/testing#contributor-tests' | relative_url }}">Test changes to AIWAF itself</a>.</p>
 <h2>Independent releases</h2>
 <p>The table lists source release targets, not registry availability. Python 1.1.8 and Rust/Python 0.2.7 are local source targets; registry publication is independent. Release versions and tags must match the relevant manifest.</p>
 <div class="table-wrap"><table><thead><tr><th>Package</th><th>Manifest</th><th>Tag</th><th>Workflow</th></tr></thead><tbody>
