@@ -349,7 +349,7 @@ python aiwaf_test.py --python-only</code></pre>
 <tr><td><code>Failed to read Readme</code> from maturin</td><td>The shared package files aren't in <code>rust/</code></td><td>Run <code>python scripts/stage_rust_package_files.py</code></td></tr>
 <tr><td><code>aiwaf-rust was installed from a package registry</code></td><td>The installed copy came from PyPI</td><td>Run the build commands above</td></tr>
 </tbody></table></div></section>
-<section id="current-source-checks"><h2>Verify the current Python and Node source</h2><p>The source targets are Python 1.1.8 with Rust/Python 0.2.7 and Node 1.1.5 with WASM 0.2.5. Run the framework-specific suites with the same dependencies and configuration as the deployed application.</p><pre><code class="language-bash"># From the AIWAF monorepo root, with test dependencies installed.
+<section id="current-source-checks"><h2>Verify the current Python and Node source</h2><p>The published versions are Python 1.1.8 with Rust/Python 0.2.7 and Node 1.1.5 with WASM 0.2.5. Run the framework-specific suites with the same dependencies and configuration as the deployed application.</p><pre><code class="language-bash"># From the AIWAF monorepo root, with test dependencies installed.
 python aiwaf_test.py --python-only
 
 # Reproduce the committed Node dependency tree.
