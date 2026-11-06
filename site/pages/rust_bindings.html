@@ -159,7 +159,7 @@ description: "Function-level aiwaf-rust API reference for PyO3 and wasm-bindgen 
         </ol>
         <h3>JS/browser WASM pattern</h3>
         <ol>
-            <li><code>await init()</code> at startup.</li>
+            <li>Import the exports you need. A bundler that supports WebAssembly loads the module, so there's no separate init call.</li>
             <li>Use wasm exports in request/event pipeline.</li>
             <li>Persist forest/state with <code>to_json()</code> as needed.</li>
         </ol>

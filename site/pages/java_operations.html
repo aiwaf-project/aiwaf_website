@@ -105,6 +105,7 @@ mvn -Dgpg.skip=true package</code></pre>
 <p>Redis keys include a state-schema version, and each base key prefix has an atomic compatibility marker. Releases using the same schema can share state during a rolling upgrade. A runtime with an incompatible schema refuses the namespace—even in <code>fail_open</code> mode. Use a unique key prefix per application and environment; deploy an incompatible schema with a new prefix, migrate deliberately, then retire the old namespace. Serialized persistent values remain JSON within a schema version.</p>
 <p>New Java models use the Python-aligned six-feature schema and are written as safe JSON containing the Python <code>aiwaf_rust.IsolationForest</code> state. Python can restore Java-generated forest state, and Java can load Python Rust-model artifacts. Existing signed Java binary artifacts, including nine-feature models, remain readable through the restricted legacy loader. Scikit-learn object artifacts are intentionally unsupported.</p>
 <p>Java operational commands mirror the common Python workflow:</p>
+<p>The package doesn't install an <code>aiwaf-cli</code> command. These examples use it as shorthand for <code>java -cp &lt;your-classpath&gt; com.aiwaf.cli.AiwafConsole</code>, so create your own launcher or run the class directly.</p>
 <pre><code class="language-bash">aiwaf-cli status
 aiwaf-cli diagnose --model model.json
 aiwaf-cli blocked

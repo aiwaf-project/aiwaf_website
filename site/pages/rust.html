@@ -123,7 +123,7 @@ maturin develop --release --locked --manifest-path rust/Cargo.toml</code></pre>
 <p>The first command copies the shared README and license files into <code>rust/</code>. The copies are ignored by Git, and release automation stages the same files before building wheels and the source distribution. Changing the Rust code? See <a href="{{ '/docs/rust/operations#proposing-rust-changes' | relative_url }}">Proposing Rust changes</a>.</p>
 <h2>WebAssembly bindings</h2>
 <p><code>aiwaf-wasm</code> exposes the shared Rust core to browsers and Node-compatible bundlers.</p>
-<pre><code class="language-javascript">import init, {
+<pre><code class="language-javascript">import {
   IsolationForest,
   KeywordMatcher,
   RouteMatcher,
@@ -131,8 +131,6 @@ maturin develop --release --locked --manifest-path rust/Cargo.toml</code></pre>
   extract_features,
   validate_headers,
 } from &#x27;aiwaf-wasm&#x27;;
-
-await init();
 
 const reason = validate_headers({
   &#x27;user-agent&#x27;: &#x27;Mozilla/5.0&#x27;,

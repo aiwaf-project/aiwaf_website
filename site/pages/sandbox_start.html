@@ -10,7 +10,7 @@ description: "Clone the sandbox, install published AIWAF packages, verify fiftee
 docker compose version
 git --version
 python --version</code></pre></section>
-<section id="clone"><h2>2. Clone the sandbox</h2><pre><code class="language-bash">git clone https://github.com/aayushgauba/sandbox.git
+<section id="clone"><h2>2. Clone the sandbox</h2><pre><code class="language-bash">git clone https://github.com/aiwaf-project/sandbox.git
 cd sandbox
 python -m pip install requests</code></pre><p>Run all following commands from the repository root unless a block changes directory. Use <code>python3</code> if that is your interpreter name. Runtime images install published packages; no host AIWAF, Java, Maven or PHP installation is needed.</p></section>
 <section id="build"><h2>3. Start one protected endpoint</h2><pre><code class="language-bash">docker compose build aiwaf

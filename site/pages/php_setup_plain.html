@@ -147,12 +147,8 @@ php setup.php</code></pre>
     </section>
 
     <section class="section">
-        <h2>5. Auto Middleware & Path Manifest Setup</h2>
-        <p>AIWAF-PHP can automatically tune your middleware protections based on your application's routing structure. By generating a Path Manifest, AIWAF categorizes your endpoints (e.g., API vs HTML Form) and automatically disables unnecessary middlewares (like Honeypots for APIs) and enforces strict rate limits where appropriate.</p>
-        <pre><code># Generate the path manifest automatically
-php cli/detect_and_train.php --generate-manifest</code></pre>
-        <p>At startup, AIWAF reads the manifest from <code>.aiwaf/paths.json</code> to auto-configure the execution chain.</p>
-        <p>If you prefer fine-grained manual control over your middleware stack rather than relying on auto-generation, proceed to the framework-specific "All Middlewares" manual setup sections below.</p>
+        <h2>5. Route classification helpers</h2>
+        <p><code>AIWAF\Core\PathManifest</code> includes helpers that classify a route, but the current release has no command that generates a manifest, and <code>AIWAF::protect()</code> doesn't read <code>.aiwaf/paths.json</code>. Configure your middleware with the manual setup sections below.</p>
     </section>
 
     <section class="section">

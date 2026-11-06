@@ -7,11 +7,3 @@ generic-title:site/pages/javascript.html
 generic-title:site/pages/python_adapters.html
 generic-title:site/pages/python_architecture.html
 generic-title:site/pages/python_operations.html
-
-# Commands for scripts that are no longer in the aiwaf repository.
-script:scripts/benchmark_csv_request_reuse.py
-script:scripts/benchmark_native_csv_training.py
-script:scripts/benchmark_native_csv_workloads.py
-script:scripts/benchmark_native_training_boundary.py
-script:scripts/benchmark_release_http.py
-script:scripts/profile_csv_logging.py

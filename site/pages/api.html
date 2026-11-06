@@ -121,6 +121,7 @@ npm run aiwaf -- export aiwaf-export.json</code></pre>
 <p>In an application with the npm package installed, use <code>npx aiwaf --help</code>; the source commands above run from <code>js/</code>.</p>
 <p>These Node CLI commands operate on legacy stores. The explicit native engine has dedicated event files and model snapshots; its state is not managed or imported automatically by the legacy CLI. See <a href="{{ '/docs/javascript/operations#native-node-operations' | relative_url }}">native operations</a>.</p>
 <h2>Java</h2>
+<p>The package doesn't install an <code>aiwaf-cli</code> command. These examples use it as shorthand for <code>java -cp &lt;your-classpath&gt; com.aiwaf.cli.AiwafConsole</code>, so create your own launcher or run the class directly.</p>
 <pre><code class="language-bash">aiwaf-cli status
 aiwaf-cli diagnose --model model.json
 aiwaf-cli blocked
@@ -134,8 +135,6 @@ aiwaf-cli model status --path model.json</code></pre>
 <li><a href="{{ '/docs/java/setup/servlet' | relative_url }}">Java engine</a></li>
 <li><a href="{{ '/docs/rust/bindings' | relative_url }}">Rust/Python and WASM functions</a></li>
 </ul>
-<h2>Website endpoints</h2>
-<p>This Flask documentation application defines its own <code>/health</code>, <code>/aiwaf/status</code>, <code>/aiwaf/allowlist</code>, <code>/aiwaf/blocklist</code>, and <code>/aiwaf/keywords</code> routes. Those are website-specific handlers, not a portable AIWAF API. Their implementation does not provide the bearer-token authentication previously described here.</p>
 </main>
         </div>
     </div>

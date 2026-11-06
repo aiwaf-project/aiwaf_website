@@ -24,6 +24,8 @@ BANNED_PHRASES = {
     "conservative mode": "AIWAF has no conservative mode",
     "release candidate:": "use the published version instead",
     "source candidate": "use the published version instead",
+    "await init()": "the aiwaf-wasm package has no default export or init function",
+    "website endpoints": "the site is static and has no endpoints",
 }
 DJANGO_BUILTIN_COMMANDS = {
     "check", "collectstatic", "createsuperuser", "dbshell", "dumpdata", "flush", "loaddata",
