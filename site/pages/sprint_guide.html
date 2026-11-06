@@ -1,0 +1,314 @@
+---
+layout: null
+permalink: "/docs/sprints/"
+title: "AIWAF Sprint Guide | Reviewing and Submitting Pull Requests"
+description: "How to take part in an AIWAF sprint: set up, review pull requests in aiwaf, and submit and review changes in aiwaf_website and sandbox."
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ page.title | escape }}</title>
+    <meta name="description" content="{{ page.description | escape }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIWAF Documentation">
+    <meta property="og:title" content="{{ page.title | escape }}">
+    <meta property="og:description" content="{{ page.description | escape }}">
+    <meta property="og:url" content="{{ page.url | absolute_url }}">
+    <meta property="og:image" content="{{ '/static/aiwaf-logo.png' | absolute_url }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page.title | escape }}">
+    <meta name="twitter:description" content="{{ page.description | escape }}">
+    <meta name="twitter:image" content="{{ '/static/aiwaf-logo.png' | absolute_url }}">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AIWAF Documentation","url":"{{ site.url | append: site.baseurl }}"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #e0e0e0; line-height: 1.6; overflow-x: hidden; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header { background: rgba(16, 16, 30, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); position: fixed; top: 0; width: 100%; z-index: 1000; transition: all 0.3s ease; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientShift 3s ease-in-out infinite; }
+        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { color: #e0e0e0; text-decoration: none; padding: 0.5rem 1rem; border-radius: 50px; transition: all 0.3s ease; }
+        .nav-link:hover { color: #4ecdc4; transform: translateY(-2px); }
+        .main-content { display: grid; grid-template-columns: 300px 1fr; gap: 3rem; padding: 120px 0 3rem; position: relative; }
+        .sidebar { background: rgba(16, 16, 30, 0.6); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; height: fit-content; position: sticky; top: 120px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; color: #4ecdc4; }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: 0.5rem; }
+        .sidebar-nav a { color: #b0b0b0; text-decoration: none; padding: 0.5rem 1rem; border-radius: 10px; display: block; transition: all 0.3s ease; }
+        .sidebar-nav a:hover { background: rgba(78, 205, 196, 0.2); color: #4ecdc4; transform: translateX(5px); }
+        .content { background: rgba(16, 16, 30, 0.4); backdrop-filter: blur(10px); border-radius: 20px; padding: 3rem; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .doc-card { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 2rem; margin-bottom: 2rem; transition: all 0.3s ease; }
+        .doc-card:hover { transform: translateY(-5px); border-color: rgba(78, 205, 196, 0.5); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); }
+        .doc-card h3 { color: #ff6b6b; margin-bottom: 1rem; font-size: 1.5rem; }
+        .doc-card a { color: #4ecdc4; text-decoration: none; font-weight: 600; }
+        .doc-card a:hover { text-decoration: underline; }
+        .page-title { font-size: 3rem; font-weight: 900; margin-bottom: 2rem; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; order: -1; } }
+
+</style>
+    <link rel="stylesheet" href="{{ '/static/docs-current.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/static/brand.css' | relative_url }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a class="brand-logo" href="{{ '/' | relative_url }}" aria-label="AIWAF home"><img src="{{ '/static/aiwaf-logo.png' | relative_url }}" alt="AIWAF" width="2172" height="724"></a>
+{% include _docs_search.html %}
+                <nav class="nav">
+                    <a href="{{ '/' | relative_url }}" class="nav-link">Home</a>
+                    <a href="{{ '/docs' | relative_url }}" class="nav-link">Documentation</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+
+    <div class="container">
+        <div class="main-content">
+            <aside class="sidebar">
+                <h3 class="sidebar-title">Documentation</h3>
+                <ul class="sidebar-nav">
+                    <li><a href="{{ '/docs/contents#tutorials' | relative_url }}">Tutorials</a></li>
+                    <li><a href="{{ '/docs/contents#topics' | relative_url }}">Topic guides</a></li>
+                    <li><a href="{{ '/docs/contents#howto' | relative_url }}">How-to guides</a></li>
+                    <li><a href="{{ '/docs/contents#reference' | relative_url }}">Reference</a></li>
+                    <li><a href="{{ '/docs/contents' | relative_url }}">Full contents</a></li>
+                    <li><a href="{{ '/docs/architecture' | relative_url }}">System Architecture</a></li>
+                    <li><a href="{{ '/docs/python' | relative_url }}">Python</a></li>
+                    <li><a href="{{ '/docs/javascript' | relative_url }}">JavaScript</a></li>
+                    <li><a href="{{ '/docs/php' | relative_url }}">PHP (Legacy)</a></li>
+                    <li><a href="{{ '/docs/java' | relative_url }}">Java</a></li>
+                    <li><a href="{{ '/docs/rust' | relative_url }}">Rust Accelerator</a></li>
+                </ul>
+            </aside>
+
+            <main class="content">
+<h1 class="page-title">AIWAF sprint guide</h1>
+<p class="docs-lead">A sprint is focused time to improve AIWAF together. We focus on reviewing pull requests in <code>aiwaf</code>, and on submitting and reviewing pull requests in <code>aiwaf_website</code> and <code>sandbox</code>. You don't need to be an AIWAF expert or a maintainer, and a sprint is a good place to make your first contribution.</p>
+<p>Each sprint's announcement lists its dates, chat channel and the maintainers taking part.</p>
+
+<section id="focus"><h2>Where to help</h2>
+<div class="table-wrap"><table><thead><tr><th>Repository</th><th>What we need most</th><th>Good for</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/aiwaf-project/aiwaf">aiwaf</a></td><td>Reviewing open pull requests</td><td>Python, Node.js, Rust and Java developers</td></tr>
+<tr><td><a href="https://github.com/aiwaf-project/aiwaf_website">aiwaf_website</a></td><td>Submitting and reviewing docs pull requests</td><td>Writers, new contributors and anyone who uses AIWAF</td></tr>
+<tr><td><a href="https://github.com/aiwaf-project/sandbox">sandbox</a></td><td>Submitting and reviewing pull requests</td><td>Anyone comfortable with Docker</td></tr>
+</tbody></table></div></section>
+
+<section id="setup"><h2>Set up</h2>
+<p>Fork and clone only the repository you're working on, and do this before the sprint if you can. The first Rust build and the sandbox's Docker images can take a while. You'll also need a GitHub account, and the <a href="https://cli.github.com/">GitHub CLI</a> makes it easier to test a pull request locally.</p>
+<h3>aiwaf</h3>
+<p>You need Python 3.10 or newer, Rust, and a virtual environment. Add Node.js for JavaScript changes, or Java 17 and Maven for Java changes. Activate the environment after creating it.</p>
+<pre><code class="language-bash">git clone https://github.com/aiwaf-project/aiwaf.git
+cd aiwaf
+python -m venv .venv
+python -m pip install maturin
+python scripts/stage_rust_package_files.py
+maturin develop --release --locked --manifest-path rust/Cargo.toml
+python -m pip install -e ".[django,flask,fastapi]"
+python -m pip install pytest pytest-cov coverage httpx redis djangorestframework python-multipart
+python aiwaf_test.py --python-only</code></pre>
+<p>After this, <code>python aiwaf_test.py</code> rebuilds <code>aiwaf-rust</code> for you. For JavaScript, also run <code>npm ci --prefix js</code>. See <a href="{{ '/docs/testing#contributor-tests' | relative_url }}">Test changes to AIWAF itself</a> if you hit a setup error.</p>
+<h3>aiwaf_website</h3>
+<p>You need Ruby 3.3 or newer, Bundler and Python, plus an <code>aiwaf</code> checkout in the same parent folder.</p>
+<pre><code class="language-bash">git clone https://github.com/aiwaf-project/aiwaf_website.git
+cd aiwaf_website
+bundle install
+bundle exec jekyll serve</code></pre>
+<p>Open <code>http://localhost:4000</code> to preview the site.</p>
+<h3>sandbox</h3>
+<p>You need Python and Node.js 22. Add Docker to run the protected services.</p>
+<pre><code class="language-bash">git clone https://github.com/aiwaf-project/sandbox.git
+cd sandbox
+python -m pip install requests
+python -m unittest discover -s examples/sandbox -p 'test_*.py'</code></pre></section>
+
+<section id="choose-work"><h2>Choose your work</h2>
+<p>Pick one item, comment on it to claim it, and then start. That stops two people from doing the same work.</p>
+<div class="table-wrap"><table><thead><tr><th>Repository</th><th>Pull requests to review</th><th>Issues to work on</th></tr></thead><tbody>
+<tr><td>aiwaf</td><td><a href="https://github.com/aiwaf-project/aiwaf/pulls">Open pull requests</a></td><td><a href="https://github.com/aiwaf-project/aiwaf/issues">Open issues</a></td></tr>
+<tr><td>aiwaf_website</td><td><a href="https://github.com/aiwaf-project/aiwaf_website/pulls">Open pull requests</a></td><td><a href="https://github.com/aiwaf-project/aiwaf_website/issues">Open issues</a></td></tr>
+<tr><td>sandbox</td><td><a href="https://github.com/aiwaf-project/sandbox/pulls">Open pull requests</a></td><td><a href="https://github.com/aiwaf-project/sandbox/issues">Open issues</a></td></tr>
+</tbody></table></div>
+<p>New to the project? Look for the <code>good first issue</code> label. If you submit a pull request, try to review someone else's as well.</p></section>
+
+<section id="review-aiwaf"><h2>Review a pull request in aiwaf</h2>
+<p>A good review answers one question: does this change fix the problem without breaking anything else? AIWAF is security software, so run the code rather than only reading the diff.</p>
+<ol>
+<li>Comment on the pull request to say you're reviewing it.</li>
+<li>Read the linked issue and what it says "done" means.</li>
+<li>Check the pull request out locally.</li>
+<li>Run the tests.</li>
+<li>Reproduce the bug on <code>main</code>, and confirm it's gone on the branch.</li>
+<li>Work through the checklist below.</li>
+<li>Post your review, including what you tested.</li>
+</ol>
+<pre><code class="language-bash">gh pr checkout 123 --repo aiwaf-project/aiwaf
+python aiwaf_test.py --python-only</code></pre>
+<div class="table-wrap"><table><thead><tr><th>If the change touches</th><th>Also run</th></tr></thead><tbody>
+<tr><td><code>rust/</code></td><td><code>cargo test --manifest-path rust/Cargo.toml --locked -p aiwaf_core</code> and <code>-p aiwaf_rust --lib</code>, then <code>python -m pytest rust/tests -q</code></td></tr>
+<tr><td><code>rust/crates/aiwaf_wasm/</code></td><td><code>cargo test --manifest-path rust/Cargo.toml --locked -p aiwaf-wasm --lib</code>, then <code>wasm-pack test --node</code> from that folder</td></tr>
+<tr><td><code>js/</code></td><td><code>npm ci --prefix js</code>, then <code>python aiwaf_test.py --js-only</code></td></tr>
+<tr><td><code>java/</code></td><td><code>mvn test</code> from <code>java/</code></td></tr>
+</tbody></table></div>
+<h3>What to check</h3>
+<ul>
+<li><strong>It fixes the issue:</strong> everything the issue asks for is done.</li>
+<li><strong>It has a test:</strong> the new test fails on the old code and passes with the fix.</li>
+<li><strong>It stays in scope:</strong> there are no unrelated changes, and removed code has a clear reason.</li>
+<li><strong>It's safe:</strong> it can't let a blocked request through, trust a client-supplied value or hide an error.</li>
+<li><strong>Languages agree:</strong> if Python and Rust share a behavior, both change together.</li>
+<li><strong>Users are covered:</strong> <code>CHANGELOG.md</code> is updated for changes users can notice, and the description says whether a new <code>aiwaf-rust</code> or <code>aiwaf-wasm</code> release is needed.</li>
+<li><strong>CI passes:</strong> if a check failed, find out whether this change caused it.</li>
+</ul>
+<p>Rust changes also need to follow <a href="{{ '/docs/rust/operations#proposing-rust-changes' | relative_url }}">Proposing Rust changes</a>.</p>
+<h3>Write useful comments</h3>
+<p>Be specific, say why something matters, and thank people for their work. Many contributors are new, and a kind, clear review is what brings them back.</p>
+<div class="table-wrap"><table><thead><tr><th>Instead of</th><th>Try</th></tr></thead><tbody>
+<tr><td>"This is wrong."</td><td>"This path still gets rewritten when the file ends in <code>.csv</code>. Could it use the shared helper?"</td></tr>
+<tr><td>"Add tests."</td><td>"Could you add a test with a negative UTC offset? I don't think this case is covered yet."</td></tr>
+<tr><td>"Why did you do this?"</td><td>"I'm not sure why this check was removed. Was it unreachable, or is it covered elsewhere?"</td></tr>
+<tr><td>"LGTM"</td><td>Use the summary below, so others know what you checked.</td></tr>
+</tbody></table></div>
+<p>Label small preferences with <code>nit:</code> so the author knows they don't block the change.</p>
+<pre><code class="language-markdown">**Tested on:** OS, language version and commit
+**Ran:** the test commands, and the result
+**Reproduced the bug on main:** yes or no, and how
+**Confirmed the fix on this branch:** yes or no, and how
+**Not tested:** anything you skipped
+
+**Result:** ready for a maintainer, or the changes needed</code></pre>
+<p>If you can't finish a review, post what you found anyway. A partial review with clear notes is still useful.</p></section>
+
+<section id="submit"><h2>Submit a pull request to aiwaf_website or sandbox</h2>
+<p>Keep each pull request to one change, and run the checks before you open it. Small changes get reviewed sooner.</p>
+<ol>
+<li>Comment on the issue to claim it. If there's no issue, open one first, unless it's a small fix.</li>
+<li>Fork the repository and create a branch from <code>main</code>.</li>
+<li>Make your change.</li>
+<li>Run the checks for that repository.</li>
+<li>Open the pull request, link the issue with <code>Fixes #123</code>, and fill in the template below.</li>
+<li>Respond to review comments, and push fixes to the same branch.</li>
+</ol>
+<h3>Checks for aiwaf_website</h3>
+<p>Run these from the repository root, with an <code>aiwaf</code> checkout next to it:</p>
+<pre><code class="language-bash">python scripts/build_docs_search.py
+bundle exec jekyll build
+python scripts/check_site.py
+python scripts/check_docs_accuracy.py --aiwaf ../aiwaf</code></pre>
+<ul>
+<li><strong>Test what you write:</strong> run every command and code sample before adding it.</li>
+<li><strong>Document what's released:</strong> only describe behavior in a published version. Merge code in <code>aiwaf</code> before docs that depend on it.</li>
+<li><strong>New pages:</strong> give each one a unique title and a description, and link it from <code>site/pages/contents.html</code>.</li>
+<li><strong>Don't edit generated files by hand:</strong> that includes the configuration defaults tables. See the website README.</li>
+<li><strong>Fixing a known problem:</strong> remove its entry from <code>scripts/docs_accuracy_baseline.txt</code>, or the check will fail.</li>
+</ul>
+<h3>Checks for sandbox</h3>
+<pre><code class="language-bash">python -m unittest discover -s examples/sandbox -p 'test_*.py'
+python examples/sandbox/check-package-pins.py
+node --test examples/sandbox/common/redis-cache.test.js
+docker compose config -q</code></pre>
+<p>If you changed a proxy, rebuild that service and run the smoke and login checks from <a href="{{ '/docs/sandbox/start' | relative_url }}">Your first sandbox run</a>.</p>
+<ul>
+<li><strong>Dependencies:</strong> update lockfiles with the project's tools, such as <code>npm install</code> or <code>lock-python-dependencies.py</code>, rather than by hand.</li>
+<li><strong>Versions:</strong> keep every manifest and lockfile in step with <code>package-versions.json</code>.</li>
+<li><strong>Don't commit</strong> <code>node_modules</code>, result files, certificates or credentials.</li>
+<li><strong>Stay local:</strong> only test against the sandbox's own services, and keep them bound to loopback. Never run its attack tools against a system you don't own.</li>
+</ul>
+<h3>Pull request template</h3>
+<pre><code class="language-markdown">Fixes #123
+
+**What changed:**
+A short description.
+
+**How I tested it:**
+The commands you ran, and what you checked by hand.
+
+**Not tested:**
+Anything you couldn't run.
+
+**AI tools:**
+None, or which tool you used and what for.</code></pre>
+<h3>Using AI tools</h3>
+<p>AI tools are fine, but you're responsible for what you submit. Understand every line, run it yourself, and say in the pull request that you used one. Changes that show no sign of being tested may be closed without review. Reviews should come from people too, so don't paste an AI's output as your review.</p></section>
+
+<section id="review-website-sandbox"><h2>Review a pull request in aiwaf_website or sandbox</h2>
+<p>Use the same steps and summary as an <code>aiwaf</code> review, with these checklists instead. You don't need to be an expert: following the instructions as a new user is a real test.</p>
+<h3>aiwaf_website</h3>
+<p>Check the pull request out, then preview it with <code>bundle exec jekyll serve</code>.</p>
+<ul>
+<li><strong>Follow it yourself:</strong> run every command and sample as written, in a clean environment.</li>
+<li><strong>Check facts against the code:</strong> setting names, defaults, flags and behavior should match <code>aiwaf</code> and the published version.</li>
+<li><strong>Look for features that don't exist:</strong> a passing check only proves a name exists, not that the description is right.</li>
+<li><strong>Look at the page:</strong> check it on desktop and on a phone.</li>
+<li><strong>Read it as a new user:</strong> a reader should know what to do next. Look for unexplained terms and missing steps.</li>
+<li><strong>Check the links:</strong> the checks only cover links within the site, so click external links yourself.</li>
+<li><strong>Check the scope:</strong> the page should only claim what was tested, and security advice should be safe if followed exactly.</li>
+</ul>
+<h3>sandbox</h3>
+<p>Check the pull request out, then run the checks above. Docker is needed for anything that changes a service.</p>
+<ul>
+<li><strong>Follow it yourself:</strong> build and start the changed service.</li>
+<li><strong>Run the smoke and login checks:</strong> do this against that service, and compare the results with <code>main</code>.</li>
+<li><strong>Check dependencies:</strong> lockfiles should only change what the description says, and <code>package-versions.json</code> should still match. Look up any new package.</li>
+<li><strong>Keep it isolated:</strong> ports stay on loopback, containers keep their restrictions, and no real credentials are added.</li>
+<li><strong>Read reports carefully:</strong> a passing test proves only that scenario, and a 403 might not come from AIWAF.</li>
+<li><strong>Check other runtimes:</strong> a change to shared code can affect all of them, so ask a maintainer to run the all-runtimes job.</li>
+<li><strong>Update the docs:</strong> if commands or services changed, the README and <a href="{{ '/docs/sandbox' | relative_url }}">the sandbox pages on this site</a> may need a matching pull request.</li>
+</ul></section>
+
+<section id="how-review-works"><h2>How review works</h2>
+<p>Anyone can review a pull request, and only maintainers merge. Your review helps a maintainer decide faster, so it counts even if you aren't a maintainer.</p>
+<h3>Automatic checks</h3>
+<div class="table-wrap"><table><thead><tr><th>Repository</th><th>What runs on pull requests</th></tr></thead><tbody>
+<tr><td>aiwaf</td><td><code>Monorepo tests</code>, <code>Rust tests</code> and <code>Java tests and security</code>, depending on which files changed</td></tr>
+<tr><td>aiwaf_website</td><td>Docs accuracy, site build, and the Flask and Django examples</td></tr>
+<tr><td>sandbox</td><td>Python harness, Node helpers, Compose validation, and an end-to-end check</td></tr>
+</tbody></table></div>
+<p>A first-time contributor's checks wait until a maintainer approves them, so "waiting for approval" doesn't mean something is wrong. An older pull request may also need <code>main</code> merged in to pick up the current checks.</p>
+<h3>Review outcomes</h3>
+<div class="table-wrap"><table><thead><tr><th>Outcome</th><th>Use it when</th></tr></thead><tbody>
+<tr><td>Comment</td><td>You have questions, or a partial review</td></tr>
+<tr><td>Approve</td><td>You tested it, and the checklist passes</td></tr>
+<tr><td>Request changes</td><td>Something needs fixing before merge. Say exactly what</td></tr>
+</tbody></table></div>
+<h3>Etiquette</h3>
+<ul>
+<li><strong>Before you start:</strong> read existing comments, and don't repeat them.</li>
+<li><strong>Authors:</strong> reply to every comment, and mark a conversation resolved once it's handled. It's fine to disagree, as long as you explain why.</li>
+<li><strong>Stuck work:</strong> if a claimed issue or pull request goes quiet, ask on it before taking it over. If you can't finish something, say so, so someone else can pick it up.</li>
+<li><strong>Competing pull requests:</strong> compare the work, not the people. Credit good ideas from the one that doesn't get merged.</li>
+<li><strong>Security problems:</strong> if a change could help someone bypass AIWAF, tell a maintainer privately rather than explaining it in a public comment.</li>
+</ul></section>
+
+<section id="help"><h2>Getting help</h2>
+<p>If you've been stuck for 15 minutes, ask. You won't be the only one, and setup problems are often quick to fix.</p>
+<ul>
+<li><strong>About a task:</strong> comment on its issue or pull request, or use the sprint's chat channel.</li>
+<li><strong>Setup errors:</strong> see <a href="{{ '/docs/testing#contributor-tests' | relative_url }}">Common setup errors</a>.</li>
+<li><strong>Behavior:</strong> everyone taking part follows the <a href="https://github.com/aiwaf-project/aiwaf/blob/main/CODE_OF_CONDUCT.md">Code of Conduct</a>. Report problems to the maintainers.</li>
+</ul></section>
+</main>
+        </div>
+    </div>
+
+    <script>
+        // Header scroll effect
+        const header = document.querySelector('.header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(16, 16, 30, 0.95)';
+            } else {
+                header.style.background = 'rgba(16, 16, 30, 0.9)';
+            }
+        });
+    </script>
+</body>
+</html>
