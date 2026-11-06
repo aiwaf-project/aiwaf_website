@@ -133,7 +133,7 @@ python -m uvicorn app:app --port 8000</code></pre><p>Open <code>http://127.0.0.1
 <li>Configure the outermost proxy to overwrite client-supplied forwarding headers.</li>
 <li>Use Redis, a database, or another shared backend when multiple workers must share rate-limit, blocklist, or exemption state.</li>
 <li>Keep health checks, static assets, and trusted webhook routes explicitly scoped instead of disabling protection globally.</li>
-<li>Start anomaly detection in observe-only or conservative mode and tune it with representative normal traffic.</li>
+<li>Tune anomaly detection with representative normal traffic before relying on it in production.</li>
 <li>Rotate logs and exclude secrets, authorization headers, cookies, and personal data.</li>
 <li>Sign model/configuration artifacts where the runtime supports HMAC verification.</li>
 <li>Run AIWAF alongside normal secure-development controls and an edge/reverse-proxy layer.</li>
